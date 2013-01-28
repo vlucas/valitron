@@ -32,56 +32,10 @@ class Validator
         }
     }
 
-
-    /**
-     * Register new validation rule callback
-     */
-    public static function addRule($name, $callback)
-    {
-        if(!is_callable($callback)) {
-            throw new \InvalidArgumentException("Second argument must be a valid callback. Given argument was not callable.");
-        }
-
-        static::$_rules[$name] = $callback;
-    }
-
-
-    /**
-     * Convenience method to add validation rules
-     */
-    public function rule($rule, $fields, $message = null)
-    {
-        if(!isset(static::$_rules[$rule])) {
-            throw new \InvalidArgumentException("Rule '" . $rule . "' has not been registered with " . __CLASS__ . "::addRule().");
-        }
-
-        $this->_validations[] = array(
-            'rule' => $rule,
-            'fields' => (array) $fields,
-            'message' => $message
-        );
-        return $this;
-    }
-
-
-    /**
-     * Convenience method to add validation rules
-     */
-    public function __call($rule, array $args)
-    {
-        if(!isset(static::$_rules[$rule])) {
-            throw new \InvalidArgumentException("Method '" . $rule . "' does not exist, or rule '" . $rule . "' has not been registered with " . __CLASS__ . "::addRule().");
-        }
-
-        array_unshift($args, $rule);
-        call_user_func_array(array($this, 'rule'), $args);
-        return $this;
-    }
-
     /**
      *  Required field validator
      */
-    public function validateRequired($field, $value, array $params = array())
+    public function validateRequired($field, $value)
     {
         if(is_null($value)) {
             return false;
@@ -92,49 +46,201 @@ class Validator
     }
 
     /**
-     * Validate that an attribute is a valid IP address
+     * Validate that two values match
+     *
+     * @param  string  $field
+     * @param  mixed   $value
+     * @param  array   $fields
+     * @return void
+     */
+    protected function validateEquals($field, $value, array $params)
+    {
+        $field2 = $params[0];
+        return isset($this->_fields[$field2]) && $value == $this->_fields[$field2];
+    }
+
+    /**
+     * Validate that a field is different from another field
+     *
+     * @param  string  $field
+     * @param  mixed   $value
+     * @param  array   $fields
+     * @return bool
+     */
+    protected function validateDifferent($field, $value, array $params)
+    {
+        $field2 = $params[0];
+        return isset($this->_fields[$field2]) && $value != $this->_fields[$field2];
+    }
+
+    /**
+     * Validate that a field was "accepted" (based on PHP's string evaluation rules)
+     *
+     * This validation rule implies the field is "required"
      *
      * @param  string  $field
      * @param  mixed   $value
      * @return bool
      */
-    public static function validateIp($field, $value)
+    protected function validateAccepted($field, $value)
+    {
+        $acceptable = array('yes', 'on', 1, true);
+        return $this->validateRequired($field, $value) && in_array($value, $acceptable, true);
+    }
+
+    /**
+     * Validate that a field is numeric
+     *
+     * @param  string  $field
+     * @param  mixed   $value
+     * @return bool
+     */
+    protected function validateNumeric($field, $value)
+    {
+        return is_numeric($value);
+    }
+
+    /**
+     * Validate that a field is an integer
+     *
+     * @param  string  $field
+     * @param  mixed   $value
+     * @return bool
+     */
+    protected function validateInteger($field, $value)
+    {
+        return filter_var($value, FILTER_VALIDATE_INT) !== false;
+    }
+
+    /**
+     * Validate the length of a string
+     *
+     * @param  string  $field
+     * @param  mixed   $value
+     * @param  array   $fields
+     * @return bool
+     */
+    protected function validateLength($field, $value, $params)
+    {
+        $length = $this->stringLength($value);
+        // Length between
+        if(isset($params[1])) {
+            return $length >= $params[0] && $length <= $params[1];
+        }
+        // Length same
+        return $length == $params[0];
+    }
+
+    /**
+     * Get the length of a string
+     *
+     * @param  string  $value
+     * @return int
+     */
+    protected function stringLength($value)
+    {
+        if (function_exists('mb_strlen')) {
+            return mb_strlen($value);
+        }
+        return strlen($value);
+    }
+
+    /**
+     * Validate the size of a field is greater than a minimum value.
+     *
+     * @param  string  $field
+     * @param  mixed   $value
+     * @param  array   $fields
+     * @return bool
+     */
+    protected function validateMin($field, $value, $params)
+    {
+        return (int) $value >= $params[0];
+    }
+
+    /**
+     * Validate the size of a field is less than a maximum value
+     *
+     * @param  string  $field
+     * @param  mixed   $value
+     * @param  array   $fields
+     * @return bool
+     */
+    protected function validateMax($field, $value, $params)
+    {
+        return (int) $value <= $params[0];
+    }
+
+    /**
+     * Validate a field is contained within a list of values
+     *
+     * @param  string  $field
+     * @param  mixed   $value
+     * @param  array   $fields
+     * @return bool
+     */
+    protected function validateIn($field, $value, $params)
+    {
+        return in_array($value, $params[0]);
+    }
+
+    /**
+     * Validate a field is not contained within a list of values
+     *
+     * @param  string  $field
+     * @param  mixed   $value
+     * @param  array   $fields
+     * @return bool
+     */
+    protected function validateNotIn($field, $value, $params)
+    {
+        return !$this->validateIn($field, $value, $params);
+    }
+
+    /**
+     * Validate that a field is a valid IP address
+     *
+     * @param  string  $field
+     * @param  mixed   $value
+     * @return bool
+     */
+    protected function validateIp($field, $value)
     {
         return filter_var($value, FILTER_VALIDATE_IP) !== false;
     }
 
     /**
-     * Validate that an attribute is a valid e-mail address
+     * Validate that a field is a valid e-mail address
      *
      * @param  string  $field
      * @param  mixed   $value
      * @return bool
      */
-    public static function validateEmail($field, $value)
+    protected function validateEmail($field, $value)
     {
         return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
     }
 
     /**
-     * Validate that an attribute is a valid URL by syntax
+     * Validate that a field is a valid URL by syntax
      *
      * @param  string  $field
      * @param  mixed   $value
      * @return bool
      */
-    public static function validateUrl($field, $value)
+    protected function validateUrl($field, $value)
     {
         return filter_var($value, FILTER_VALIDATE_URL) !== false;
     }
 
     /**
-     * Validate that an attribute is an active URL by verifying DNS record
+     * Validate that a field is an active URL by verifying DNS record
      *
      * @param  string  $field
      * @param  mixed   $value
      * @return bool
      */
-    public static function validateActiveUrl($field, $value)
+    protected function validateUrlActive($field, $value)
     {
         $url = str_replace(array('http://', 'https://', 'ftp://'), '', strtolower($value));
 
@@ -142,74 +248,74 @@ class Validator
     }
 
     /**
-     * Validate that an attribute contains only alphabetic characters
+     * Validate that a field contains only alphabetic characters
      *
      * @param  string  $field
      * @param  mixed   $value
      * @return bool
      */
-    public static function validateAlpha($field, $value)
+    protected function validateAlpha($field, $value)
     {
         return preg_match('/^([a-z])+$/i', $value);
     }
 
     /**
-     * Validate that an attribute contains only alpha-numeric characters.
+     * Validate that a field contains only alpha-numeric characters
      *
      * @param  string  $field
      * @param  mixed   $value
      * @return bool
      */
-    public static function validateAlphaNum($field, $value)
+    protected function validateAlphaNum($field, $value)
     {
         return preg_match('/^([a-z0-9])+$/i', $value);
     }
 
     /**
-     * Validate that an attribute contains only alpha-numeric characters, dashes, and underscores.
+     * Validate that a field contains only alpha-numeric characters, dashes, and underscores
      *
      * @param  string  $field
      * @param  mixed   $value
      * @return bool
      */
-    public static function validateAlphaDash($field, $value)
+    protected function validateAlphaDash($field, $value)
     {
         return preg_match('/^([-a-z0-9_-])+$/i', $value);
     }
 
     /**
-     * Validate that an attribute passes a regular expression check.
+     * Validate that a field passes a regular expression check
      *
      * @param  string  $field
      * @param  mixed   $value
      * @return bool
      */
-    public static function validateRegex($field, $value, $params)
+    protected function validateRegex($field, $value, $params)
     {
         return preg_match($params[0], $value);
     }
 
     /**
-     * Validate that an attribute is a valid date.
+     * Validate that a field is a valid date
      *
      * @param  string  $field
      * @param  mixed   $value
      * @return bool
      */
-    public static function validateDate($field, $value)
+    protected function validateDate($field, $value)
     {
         return strtotime($value) !== false;
     }
 
     /**
-     * Validate that an attribute matches a date format.
+     * Validate that a field matches a date format
      *
      * @param  string  $field
      * @param  mixed   $value
-     * @param  array   $params
+     * @param  array   $fields
      * @return bool
      */
-    public static function validateDateFormat($field, $value, $params)
+    protected function validateDateFormat($field, $value, $params)
     {
         $parsed = date_parse_from_format($params[0], $value);
 
@@ -217,29 +323,33 @@ class Validator
     }
 
     /**
-     * Validate the date is before a given date.
+     * Validate the date is before a given date
      *
      * @param  string  $field
      * @param  mixed   $value
-     * @param  array   $params
+     * @param  array   $fields
      * @return bool
      */
-    public static function validateBefore($field, $value, $params)
+    protected function validateDateBefore($field, $value, $params)
     {
-        return strtotime($value) < strtotime($params[0]);
+        $vtime = ($value instanceof \DateTime) ? $value->getTimestamp() : strtotime($value);
+        $ptime = ($params[0] instanceof \DateTime) ? $params[0]->getTimestamp() : strtotime($params[0]);
+        return $vtime < $ptime;
     }
 
     /**
-     * Validate the date is after a given date.
+     * Validate the date is after a given date
      *
      * @param  string  $field
      * @param  mixed   $value
-     * @param  array   $params
+     * @param  array   $fields
      * @return bool
      */
-    public static function validateAfter($field, $value, $params)
+    protected function validateDateAfter($field, $value, $params)
     {
-        return strtotime($value) > strtotime($params[0]);
+        $vtime = ($value instanceof \DateTime) ? $value->getTimestamp() : strtotime($value);
+        $ptime = ($params[0] instanceof \DateTime) ? $params[0]->getTimestamp() : strtotime($params[0]);
+        return $vtime > $ptime;
     }
 
     /**
@@ -271,6 +381,16 @@ class Validator
     }
 
     /**
+     * Reset object properties
+     */
+    public function reset()
+    {
+        $this->_fields = array();
+        $this->_errors = array();
+        $this->_validations = array();
+    }
+
+    /**
      * Run validations and return boolean result
      *
      * @return boolean
@@ -280,19 +400,69 @@ class Validator
         foreach($this->_validations as $v) {
             foreach($v['fields'] as $field) {
                 $value = isset($this->_fields[$field]) ? $this->_fields[$field] : null;
-                $result = call_user_func(static::$_rules[$v['rule']], $field, $value);
+
+                // Callback is user-specified or assumed method on class
+                if(isset(static::$_rules[$v['rule']])) {
+                    $callback = static::$_rules[$v['rule']];
+                } else {
+                    $callback = array($this, 'validate' . ucfirst($v['rule']));
+                }
+
+                $result = call_user_func($callback, $field, $value, $v['params']);
                 if(!$result) {
                     $this->error($field, $v['message']);
                 }
             }
         }
-        return count($this->errors()) === 0;
+        $result = count($this->errors()) === 0;
+        $this->reset();
+        return $result;
+    }
+
+    /**
+     * Register new validation rule callback
+     */
+    public static function addRule($name, $callback)
+    {
+        if(!is_callable($callback)) {
+            throw new \InvalidArgumentException("Second argument must be a valid callback. Given argument was not callable.");
+        }
+
+        static::$_rules[$name] = $callback;
+    }
+
+    /**
+     * Convenience method to add validation rules
+     */
+    public function rule($rule, $fields)
+    {
+        if(!isset(static::$_rules[$rule])) {
+            $ruleMethod = 'validate' . ucfirst($rule);
+            if(!method_exists($this, $ruleMethod)) {
+                throw new \InvalidArgumentException("Rule '" . $rule . "' has not been registered with " . __CLASS__ . "::addRule().");
+            }
+        }
+
+        // Get any other arguments passed to function
+        $params = array_slice(func_get_args(), 2);
+
+        $this->_validations[] = array(
+            'rule' => $rule,
+            'fields' => (array) $fields,
+            'params' => (array) $params,
+            'message' => null
+        );
+        return $this;
+    }
+
+    /**
+     * Convenience method to add validation rules
+     */
+    public function __call($rule, array $args)
+    {
+        array_unshift($args, $rule);
+        call_user_func_array(array($this, 'rule'), $args);
+        return $this;
     }
 }
-
-// Register default validations here so they can be overridden by user after include
-$class = __NAMESPACE__ . '\Validator';
-$class::addRule('required', array($class, 'validateRequired'));
-$class::addRule('email', array($class, 'validateEmail'));
-$class::addRule('url', array($class, 'validateUrl'));
 
