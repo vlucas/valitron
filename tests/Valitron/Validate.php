@@ -22,6 +22,20 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(1, count($v->errors('name')));
     }
 
+    public function testArrayOfFieldsToValidate()
+    {
+        $v = new Validator(array('name' => 'Chester Tester', 'email' => 'chester@tester.com'));
+        $v->rule('required', array('name', 'email'));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testArrayOfFieldsToValidateOneEmpty()
+    {
+        $v = new Validator(array('name' => 'Chester Tester', 'email' => ''));
+        $v->rule('required', array('name', 'email'));
+        $this->assertFalse($v->validate());
+    }
+
     public function testRequiredValid()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
