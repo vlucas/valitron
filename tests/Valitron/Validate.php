@@ -22,6 +22,31 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(1, count($v->errors('name')));
     }
 
+    public function testAccurateErrorMessage()
+    {
+        $v = new Validator(array());
+        $v->required('name');
+        $v->validate();
+        $this->assertSame(array("Required"), $v->errors('name'));
+    }
+
+    public function testAccurateErrorMessageParams()
+    {
+        $v = new Validator(array('num' => 5));
+        $v->min('num', 6);
+        $v->validate();
+        $this->assertSame(array("Must be greater than 6"), $v->errors('num'));
+    }
+
+    public function testCustomErrorMessage()
+    {
+        $v = new Validator(array());
+        $v->required('name')->message('Name is required');
+        $v->validate();
+        $errors = $v->errors('name');
+        $this->assertSame('Name is required', $errors[0]);
+    }
+
     public function testArrayOfFieldsToValidate()
     {
         $v = new Validator(array('name' => 'Chester Tester', 'email' => 'chester@tester.com'));
@@ -291,14 +316,14 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testAlphaDashValid()
     {
         $v = new Validator(array('test' => 'abc-123_DEF'));
-        $v->alphaDash('test');
+        $v->slug('test');
         $this->assertTrue($v->validate());
     }
 
     public function testAlphaDashInvalid()
     {
         $v = new Validator(array('test' => 'abc-123_DEF $%^'));
-        $v->rule('alphaDash', 'test');
+        $v->rule('slug', 'test');
         $this->assertFalse($v->validate());
     }
 

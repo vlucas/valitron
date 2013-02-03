@@ -15,13 +15,17 @@ class Validator
     protected $_fields = array();
     protected $_errors = array();
     protected $_validations = array();
+
+    protected static $_lang;
+    protected static $_langDir;
     protected static $_rules = array();
+    protected static $_ruleMessages = array();
 
 
     /**
      *  Setup validation
      */
-    public function __construct($data, $fields = array())
+    public function __construct($data, $fields = array(), $lang = 'en', $langDir = null)
     {
         // Allows filtering of used input fields against optional second array of field names allowed
         // This is useful for limiting raw $_POST or $_GET data to only known fields
@@ -30,12 +34,50 @@ class Validator
                 $this->_fields[$field] = $value;
             }
         }
+
+        // Only load language files if language or directory has changed
+        if($lang !== static::$_lang || $langDir !== static::$_langDir) {
+            // Set language directory for loading language files
+            if($langDir === null) {
+                $langDir = dirname(dirname(__DIR__)) . '/lang';
+            }
+            static::langDir($langDir);
+
+            // Set language for error messages
+            static::lang($lang);
+        }
+    }
+
+    /**
+     * Get/set language to use for validation messages
+     */
+    public static function lang($lang = null)
+    {
+        if($lang !== null) {
+            static::$_lang = $lang;
+
+            // Load language file in directory
+            $langDir = static::langDir();
+            static::$_ruleMessages = require rtrim($langDir, '/') . '/' . $lang . '.php';
+        }
+        return static::$_lang;
+    }
+
+    /**
+     * Get/set language file path
+     */
+    public static function langDir($dir = null)
+    {
+        if($dir !== null) {
+            static::$_langDir = $dir;
+        }
+        return static::$_langDir;
     }
 
     /**
      *  Required field validator
      */
-    public function validateRequired($field, $value)
+    protected function validateRequired($field, $value)
     {
         if(is_null($value)) {
             return false;
@@ -278,7 +320,7 @@ class Validator
      * @param  mixed   $value
      * @return bool
      */
-    protected function validateAlphaDash($field, $value)
+    protected function validateSlug($field, $value)
     {
         return preg_match('/^([-a-z0-9_-])+$/i', $value);
     }
@@ -355,7 +397,7 @@ class Validator
     /**
      *  Get array of fields and data
      */
-    public function data($field = null)
+    public function data()
     {
         return $this->_fields;
     }
@@ -374,10 +416,18 @@ class Validator
     /**
      *  Add an error to error messages array
      */
-    public function error($field, $msg)
+    public function error($field, $msg, array $params = array())
     {
-        // Add to error array
-        $this->_errors[$field][] = sprintf($msg, $field);
+        $this->_errors[$field][] = vsprintf($msg, $params);
+    }
+
+    /**
+     * Specify validation message to use for error for the last validation rule
+     */
+    public function message($msg)
+    {
+        $this->_validations[count($this->_validations)-1]['message'] = $msg;
+        return $this;
     }
 
     /**
@@ -410,13 +460,11 @@ class Validator
 
                 $result = call_user_func($callback, $field, $value, $v['params']);
                 if(!$result) {
-                    $this->error($field, $v['message']);
+                    $this->error($field, $v['message'], $v['params']);
                 }
             }
         }
-        $result = count($this->errors()) === 0;
-        $this->reset();
-        return $result;
+        return count($this->errors()) === 0;
     }
 
     /**
@@ -443,6 +491,9 @@ class Validator
             }
         }
 
+        // Ensure rule has an accompanying message
+        $message = isset(static::$_ruleMessages[$rule]) ? static::$_ruleMessages[$rule] : 'Invalid';
+
         // Get any other arguments passed to function
         $params = array_slice(func_get_args(), 2);
 
@@ -450,7 +501,7 @@ class Validator
             'rule' => $rule,
             'fields' => (array) $fields,
             'params' => (array) $params,
-            'message' => null
+            'message' => $message
         );
         return $this;
     }
