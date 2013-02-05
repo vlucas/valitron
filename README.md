@@ -67,6 +67,31 @@ if($v->validate()) {
 }
 ```
 
+## Built-in Validation Rules
+
+ * `required` - Required field
+ * `equals` - Field must match another field (email/password confirmation)
+ * `different` - Field must be different than another field
+ * `accepted` - Checkbox or Radio must be accepted (yes, on, 1, true)
+ * `numeric` - Must be numeric
+ * `integer` - Must be integer number
+ * `length` - String must be certain length or between given lengths
+ * `min` - Minimum
+ * `max` - Maximum
+ * `in` - Performs in_array check on given array values
+ * `notIn` - Negation of `in` rule (not in array of values)
+ * `ip` - Valid IP address
+ * `email` - Valid email address
+ * `url` - Valid URL 
+ * `urlActive` - Valid URL with active DNS record
+ * `alpha` - Alphabetic characters only
+ * `alphaNum` - Alphabetic and numeric characters only
+ * `slug` - URL slug characters (a-z, 0-9, -, _)
+ * `regex` - Field matches given regex pattern
+ * `date` - Field is a valid date
+ * `dateFormat` - Field is a valid date in the given format
+ * `dateBefore` - Field is a valid date and is before the given date
+ * `dateAfter` - Field is a valid date and is after the given date
 
 ## Contributing
 

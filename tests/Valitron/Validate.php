@@ -18,14 +18,14 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testAccurateErrorCount()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
-        $v->required('name');
+        $v->rule('required', 'name');
         $this->assertSame(1, count($v->errors('name')));
     }
 
     public function testAccurateErrorMessage()
     {
         $v = new Validator(array());
-        $v->required('name');
+        $v->rule('required', 'name');
         $v->validate();
         $this->assertSame(array("Required"), $v->errors('name'));
     }
@@ -33,7 +33,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testAccurateErrorMessageParams()
     {
         $v = new Validator(array('num' => 5));
-        $v->min('num', 6);
+        $v->rule('min', 'num', 6);
         $v->validate();
         $this->assertSame(array("Must be greater than 6"), $v->errors('num'));
     }
@@ -41,7 +41,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testCustomErrorMessage()
     {
         $v = new Validator(array());
-        $v->required('name')->message('Name is required');
+        $v->rule('required', 'name')->message('Name is required');
         $v->validate();
         $errors = $v->errors('name');
         $this->assertSame('Name is required', $errors[0]);
@@ -71,21 +71,21 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testRequiredNonExistentField()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
-        $v->required('nonexistent_field');
+        $v->rule('required', 'nonexistent_field');
         $this->assertFalse($v->validate());
     }
 
     public function testEqualsValid()
     {
         $v = new Validator(array('foo' => 'bar', 'bar' => 'bar'));
-        $v->equals('foo', 'bar');
+        $v->rule('equals', 'foo', 'bar');
         $this->assertTrue($v->validate());
     }
 
     public function testEqualsInvalid()
     {
         $v = new Validator(array('foo' => 'foo', 'bar' => 'bar'));
-        $v->equals('foo', 'bar');
+        $v->rule('equals', 'foo', 'bar');
         $this->assertFalse($v->validate());
     }
 
@@ -99,7 +99,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testDifferentInvalid()
     {
         $v = new Validator(array('test1' => 'test', 'test2' => 'test'));
-        $v->different('test1', 'test2');
+        $v->rule('different', 'foo', 'bar');
         $this->assertFalse($v->validate());
     }
 
@@ -113,7 +113,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testAcceptedInvalid()
     {
         $v = new Validator(array('agree' => 'no'));
-        $v->accepted('agree');
+        $v->rule('accepted', 'agree');
         $this->assertFalse($v->validate());
     }
 
@@ -127,7 +127,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testNumericInvalid()
     {
         $v = new Validator(array('num' => 'nope'));
-        $v->numeric('num');
+        $v->rule('numeric', 'num');
         $this->assertFalse($v->validate());
     }
 
@@ -141,7 +141,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testIntegerInvalid()
     {
         $v = new Validator(array('num' => '42.341569'));
-        $v->integer('num');
+        $v->rule('integer', 'num');
         $this->assertFalse($v->validate());
     }
 
@@ -155,7 +155,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testLengthInvalid()
     {
         $v = new Validator(array('str' => 'sad'));
-        $v->length('str', 6);
+        $v->rule('length', 'str', 6);
         $this->assertFalse($v->validate());
     }
 
@@ -169,7 +169,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testLengthBetweenInvalid()
     {
         $v = new Validator(array('str' => 'sad'));
-        $v->length('str', 4, 10);
+        $v->rule('length', 'str', 4, 10);
         $this->assertFalse($v->validate());
     }
 
@@ -183,7 +183,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testMinInvalid()
     {
         $v = new Validator(array('num' => 5));
-        $v->min('num', 6);
+        $v->rule('min', 'num', 6);
         $this->assertFalse($v->validate());
     }
 
@@ -197,7 +197,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testMaxInvalid()
     {
         $v = new Validator(array('num' => 5));
-        $v->max('num', 4);
+        $v->rule('max', 'num', 4);
         $this->assertFalse($v->validate());
     }
 
@@ -211,7 +211,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testInInvalid()
     {
         $v = new Validator(array('color' => 'yellow'));
-        $v->in('color', array('red', 'green', 'blue'));
+        $v->rule('in', 'color', array('red', 'green', 'blue'));
         $this->assertFalse($v->validate());
     }
 
@@ -225,7 +225,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testNotInInvalid()
     {
         $v = new Validator(array('color' => 'blue'));
-        $v->notIn('color', array('red', 'green', 'blue'));
+        $v->rule('notIn', 'color', array('red', 'green', 'blue'));
         $this->assertFalse($v->validate());
     }
 
@@ -239,14 +239,14 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testIpInvalid()
     {
         $v = new Validator(array('ip' => 'buy viagra now!'));
-        $v->ip('ip');
+        $v->rule('ip', 'ip');
         $this->assertFalse($v->validate());
     }
 
     public function testEmailValid()
     {
         $v = new Validator(array('name' => 'Chester Tester', 'email' => 'chester@tester.com'));
-        $v->email('email');
+        $v->rule('email', 'email');
         $this->assertTrue($v->validate());
     }
 
@@ -260,7 +260,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testUrlValid()
     {
         $v = new Validator(array('website' => 'http://google.com'));
-        $v->url('website');
+        $v->rule('url', 'website');
         $this->assertTrue($v->validate());
     }
 
@@ -274,7 +274,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testUrlActive()
     {
         $v = new Validator(array('website' => 'http://google.com'));
-        $v->urlActive('website');
+        $v->rule('urlActive', 'website');
         $this->assertTrue($v->validate());
     }
 
@@ -288,7 +288,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testAlphaValid()
     {
         $v = new Validator(array('test' => 'abcDEF'));
-        $v->alpha('test');
+        $v->rule('alpha', 'test');
         $this->assertTrue($v->validate());
     }
 
@@ -302,7 +302,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testAlphaNumValid()
     {
         $v = new Validator(array('test' => 'abc123'));
-        $v->alphaNum('test');
+        $v->rule('alphaNum', 'test');
         $this->assertTrue($v->validate());
     }
 
@@ -316,7 +316,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testAlphaDashValid()
     {
         $v = new Validator(array('test' => 'abc-123_DEF'));
-        $v->slug('test');
+        $v->rule('slug', 'test');
         $this->assertTrue($v->validate());
     }
 
@@ -330,7 +330,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testRegexValid()
     {
         $v = new Validator(array('test' => '42'));
-        $v->regex('test', '/[\d]+/');
+        $v->rule('regex', 'test', '/[\d]+/');
         $this->assertTrue($v->validate());
     }
 
@@ -344,7 +344,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testDateValid()
     {
         $v = new Validator(array('date' => '2013-01-27'));
-        $v->date('date');
+        $v->rule('date', 'date');
         $this->assertTrue($v->validate());
     }
 
@@ -358,7 +358,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testDateFormatValid()
     {
         $v = new Validator(array('date' => '2013-01-27'));
-        $v->dateFormat('date', 'Y-m-d');
+        $v->rule('dateFormat', 'date', 'Y-m-d');
         $this->assertTrue($v->validate());
     }
 
@@ -372,7 +372,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testDateBeforeValid()
     {
         $v = new Validator(array('date' => '2013-01-27'));
-        $v->dateBefore('date', new \DateTime('2013-01-28'));
+        $v->rule('dateBefore', 'date', new \DateTime('2013-01-28'));
         $this->assertTrue($v->validate());
     }
 
@@ -386,7 +386,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testDateAfterValid()
     {
         $v = new Validator(array('date' => '2013-01-27'));
-        $v->dateAfter('date', new \DateTime('2013-01-26'));
+        $v->rule('dateAfter', 'date', new \DateTime('2013-01-26'));
         $this->assertTrue($v->validate());
     }
 

@@ -505,15 +505,5 @@ class Validator
         );
         return $this;
     }
-
-    /**
-     * Convenience method to add validation rules
-     */
-    public function __call($rule, array $args)
-    {
-        array_unshift($args, $rule);
-        call_user_func_array(array($this, 'rule'), $args);
-        return $this;
-    }
 }
 
