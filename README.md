@@ -93,6 +93,21 @@ if($v->validate()) {
  * `dateBefore` - Field is a valid date and is before the given date
  * `dateAfter` - Field is a valid date and is after the given date
 
+## Adding Custom Validation Rules
+
+To add your own validation rule, use the `addRule` method with a rule
+name, a custom callback or closure, and a error message to display in
+case of an error. The callback provided should return boolean true or
+false.
+
+```
+Valitron\Validation::addRule('alwaysFail', function($field, $value,
+array $params) {
+    return false;
+}, 'Everything you do is wrong. You fail.');
+```
+
+
 ## Contributing
 
 1. Fork it

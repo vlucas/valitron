@@ -21,6 +21,8 @@ class Validator
     protected static $_rules = array();
     protected static $_ruleMessages = array();
 
+    const ERROR_DEFAULT = 'Invalid';
+
 
     /**
      *  Setup validation
@@ -470,13 +472,14 @@ class Validator
     /**
      * Register new validation rule callback
      */
-    public static function addRule($name, $callback)
+    public static function addRule($name, $callback, $message = self::ERROR_DEFAULT)
     {
         if(!is_callable($callback)) {
             throw new \InvalidArgumentException("Second argument must be a valid callback. Given argument was not callable.");
         }
 
         static::$_rules[$name] = $callback;
+        static::$_ruleMessages[$name] = $message;
     }
 
     /**
@@ -492,7 +495,7 @@ class Validator
         }
 
         // Ensure rule has an accompanying message
-        $message = isset(static::$_ruleMessages[$rule]) ? static::$_ruleMessages[$rule] : 'Invalid';
+        $message = isset(static::$_ruleMessages[$rule]) ? static::$_ruleMessages[$rule] : self::ERROR_DEFAULT;
 
         // Get any other arguments passed to function
         $params = array_slice(func_get_args(), 2);
