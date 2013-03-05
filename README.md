@@ -101,12 +101,20 @@ case of an error. The callback provided should return boolean true or
 false.
 
 ```
-Valitron\Validation::addRule('alwaysFail', function($field, $value,
-array $params) {
+Valitron\Validation::addRule('alwaysFail', function($field, $value, array $params) {
     return false;
 }, 'Everything you do is wrong. You fail.');
 ```
 
+## Running Tests
+
+The test suite depends on the Composer autoloader to load and run the
+Valitron files. Please ensure you have downloaded and installed Composer
+before running the tests:
+
+1. Download Composer `curl -s http://getcomposer.org/installer | php`
+2. Run 'install' `php composer.phar install`
+3. Run the tests `phpunit`
 
 ## Contributing
 
@@ -117,4 +125,6 @@ array $params) {
 5. Commit your changes (`git commit -am 'Added some feature'`)
 6. Push to the branch (`git push origin my-new-feature`)
 7. Create new Pull Request
+8. Pat yourself on the back for being so awesome
+
 
