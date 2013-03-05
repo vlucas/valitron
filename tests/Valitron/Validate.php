@@ -396,5 +396,92 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $v->rule('dateAfter', 'date', '2013-01-28');
         $this->assertFalse($v->validate());
     }
+
+    public function testAcceptBulkRulesWithSingleParams()
+    {
+        $rules = array(
+            'required' => 'nonexistent_field',
+            'accepted' => 'foo',
+            'integer' =>  'foo'
+        );
+
+        $v1 = new Validator(array('foo' => 'bar', 'bar' => 'baz'));
+        $v1->rules($rules);
+        $v1->validate();
+
+        $v2 = new Validator(array('foo' => 'bar', 'bar' => 'baz'));
+        $v2->rule('required', 'nonexistent_field');
+        $v2->rule('accepted', 'foo');
+        $v2->rule('integer', 'foo');
+        $v2->validate();
+
+        $this->assertEquals($v1->errors(), $v2->errors());
+    }
+
+    public function testAcceptBulkRulesWithMultipleParams()
+    {
+        $rules = array(
+            'required' => array('nonexistent_field', 'foo'),
+            'equals' => array('foo', 'bar'),
+            'length' => array('foo', 5)
+        );
+
+        $v1 = new Validator(array('foo' => 'bar', 'bar' => 'baz'));
+        $v1->rules($rules);
+        $v1->validate();
+
+        $v2 = new Validator(array('foo' => 'bar', 'bar' => 'baz'));
+        $v2->rule('required', array('nonexistent_field', 'foo'));
+        $v2->rule('equals', 'foo', 'bar');
+        $v2->rule('length', 'foo', 5);
+        $v2->validate();
+
+        $this->assertEquals($v1->errors(), $v2->errors());
+    }
+
+    public function testAcceptBulkRulesWithNestedRules()
+    {
+        $rules = array(
+            'length'   => array(
+                array('foo', 5),
+                array('bar', 5)
+            )
+        );
+
+        $v1 = new Validator(array('foo' => 'bar', 'bar' => 'baz'));
+        $v1->rules($rules);
+        $v1->validate();
+
+        $v2 = new Validator(array('foo' => 'bar', 'bar' => 'baz'));
+        $v2->rule('length', 'foo', 5);
+        $v2->rule('length', 'bar', 5);
+        $v2->validate();
+
+        $this->assertEquals($v1->errors(), $v2->errors());
+    }
+
+    public function testAcceptBulkRulesWithNestedRulesAndMultipleFields()
+    {
+        $rules = array(
+            'length'   => array(
+                array(array('foo', 'bar'), 5),
+                array('baz', 5)
+            ),
+            'required' => array('missing_field_1', 'missing_field_2')
+        );
+
+        $v1 = new Validator(array('foo' => 'bar', 'bar' => 'baz', 'baz' => 'foo'));
+        $v1->rules($rules);
+        $v1->validate();
+
+        $v2 = new Validator(array('foo' => 'bar', 'bar' => 'baz', 'baz' => 'foo'));
+        $v2->rule('length', array('foo', 'bar'), 5);
+        $v2->rule('length', 'baz', 5);
+        $v2->rule('required', array('missing_field_1', 'missing_field_2'));
+        $v2->validate();
+
+        $this->assertEquals($v1->errors(), $v2->errors());
+    }
+
 }
 
