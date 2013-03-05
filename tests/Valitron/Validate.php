@@ -421,7 +421,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testAcceptBulkRulesWithMultipleParams()
     {
         $rules = array(
-            'required' => array('nonexistent_field', 'other_missing_field'),
+            'required' => array(array('nonexistent_field', 'other_missing_field')),
             'equals' => array('foo', 'bar'),
             'length' => array('foo', 5)
         );

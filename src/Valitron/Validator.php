@@ -516,7 +516,9 @@ class Validator
     {
         foreach ($rules as $ruleType => $params) {
             if (is_array($params) && !empty($params)) {
-                if (is_array($params[0])) {
+                // differentiate between a single rule taking an array of params
+                // and an array of rules within a single type
+                if (count($params) > 1 && is_array($params[0]) && is_array($params[1])) {
                     foreach ($params as $innerParams) {
                         $this->callRuleWithParams($ruleType, $innerParams);
                     }
