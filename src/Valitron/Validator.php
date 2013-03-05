@@ -450,7 +450,18 @@ class Validator
      */
     public function error($field, $msg, array $params = array())
     {
-        $this->_errors[$field][] = vsprintf($msg, $params);
+        $values = array();
+        // Printed values need to be in string format
+        foreach($params as $param) {
+            if(is_array($param)) {
+                $param = "['" . implode("', '", $param) . "']";
+            }
+            if($param instanceof \DateTime) {
+                $param = $param->format('Y-m-d');
+            }
+            $values[] = $param;
+        }
+        $this->_errors[$field][] = vsprintf($msg, $values);
     }
 
     /**
