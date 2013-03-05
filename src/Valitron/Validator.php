@@ -483,7 +483,7 @@ class Validator
     }
 
     /**
-     * Convenience method to add validation rules
+     * Convenience method to add a single validation rule
      */
     public function rule($rule, $fields)
     {
@@ -508,5 +508,30 @@ class Validator
         );
         return $this;
     }
-}
 
+    /**
+     * Convenience method to add multiple validation rules with an array
+     */
+    public function rules($rules)
+    {
+        foreach ($rules as $ruleType => $params) {
+            if (is_array($params) && !empty($params)) {
+                if (is_array($params[0])) {
+                    foreach ($params as $innerParams) {
+                        $this->callRuleWithParams($ruleType, $innerParams);
+                    }
+                } else {
+                    $this->callRuleWithParams($ruleType, $params);
+                }
+            } else {
+                $this->rule($ruleType, $params);
+            }
+        }
+    }
+
+    protected function callRuleWithParams($ruleType, $params)
+    {
+        array_unshift($params, $ruleType);
+        call_user_func_array(array($this, 'rule'), $params);
+    }
+}
