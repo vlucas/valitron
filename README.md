@@ -41,7 +41,7 @@ Usage is simple and straightforward. Just supply an array of data you
 wish to validate, add some rules, and then call `validate()`. If there
 are any errors, you can call `errors()` to get them.
 
-```
+```php
 $v = new Valitron\Validator(array('name' => 'Chester Tester'));
 $v->rule('required', 'name');
 if($v->validate()) {
@@ -55,7 +55,7 @@ if($v->validate()) {
 Using this format, you can validate `$_POST` data directly and easily,
 and can even apply a rule like `required` to an array of fields:
 
-```
+```php
 $v = new Valitron\Validator($_POST);
 $v->rule('required', ['name', 'email']);
 $v->rule('email', 'email');
@@ -101,7 +101,7 @@ name, a custom callback or closure, and a error message to display in
 case of an error. The callback provided should return boolean true or
 false.
 
-```
+```php
 Valitron\Validation::addRule('alwaysFail', function($field, $value, array $params) {
     return false;
 }, 'Everything you do is wrong. You fail.');
