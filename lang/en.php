@@ -22,6 +22,7 @@ return array(
     'date' => "Invalid date",
     'dateFormat' => "Must be date with format '%s'",
     'dateBefore' => "Must be date before '%s'",
-    'dateAfter' => "Must be date after '%s'"
+    'dateAfter' => "Must be date after '%s'",
+    'contains' => "Must contain %s"
 );
 
