@@ -515,25 +515,14 @@ class Validator
     public function rules($rules)
     {
         foreach ($rules as $ruleType => $params) {
-            if (is_array($params) && !empty($params)) {
-                // differentiate between a single rule taking an array of params
-                // and an array of rules within a single type
-                if (count($params) > 1 && is_array($params[0]) && is_array($params[1])) {
-                    foreach ($params as $innerParams) {
-                        $this->callRuleWithParams($ruleType, $innerParams);
-                    }
-                } else {
-                    $this->callRuleWithParams($ruleType, $params);
+            if (is_array($params)) {
+                foreach ($params as $innerParams) {
+                    array_unshift($innerParams, $ruleType);
+                    call_user_func_array(array($this, "rule"), $innerParams);
                 }
             } else {
                 $this->rule($ruleType, $params);
             }
         }
-    }
-
-    protected function callRuleWithParams($ruleType, $params)
-    {
-        array_unshift($params, $ruleType);
-        call_user_func_array(array($this, 'rule'), $params);
     }
 }
