@@ -521,7 +521,6 @@ class Validator
                         $this->callRuleWithParams($ruleType, $innerParams);
                     }
                 } else {
-                    var_dump($params);
                     $this->callRuleWithParams($ruleType, $params);
                 }
             } else {
