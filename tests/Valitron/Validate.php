@@ -421,7 +421,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testAcceptBulkRulesWithMultipleParams()
     {
         $rules = array(
-            'required' => array('nonexistent_field', 'foo'),
+            'required' => array('nonexistent_field', 'other_missing_field'),
             'equals' => array('foo', 'bar'),
             'length' => array('foo', 5)
         );
@@ -431,7 +431,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $v1->validate();
 
         $v2 = new Validator(array('foo' => 'bar', 'bar' => 'baz'));
-        $v2->rule('required', array('nonexistent_field', 'foo'));
+        $v2->rule('required', array('nonexistent_field', 'other_missing_field'));
         $v2->rule('equals', 'foo', 'bar');
         $v2->rule('length', 'foo', 5);
         $v2->validate();
@@ -466,8 +466,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
             'length'   => array(
                 array(array('foo', 'bar'), 5),
                 array('baz', 5)
-            ),
-            'required' => array('missing_field_1', 'missing_field_2')
+            )
         );
 
         $v1 = new Validator(array('foo' => 'bar', 'bar' => 'baz', 'baz' => 'foo'));
@@ -477,7 +476,6 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $v2 = new Validator(array('foo' => 'bar', 'bar' => 'baz', 'baz' => 'foo'));
         $v2->rule('length', array('foo', 'bar'), 5);
         $v2->rule('length', 'baz', 5);
-        $v2->rule('required', array('missing_field_1', 'missing_field_2'));
         $v2->validate();
 
         $this->assertEquals($v1->errors(), $v2->errors());
