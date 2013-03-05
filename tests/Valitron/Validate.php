@@ -396,5 +396,26 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $v->rule('dateAfter', 'date', '2013-01-28');
         $this->assertFalse($v->validate());
     }
+
+    public function testContainsValid()
+    {
+        $v = new Validator(array('test_string' => 'this is a test'));
+        $v->rule('contains', 'test_string', 'a test');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testContainsNotFound()
+    {
+        $v = new Validator(array('test_string' => 'this is a test'));
+        $v->rule('contains', 'test_string', 'foobar');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testContainsInvalidValue()
+    {
+        $v = new Validator(array('test_string' => 'this is a test'));
+        $v->rule('contains', 'test_string', array('test'));
+        $this->assertFalse($v->validate());
+    }
 }
 

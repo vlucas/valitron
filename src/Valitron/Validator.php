@@ -23,6 +23,7 @@ class Validator
 
     const ERROR_DEFAULT = 'Invalid';
 
+    protected $validUrlPrefixes = array('http://', 'https://', 'ftp://');
 
     /**
      *  Setup validation
@@ -242,6 +243,25 @@ class Validator
     }
 
     /**
+     * Validate a field contains a given string
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @param  array  $params
+     * @return bool
+     */
+    protected function validateContains($field, $value, $params)
+    {
+        if(!isset($params[0])) {
+            return false;
+        }
+        if (!is_string($params[0]) || !is_string($value)) {
+            return false;
+        }
+        return (strpos($value, $params[0]) !== false);
+    }
+
+    /**
      * Validate that a field is a valid IP address
      *
      * @param  string  $field
@@ -274,7 +294,12 @@ class Validator
      */
     protected function validateUrl($field, $value)
     {
-        return filter_var($value, FILTER_VALIDATE_URL) !== false;
+        foreach ($this->validUrlPrefixes as $prefix) {
+            if(strpos($value, $prefix) !== false) {
+                return filter_var($value, FILTER_VALIDATE_URL) !== false;
+            }
+        }
+        return false;
     }
 
     /**
@@ -286,9 +311,14 @@ class Validator
      */
     protected function validateUrlActive($field, $value)
     {
-        $url = str_replace(array('http://', 'https://', 'ftp://'), '', strtolower($value));
+        foreach ($this->validUrlPrefixes as $prefix) {
+            if(strpos($value, $prefix) !== false) {
+                $url = str_replace($prefix, '', strtolower($value));
 
-        return checkdnsrr($url);
+                return checkdnsrr($url);
+            }
+        }
+        return false;
     }
 
     /**
@@ -420,7 +450,18 @@ class Validator
      */
     public function error($field, $msg, array $params = array())
     {
-        $this->_errors[$field][] = vsprintf($msg, $params);
+        $values = array();
+        // Printed values need to be in string format
+        foreach($params as $param) {
+            if(is_array($param)) {
+                $param = "['" . implode("', '", $param) . "']";
+            }
+            if($param instanceof \DateTime) {
+                $param = $param->format('Y-m-d');
+            }
+            $values[] = $param;
+        }
+        $this->_errors[$field][] = vsprintf($msg, $values);
     }
 
     /**
