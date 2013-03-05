@@ -92,6 +92,7 @@ if($v->validate()) {
  * `dateFormat` - Field is a valid date in the given format
  * `dateBefore` - Field is a valid date and is before the given date
  * `dateAfter` - Field is a valid date and is after the given date
+ * `contains` - Field is a string and contains the given string
 
 ## Adding Custom Validation Rules
 
