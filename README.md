@@ -107,6 +107,67 @@ Valitron\Validation::addRule('alwaysFail', function($field, $value, array $param
 }, 'Everything you do is wrong. You fail.');
 ```
 
+## Alternate syntax for adding rules
+
+As the number of rules grows, you may prefer the alternate syntax
+for defining multiple rules at once.
+
+```php
+$rules = [
+    'required' => 'foo',
+    'accepted' => 'bar',
+    'integer' =>  'bar'
+];
+
+$v = new Valitron\Validator(array('foo' => 'bar', 'bar' => 1));
+$v->rules($rules);
+$v->validate();
+```
+
+If your rule requires multiple parameters or a single parameter
+more complex than a string, you need to wrap the rule in an array.
+
+```php
+$rules = [
+    'required' => [
+        ['foo', 'bar']
+    ],
+    'length' => [
+        ['foo', 3]
+    ]
+];
+```
+You can also specify multiple rules for each rule type.
+
+```php
+$rules = [
+    'length'   => [
+        ['foo', 5],
+        ['bar', 5]
+    ]
+];
+```
+
+Putting these techniques together, you can create a complete
+rule definition in a relatively compact data structure.
+
+You can continue to add individual rules with the `rule` method
+even after specifying a rule defnition via an array. This is
+especially useful if you are defining custom validation rules.
+
+```php
+$rules = [
+    'required' => 'foo',
+    'accepted' => 'bar',
+    'integer' =>  'bar'
+];
+
+$v = new Valitron\Validator(array('foo' => 'bar', 'bar' => 1));
+$v->rules($rules);
+$v->rule('min', 'bar', 0);
+$v->validate();
+```
+
 ## Running Tests
 
 The test suite depends on the Composer autoloader to load and run the
@@ -127,5 +188,4 @@ before running the tests:
 6. Push to the branch (`git push origin my-new-feature`)
 7. Create new Pull Request
 8. Pat yourself on the back for being so awesome
-
 

@@ -524,7 +524,7 @@ class Validator
     }
 
     /**
-     * Convenience method to add validation rules
+     * Convenience method to add a single validation rule
      */
     public function rule($rule, $fields)
     {
@@ -549,5 +549,21 @@ class Validator
         );
         return $this;
     }
-}
 
+    /**
+     * Convenience method to add multiple validation rules with an array
+     */
+    public function rules($rules)
+    {
+        foreach ($rules as $ruleType => $params) {
+            if (is_array($params)) {
+                foreach ($params as $innerParams) {
+                    array_unshift($innerParams, $ruleType);
+                    call_user_func_array(array($this, "rule"), $innerParams);
+                }
+            } else {
+                $this->rule($ruleType, $params);
+            }
+        }
+    }
+}
