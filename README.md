@@ -3,7 +3,7 @@
 Valitron is a simple, minimal and elegant stand-alone validation library
 with NO dependencies. Valitron uses simple, straightforward validation
 methods with a focus on readable and concise syntax. Valitron is the
-simple and pragmatic validation library you've been loking for.
+simple and pragmatic validation library you've been looking for.
 
 [![Build
 Status](https://travis-ci.org/vlucas/valitron.png?branch=master)](https://travis-ci.org/vlucas/valitron)
@@ -152,7 +152,7 @@ Putting these techniques together, you can create a complete
 rule definition in a relatively compact data structure.
 
 You can continue to add individual rules with the `rule` method
-even after specifying a rule defnition via an array. This is
+even after specifying a rule definition via an array. This is
 especially useful if you are defining custom validation rules.
 
 ```php
