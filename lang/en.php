@@ -12,8 +12,8 @@ return array(
     'in' => "Invalid value",
     'notIn' => "Invalid value",
     'ip' => "Invalid IP address",
-    'email' => "Inalid email address",
-    'url' => "Inalid URL",
+    'email' => "Invalid email address",
+    'url' => "Invalid URL",
     'urlActive' => "Must be active domain",
     'alpha' => "Must contain only leters a-z",
     'alphaNum' => "Must contain only leters a-z and/or numbers 0-9",
@@ -25,4 +25,5 @@ return array(
     'dateAfter' => "Must be date after '%s'",
     'contains' => "Must contain %s"
 );
+
 
