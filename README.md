@@ -102,7 +102,7 @@ case of an error. The callback provided should return boolean true or
 false.
 
 ```php
-Valitron\Validation::addRule('alwaysFail', function($field, $value, array $params) {
+Valitron\Validator::addRule('alwaysFail', function($field, $value, array $params) {
     return false;
 }, 'Everything you do is wrong. You fail.');
 ```
