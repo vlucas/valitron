@@ -15,6 +15,7 @@ class Validator
     protected $_fields = array();
     protected $_errors = array();
     protected $_validations = array();
+    protected $_labels = array();
 
     protected static $_lang;
     protected static $_langDir;
@@ -504,6 +505,8 @@ class Validator
 
                 $result = call_user_func($callback, $field, $value, $v['params']);
                 if(!$result) {
+                    $field = $this->checkAndSetLabel($field);
+                    $v['params'] = $this->checkAndSetLabel($v['params']);
                     $this->error($field, $v['message'], $v['params']);
                 }
             }
@@ -549,6 +552,36 @@ class Validator
             'message' => $message
         );
         return $this;
+    }
+    
+    /**
+     * @param array $labels
+     * @return $this
+     */
+    public function label($labels = array())
+    {
+        if (is_array($labels)) {
+            $this->_labels = $labels;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param $field
+     * @return array
+     */
+    private function checkAndSetLabel($field)
+    {
+        if (is_array($field)) {
+            foreach ($field as $k => $v) {
+                $field[$k] = isset($this->_labels[$field[$k]]) ? $this->_labels[$field[$k]] : $v;
+            }
+        } else {
+            $field = isset($this->_labels[$field]) ? $this->_labels[$field] : $field;
+        }
+
+        return $field;
     }
 
     /**
