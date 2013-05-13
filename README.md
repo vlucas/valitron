@@ -168,6 +168,37 @@ $v->rule('min', 'bar', 0);
 $v->validate();
 ```
 
+## Adding field label to messages
+
+You can do this in two different ways, you can add a individual label to a rule or an array of all labels for the rules.
+
+To add individual label to rule you simply add the `label` method after the rule.
+
+```php
+$v = new Valitron\Validator(array());
+$v->rule('required', 'name')->message('{field} is required')->label('Name');
+$v->validate();
+
+There is a edge case to this method, you wouldn't be able to use a array of field names in the rule definition, so one rule per field. So this wouldn't work:
+
+```php
+$v = new Valitron\Validator(array());
+$v->rule('required', array('name', 'email'))->message('{field} is required')->label('Name');
+$v->validate();
+
+However we can use a array of labels to solve this issue by simply adding the `labels` method instead:
+
+```php
+$v = new Valitron\Validator(array());
+$v->rule('required', array('name', 'email'))->message('{field} is required');
+$v->rules(array(
+    'name' => 'Name',
+    'email' => 'Email address'
+));
+$v->validate();
+
+This introduces a new set of tags to your error language file which looks like `{field}`, if you are using a rule like `equals` you can access the second value in the language file by incrementing the field with a value like `{field1}`.
+
 ## Running Tests
 
 The test suite depends on the Composer autoloader to load and run the
