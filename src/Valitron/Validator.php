@@ -4,7 +4,7 @@ namespace Valitron;
 /**
  * Validation Class
  *
- * Validates input against certain criteria
+ * Validates input against certian criteria
  *
  * @package Valitron
  * @author Vance Lucas <vance@vancelucas.com>
@@ -15,6 +15,7 @@ class Validator
     protected $_fields = array();
     protected $_errors = array();
     protected $_validations = array();
+    protected $_labels = array();
 
     protected static $_lang;
     protected static $_langDir;
@@ -32,16 +33,16 @@ class Validator
     {
         // Allows filtering of used input fields against optional second array of field names allowed
         // This is useful for limiting raw $_POST or $_GET data to only known fields
-        foreach ($data as $field => $value) {
-            if (empty($fields) || (!empty($fields) && in_array($field, $fields))) {
+        foreach($data as $field => $value) {
+            if(empty($fields) || (!empty($fields) && in_array($field, $fields))) {
                 $this->_fields[$field] = $value;
             }
         }
 
         // Only load language files if language or directory has changed
-        if ($lang !== static::$_lang || $langDir !== static::$_langDir) {
+        if($lang !== static::$_lang || $langDir !== static::$_langDir) {
             // Set language directory for loading language files
-            if ($langDir === null) {
+            if($langDir === null) {
                 $langDir = dirname(dirname(__DIR__)) . '/lang';
             }
             static::langDir($langDir);
@@ -56,7 +57,7 @@ class Validator
      */
     public static function lang($lang = null)
     {
-        if ($lang !== null) {
+        if($lang !== null) {
             static::$_lang = $lang;
 
             // Load language file in directory
@@ -71,7 +72,7 @@ class Validator
      */
     public static function langDir($dir = null)
     {
-        if ($dir !== null) {
+        if($dir !== null) {
             static::$_langDir = $dir;
         }
         return static::$_langDir;
@@ -82,9 +83,9 @@ class Validator
      */
     protected function validateRequired($field, $value)
     {
-        if (is_null($value)) {
+        if(is_null($value)) {
             return false;
-        } elseif (is_string($value) and trim($value) === '') {
+        } elseif(is_string($value) and trim($value) === '') {
             return false;
         }
         return true;
@@ -95,7 +96,7 @@ class Validator
      *
      * @param  string  $field
      * @param  mixed   $value
-     * @param  array   $params
+     * @param  array   $fields
      * @return void
      */
     protected function validateEquals($field, $value, array $params)
@@ -109,7 +110,7 @@ class Validator
      *
      * @param  string  $field
      * @param  mixed   $value
-     * @param  array   $params
+     * @param  array   $fields
      * @return bool
      */
     protected function validateDifferent($field, $value, array $params)
@@ -162,14 +163,14 @@ class Validator
      *
      * @param  string  $field
      * @param  mixed   $value
-     * @param  array   $params
+     * @param  array   $fields
      * @return bool
      */
     protected function validateLength($field, $value, $params)
     {
         $length = $this->stringLength($value);
         // Length between
-        if (isset($params[1])) {
+        if(isset($params[1])) {
             return $length >= $params[0] && $length <= $params[1];
         }
         // Length same
@@ -195,7 +196,7 @@ class Validator
      *
      * @param  string  $field
      * @param  mixed   $value
-     * @param  array   $params
+     * @param  array   $fields
      * @return bool
      */
     protected function validateMin($field, $value, $params)
@@ -208,7 +209,7 @@ class Validator
      *
      * @param  string  $field
      * @param  mixed   $value
-     * @param  array   $params
+     * @param  array   $fields
      * @return bool
      */
     protected function validateMax($field, $value, $params)
@@ -221,7 +222,7 @@ class Validator
      *
      * @param  string  $field
      * @param  mixed   $value
-     * @param  array   $params
+     * @param  array   $fields
      * @return bool
      */
     protected function validateIn($field, $value, $params)
@@ -234,7 +235,7 @@ class Validator
      *
      * @param  string  $field
      * @param  mixed   $value
-     * @param  array   $params
+     * @param  array   $fields
      * @return bool
      */
     protected function validateNotIn($field, $value, $params)
@@ -252,7 +253,7 @@ class Validator
      */
     protected function validateContains($field, $value, $params)
     {
-        if (!isset($params[0])) {
+        if(!isset($params[0])) {
             return false;
         }
         if (!is_string($params[0]) || !is_string($value)) {
@@ -295,7 +296,7 @@ class Validator
     protected function validateUrl($field, $value)
     {
         foreach ($this->validUrlPrefixes as $prefix) {
-            if (strpos($value, $prefix) !== false) {
+            if(strpos($value, $prefix) !== false) {
                 return filter_var($value, FILTER_VALIDATE_URL) !== false;
             }
         }
@@ -312,7 +313,7 @@ class Validator
     protected function validateUrlActive($field, $value)
     {
         foreach ($this->validUrlPrefixes as $prefix) {
-            if (strpos($value, $prefix) !== false) {
+            if(strpos($value, $prefix) !== false) {
                 $url = str_replace($prefix, '', strtolower($value));
 
                 return checkdnsrr($url);
@@ -362,7 +363,6 @@ class Validator
      *
      * @param  string  $field
      * @param  mixed   $value
-     * @param  array   $params
      * @return bool
      */
     protected function validateRegex($field, $value, $params)
@@ -387,7 +387,7 @@ class Validator
      *
      * @param  string  $field
      * @param  mixed   $value
-     * @param  array   $params
+     * @param  array   $fields
      * @return bool
      */
     protected function validateDateFormat($field, $value, $params)
@@ -402,7 +402,7 @@ class Validator
      *
      * @param  string  $field
      * @param  mixed   $value
-     * @param  array   $params
+     * @param  array   $fields
      * @return bool
      */
     protected function validateDateBefore($field, $value, $params)
@@ -417,7 +417,7 @@ class Validator
      *
      * @param  string  $field
      * @param  mixed   $value
-     * @param  array   $params
+     * @param  array   $fields
      * @return bool
      */
     protected function validateDateAfter($field, $value, $params)
@@ -440,7 +440,7 @@ class Validator
      */
     public function errors($field = null)
     {
-        if ($field !== null) {
+        if($field !== null) {
             return isset($this->_errors[$field]) ? $this->_errors[$field] : false;
         }
         return $this->_errors;
@@ -451,13 +451,15 @@ class Validator
      */
     public function error($field, $msg, array $params = array())
     {
+        $msg = $this->checkAndSetLabel($field, $msg, $params);
+
         $values = array();
         // Printed values need to be in string format
-        foreach ($params as $param) {
-            if (is_array($param)) {
+        foreach($params as $param) {
+            if(is_array($param)) {
                 $param = "['" . implode("', '", $param) . "']";
             }
-            if ($param instanceof \DateTime) {
+            if($param instanceof \DateTime) {
                 $param = $param->format('Y-m-d');
             }
             $values[] = $param;
@@ -482,6 +484,7 @@ class Validator
         $this->_fields = array();
         $this->_errors = array();
         $this->_validations = array();
+        $this->_labels = array();
     }
 
     /**
@@ -491,12 +494,12 @@ class Validator
      */
     public function validate()
     {
-        foreach ($this->_validations as $v) {
-            foreach ($v['fields'] as $field) {
+        foreach($this->_validations as $v) {
+            foreach($v['fields'] as $field) {
                 $value = isset($this->_fields[$field]) ? $this->_fields[$field] : null;
 
                 // Callback is user-specified or assumed method on class
-                if (isset(static::$_rules[$v['rule']])) {
+                if(isset(static::$_rules[$v['rule']])) {
                     $callback = static::$_rules[$v['rule']];
                 } else {
                     $callback = array($this, 'validate' . ucfirst($v['rule']));
@@ -516,7 +519,7 @@ class Validator
      */
     public static function addRule($name, $callback, $message = self::ERROR_DEFAULT)
     {
-        if (!is_callable($callback)) {
+        if(!is_callable($callback)) {
             throw new \InvalidArgumentException("Second argument must be a valid callback. Given argument was not callable.");
         }
 
@@ -529,9 +532,9 @@ class Validator
      */
     public function rule($rule, $fields)
     {
-        if (!isset(static::$_rules[$rule])) {
+        if(!isset(static::$_rules[$rule])) {
             $ruleMethod = 'validate' . ucfirst($rule);
-            if (!method_exists($this, $ruleMethod)) {
+            if(!method_exists($this, $ruleMethod)) {
                 throw new \InvalidArgumentException("Rule '" . $rule . "' has not been registered with " . __CLASS__ . "::addRule().");
             }
         }
@@ -549,6 +552,51 @@ class Validator
             'message' => $message
         );
         return $this;
+    }
+
+    /**
+     * @param array $labels
+     * @return $this
+     */
+    public function label($value)
+    {
+        $lastRules = $this->_validations[count($this->_validations)-1]['fields'];
+        $this->labels(array($lastRules[0] => $value));
+
+        return $this;
+    }
+
+    /**
+     * @param array $labels
+     * @return $this
+     */
+    public function labels($labels = array())
+    {
+        $this->_labels = array_merge($this->_labels, $labels);
+        return $this;
+    }
+
+    /**
+     * @param $field
+     * @return array
+     */
+    private function checkAndSetLabel($field, $msg, $params)
+    {
+        if (isset($this->_labels[$field])) {
+            $msg = str_replace('{field}', $this->_labels[$field], $msg);
+
+            if (is_array($params)) {
+                $i = 1;
+                foreach ($params as $k => $v) {
+                    $tag = '{field'. $i .'}';
+                    $label = isset($params[$k]) && isset($this->_labels[$params[$k]]) ? $this->_labels[$params[$k]] : $tag;
+                    $msg = str_replace($tag, $label, $msg);
+                    $i++;
+                }
+            }
+        }
+
+        return $msg;
     }
 
     /**
