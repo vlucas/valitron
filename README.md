@@ -191,7 +191,7 @@ However we can use a array of labels to solve this issue by simply adding the `l
 ```php
 $v = new Valitron\Validator(array());
 $v->rule('required', array('name', 'email'))->message('{field} is required');
-$v->rules(array(
+$v->labels(array(
     'name' => 'Name',
     'email' => 'Email address'
 ));
