@@ -1,6 +1,6 @@
 {
     "name": "vlucas/valitron",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "type": "library",
     "description": "Simple, elegant, stand-alone validation library with NO dependencies",
     "keywords": ["validation", "validator", "valid"],
