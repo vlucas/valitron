@@ -63,7 +63,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
             'email' => array('Email should be a valid email address')
         );
 
-        $v = new Validator(array());
+        $v = new Validator(array('name' => '', 'email' => '$'));
         $v->rule('required', 'name')->message('{field} is required');
         $v->rule('email', 'email')->message('{field} should be a valid email address');
 
@@ -128,7 +128,7 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 
     public function testDifferentInvalid()
     {
-        $v = new Validator(array('test1' => 'test', 'test2' => 'test'));
+        $v = new Validator(array('foo' => 'baz', 'bar' => 'baz'));
         $v->rule('different', 'foo', 'bar');
         $this->assertFalse($v->validate());
     }
@@ -383,6 +383,16 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $v = new Validator(array('date' => 'no thanks'));
         $v->rule('date', 'date');
         $this->assertFalse($v->validate());
+    }
+
+    /**
+     * @group issue-13
+     */
+    public function testDateValidWhenEmptyButNotRequired()
+    {
+        $v = new Validator(array('date' => ''));
+        $v->rule('date', 'date');
+        $this->assertTrue($v->validate());
     }
 
     public function testDateFormatValid()
