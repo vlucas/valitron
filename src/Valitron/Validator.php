@@ -498,6 +498,11 @@ class Validator
             foreach($v['fields'] as $field) {
                 $value = isset($this->_fields[$field]) ? $this->_fields[$field] : null;
 
+                // Don't validate if the field is not required and the value is empty
+                if ($v['rule'] !== 'required' && !$this->hasRule('required', $field) && $value == '') {
+                    continue;
+                }
+
                 // Callback is user-specified or assumed method on class
                 if(isset(static::$_rules[$v['rule']])) {
                     $callback = static::$_rules[$v['rule']];
@@ -511,7 +516,20 @@ class Validator
                 }
             }
         }
+
         return count($this->errors()) === 0;
+    }
+
+    /**
+     * Determine whether a field is being validated by the given rule.
+     * 
+     * @param string $name The name of the rule
+     * @param string $field The name of the field
+     * @return boolean
+     */
+    protected function hasRule($name, $field)
+    {
+        return isset($this->_validations[$name]) && in_array($field, $this->_validations[$name]['fields']);
     }
 
     /**
