@@ -88,6 +88,7 @@ if($v->validate()) {
  * `alphaNum` - Alphabetic and numeric characters only
  * `slug` - URL slug characters (a-z, 0-9, -, _)
  * `regex` - Field matches given regex pattern
+ * `noWhiteSpace` - Field must have no whitespace
  * `date` - Field is a valid date
  * `dateFormat` - Field is a valid date in the given format
  * `dateBefore` - Field is a valid date and is before the given date
