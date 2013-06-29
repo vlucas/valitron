@@ -464,6 +464,7 @@ class Validator
             }
             $values[] = $param;
         }
+
         $this->_errors[$field][] = vsprintf($msg, $values);
     }
 
@@ -567,7 +568,7 @@ class Validator
             'rule' => $rule,
             'fields' => (array) $fields,
             'params' => (array) $params,
-            'message' => $message
+            'message' => '{field} ' . $message
         );
         return $this;
     }
@@ -612,6 +613,8 @@ class Validator
                     $i++;
                 }
             }
+        } else {
+            $msg = str_replace('{field}', ucwords(str_replace('_', ' ', $field)), $msg);
         }
 
         return $msg;
