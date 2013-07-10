@@ -4,7 +4,7 @@ namespace Valitron;
 /**
  * Validation Class
  *
- * Validates input against certian criteria
+ * Validates input against certain criteria
  *
  * @package Valitron
  * @author Vance Lucas <vance@vancelucas.com>
