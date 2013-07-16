@@ -564,7 +564,7 @@ class Validator
         // Get any other arguments passed to function
         $params = array_slice(func_get_args(), 2);
 
-        $this->_validations[] = array(
+        $this->_validations[$rule] = array(
             'rule' => $rule,
             'fields' => (array) $fields,
             'params' => (array) $params,
