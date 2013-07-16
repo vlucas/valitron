@@ -530,7 +530,11 @@ class Validator
      */
     protected function hasRule($name, $field)
     {
-        return isset($this->_validations[$name]) && in_array($field, $this->_validations[$name]['fields']);
+		foreach($this->_validations as $validation) {
+			if ($validation['rule'] == $name)
+				return in_array($field, $validation['fields']);
+		}
+        return false;
     }
 
     /**
