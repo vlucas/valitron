@@ -510,5 +510,78 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($v1->errors(), $v2->errors());
     }
+
+    /**
+     * Custom rules and callbacks
+     */
+
+    public function testAddRuleClosure()
+    {
+        $v = new Validator(array('name' => 'Chester Tester'));
+        $v->addRule('testRule', function() { return true; });
+        $v->rule('testRule', 'name');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testAddRuleClosureReturnsFalse()
+    {
+        $v = new Validator(array('name' => 'Chester Tester'));
+        $v->addRule('testRule', function() { return false; });
+        $v->rule('testRule', 'name');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testAddRuleClosureWithFieldArray()
+    {
+        $v = new Validator(array('name' => 'Chester Tester', 'email' => 'foo@example.com'));
+        $v->addRule('testRule', function() { return true; });
+        $v->rule('testRule', array('name', 'email'));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testAddRuleClosureWithArrayAsExtraParameter()
+    {
+        $v = new Validator(array('name' => 'Chester Tester'));
+        $v->addRule('testRule', function() { return true; });
+        $v->rule('testRule', 'name', array('foo', 'bar'));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testAddRuleCallback()
+    {
+        $v = new Validator(array('name' => 'Chester Tester'));
+        $v->addRule('testRule', 'sampleFunctionCallback');
+        $v->rule('testRule', 'name');
+        $this->assertTrue($v->validate());
+    }
+
+    public function sampleObjectCallback() { return true; }
+    public function sampleObjectCallbackFalse() { return false; }
+    public function testAddRuleCallbackArray()
+    {
+        $v = new Validator(array('name' => 'Chester Tester'));
+        $v->addRule('testRule', array($this, 'sampleObjectCallback'));
+        $v->rule('testRule', 'name');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testAddRuleCallbackArrayWithArrayAsExtraParameter()
+    {
+        $v = new Validator(array('name' => 'Chester Tester'));
+        $v->addRule('testRule', array($this, 'sampleObjectCallback'));
+        $v->rule('testRule', 'name', array('foo', 'bar'));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testAddRuleCallbackArrayWithArrayAsExtraParameterAndCustomMessage()
+    {
+        $v = new Validator(array('name' => 'Chester Tester'));
+        $v->addRule('testRule', array($this, 'sampleObjectCallbackFalse'));
+        $v->rule('testRule', 'name', array('foo', 'bar'))->message('Invalid name selected.');
+        $this->assertFalse($v->validate());
+    }
 }
 
+function sampleFunctionCallback($field, $value, array $params) {
+  return true;
+}
