@@ -511,6 +511,29 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($v1->errors(), $v2->errors());
     }
 
+    public function testCustomLabelInMessage()
+    {
+        $v = new Valitron\Validator(array());
+        $v->rule('required', 'name')->message('{field} is required')->label('NAME!!!');
+        $v->validate();
+        $this->assertEquals(array('NAME!!! is required'), $v->errors('name'));
+    }
+
+    public function testCustomLabelArrayInMessage()
+    {
+        $v = new Valitron\Validator(array());
+        $v->rule('required', array('name', 'email'))->message('{field} is required');
+        $v->labels(array(
+          'name' => 'Name',
+          'email' => 'Email address'
+        ));
+        $v->validate();
+        $this->assertEquals(array(
+          'name' => array('Name is required'),
+          'email' => array('Email address is required')
+        ), $v->errors());
+    }
+
     /**
      * Custom rules and callbacks
      */
@@ -576,6 +599,15 @@ class ValidateTest extends \PHPUnit_Framework_TestCase
     public function testAddRuleCallbackArrayWithArrayAsExtraParameterAndCustomMessage()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
+        $v->addRule('testRule', array($this, 'sampleObjectCallbackFalse'));
+        $v->rule('testRule', 'name', array('foo', 'bar'))->message('Invalid name selected.');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testAddRuleCallbackArrayWithArrayAsExtraParameterAndCustomMessageLabel()
+    {
+        $v = new Validator(array('name' => 'Chester Tester'));
+        $v->labels(array('name' => 'Name'));
         $v->addRule('testRule', array($this, 'sampleObjectCallbackFalse'));
         $v->rule('testRule', 'name', array('foo', 'bar'))->message('Invalid name selected.');
         $this->assertFalse($v->validate());

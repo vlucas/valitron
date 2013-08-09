@@ -612,7 +612,7 @@ class Validator
                 $i = 1;
                 foreach ($params as $k => $v) {
                     $tag = '{field'. $i .'}';
-                    $label = isset($params[$k]) && isset($this->_labels[$params[$k]]) ? $this->_labels[$params[$k]] : $tag;
+                    $label = isset($params[$k]) && !is_array($params[$k]) && isset($this->_labels[$params[$k]]) ? $this->_labels[$params[$k]] : $tag;
                     $msg = str_replace($tag, $label, $msg);
                     $i++;
                 }
