@@ -1,7 +1,7 @@
 <?php
 use Valitron\Validator;
 
-class ValidateTest extends \PHPUnit_Framework_TestCase
+class ValidateTest extends BaseTestCase
 {
     public function testValidWithNoRules()
     {
