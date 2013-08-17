@@ -29,7 +29,7 @@ class Validator
     /**
      *  Setup validation
      */
-    public function __construct($data, $fields = array(), $lang = 'en', $langDir = null)
+    public function __construct($data, $fields = array(), $lang = null, $langDir = null)
     {
         // Allows filtering of used input fields against optional second array of field names allowed
         // This is useful for limiting raw $_POST or $_GET data to only known fields
@@ -39,17 +39,13 @@ class Validator
             }
         }
 
-        // Only load language files if language or directory has changed
-        if($lang !== static::$_lang || $langDir !== static::$_langDir) {
-            // Set language directory for loading language files
-            if($langDir === null) {
-                $langDir = dirname(dirname(__DIR__)) . '/lang';
-            }
-            static::langDir($langDir);
+        // set lang in the follow order: constructor param, static::$_lang, defaul to en
+        $lang = $lang ?: static::$_lang ?: 'en';
+        // set langDir in the follow order: constructor param, static::$_langDir, default to package lang dir
+        $langDir = $langDir ?: static::$_langDir ?: dirname(dirname(__DIR__)) . '/lang';
 
-            // Set language for error messages
-            static::lang($lang);
-        }
+        static::langDir($langDir);
+        static::lang($lang);
     }
 
     /**
