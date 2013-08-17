@@ -16,3 +16,4 @@ if($vendorPos !== false) {
     $loader = require __DIR__.'/../vendor/autoload.php';
 }
 
+require_once __DIR__ . '/Valitron/BaseTestCase.php';

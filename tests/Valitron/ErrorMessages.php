@@ -1,7 +1,7 @@
 <?php
 use Valitron\Validator;
 
-class ErrorMessagesTest extends \PHPUnit_Framework_TestCase
+class ErrorMessagesTest extends BaseTestCase
 {
     public function testErrorMessageIncludesFieldName()
     {
