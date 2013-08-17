@@ -44,8 +44,8 @@ class Validator
         // set langDir in the follow order: constructor param, static::$_langDir, default to package lang dir
         $langDir = $langDir ?: static::langDir();
 
-        static::langDir($langDir);
-        static::lang($lang);
+        // Load language file in directory
+        static::$_ruleMessages = include rtrim($langDir, '/') . '/' . $lang . '.php';
     }
 
     /**
@@ -55,10 +55,6 @@ class Validator
     {
         if($lang !== null) {
             static::$_lang = $lang;
-
-            // Load language file in directory
-            $langDir = static::langDir();
-            static::$_ruleMessages = require rtrim($langDir, '/') . '/' . $lang . '.php';
         }
         return static::$_lang ?: 'en';
     }
