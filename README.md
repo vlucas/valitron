@@ -67,6 +67,21 @@ if($v->validate()) {
 }
 ```
 
+Setting language and language dir globally:
+
+```php
+
+// boot or config file
+
+use Valitron\Validator as V; 
+
+V::langDir(__DIR__.'/validator_lang'); // always set langDir before lang.
+V::lang('ar');
+
+```
+
+
+
 ## Built-in Validation Rules
 
  * `required` - Required field
