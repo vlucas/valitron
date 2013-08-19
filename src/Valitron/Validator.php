@@ -1,6 +1,8 @@
 <?php
 namespace Valitron;
 
+use InvalidArgumentException;
+
 /**
  * Validation Class
  *
@@ -45,7 +47,12 @@ class Validator
         $langDir = $langDir ?: static::langDir();
 
         // Load language file in directory
-        static::$_ruleMessages = include rtrim($langDir, '/') . '/' . $lang . '.php';
+        $langFile = rtrim($langDir, '/') . '/' . $lang . '.php';
+        if ( stream_resolve_include_path($langFile) ) {
+            static::$_ruleMessages = include $langFile;            
+        } else {
+            throw new InvalidArgumentException("fail to load language file '$langFile'");
+        }
     }
 
     /**

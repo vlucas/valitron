@@ -1,7 +1,7 @@
 <?php
 use Valitron\Validator;
 
-class StaticLangTest extends BaseTestCase
+class LangTest extends BaseTestCase
 {
 	protected function getLangDir()
 	{
@@ -40,5 +40,14 @@ class StaticLangTest extends BaseTestCase
 	{
 		$validator = new Validator(array());
 		$this->assertEquals(realpath($this->getLangDir()), realpath(Validator::langDir()));
+	}
+
+	/**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage fail to load language file '/this/dir/does/not/exists/en.php'
+     */
+	public function testLangException()
+	{
+		new Validator(array(), array(), 'en', '/this/dir/does/not/exists');
 	}
 }
