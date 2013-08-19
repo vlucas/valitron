@@ -1,6 +1,8 @@
 <?php
 namespace Valitron;
 
+use InvalidArgumentException;
+
 /**
  * Validation Class
  *
@@ -44,8 +46,13 @@ class Validator
         // set langDir in the follow order: constructor param, static::$_langDir, default to package lang dir
         $langDir = $langDir ?: static::langDir();
 
-        static::langDir($langDir);
-        static::lang($lang);
+        // Load language file in directory
+        $langFile = rtrim($langDir, '/') . '/' . $lang . '.php';
+        if ( stream_resolve_include_path($langFile) ) {
+            static::$_ruleMessages = include $langFile;            
+        } else {
+            throw new InvalidArgumentException("fail to load language file '$langFile'");
+        }
     }
 
     /**
@@ -55,10 +62,6 @@ class Validator
     {
         if($lang !== null) {
             static::$_lang = $lang;
-
-            // Load language file in directory
-            $langDir = static::langDir();
-            static::$_ruleMessages = require rtrim($langDir, '/') . '/' . $lang . '.php';
         }
         return static::$_lang ?: 'en';
     }
