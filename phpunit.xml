@@ -12,7 +12,7 @@
 >
   <testsuites>
     <testsuite name="Valitron Test Suite">
-      <directory suffix=".php">tests/Valitron</directory>
+      <directory suffix="Test.php">tests/Valitron</directory>
     </testsuite>
   </testsuites>
 </phpunit>
