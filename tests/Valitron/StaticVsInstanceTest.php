@@ -12,7 +12,7 @@ class StaticVsInstanceTest extends BaseTestCase
 	}
 
 	/**
-	 * Rules messages added with Validator::addRule are replaced after creating validator instance
+	 * Fix bug where rules messages added with Validator::addRule were replaced after creating validator instance
 	 */
 	public function testRuleMessagesReplacedAfterConstructor()
 	{
