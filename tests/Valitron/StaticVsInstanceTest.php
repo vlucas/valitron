@@ -17,19 +17,14 @@ class StaticVsInstanceTest extends BaseTestCase
 	public function testRuleMessagesReplacedAfterConstructor()
 	{
 		$customMessage = 'custom message';
-		$ruleName = 'foo';
+		$ruleName = 'customRule';
+		$fieldName = 'fieldName';
 		Validator::addRule($ruleName, function() {}, $customMessage);
-
-		$prop = new ReflectionProperty('Valitron\Validator', '_ruleMessages');
-		$prop->setAccessible(true);
-		$messages = $prop->getValue();
-
-		$this->assertEquals($customMessage, $messages[$ruleName]);
-
-		new Validator(array(), array());
-
-		$messages = $prop->getValue();
-		$this->assertArrayHasKey($ruleName, $messages);
-		$this->assertEquals($customMessage, $messages[$ruleName]);
+		$v = new Validator(array($fieldName => $fieldName));
+		$v->rule($ruleName, $fieldName);
+		$v->validate();
+		$messages = $v->errors();
+		$this->assertArrayHasKey($fieldName, $messages);
+		$this->assertEquals(ucfirst("$fieldName $customMessage"), $messages[$fieldName][0]);
 	}
 }
