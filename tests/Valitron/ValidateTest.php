@@ -182,6 +182,17 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
+    public function testInValidAssociativeArray()
+    {
+        $v = new Validator(array('color' => 'green'));
+        $v->rule('in', 'color', array(
+            'red' => 'Red',
+            'green' => 'Green',
+            'blue' => 'Blue'
+        ));
+        $this->assertTrue($v->validate());
+    }
+
     public function testInInvalid()
     {
         $v = new Validator(array('color' => 'yellow'));
