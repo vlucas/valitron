@@ -145,7 +145,8 @@ more complex than a string, you need to wrap the rule in an array.
 ```php
 $rules = [
     'required' => [
-        ['foo', 'bar']
+        ['foo'],
+        ['bar']
     ],
     'length' => [
         ['foo', 3]
