@@ -31,15 +31,9 @@ class Validator
     /**
      *  Setup validation
      */
-    public function __construct($data, $fields = array(), $lang = null, $langDir = null)
+    public function __construct($data = null, $fields = array(), $lang = null, $langDir = null)
     {
-        // Allows filtering of used input fields against optional second array of field names allowed
-        // This is useful for limiting raw $_POST or $_GET data to only known fields
-        foreach($data as $field => $value) {
-            if(empty($fields) || (!empty($fields) && in_array($field, $fields))) {
-                $this->_fields[$field] = $value;
-            }
-        }
+        $this->setData($data, $fields);
 
         // set lang in the follow order: constructor param, static::$_lang, defaul to en
         $lang = $lang ?: static::lang();
@@ -49,7 +43,7 @@ class Validator
         // Load language file in directory
         $langFile = rtrim($langDir, '/') . '/' . $lang . '.php';
         if ( stream_resolve_include_path($langFile) ) {
-            static::$_ruleMessages = include $langFile;            
+            static::$_ruleMessages = include $langFile;
         } else {
             throw new InvalidArgumentException("fail to load language file '$langFile'");
         }
@@ -439,6 +433,32 @@ class Validator
     }
 
     /**
+     *  Set the data that will be used for the call to validate
+     */
+    public function setData($data, $fields = array())
+    {
+        if(empty($data))
+        {
+            $this->_fields = array();
+            return;
+        }
+        elseif(!is_array($data))
+        {
+            throw new InvalidArgumentException("data to validate must be an array");
+        }
+
+        // Allows filtering of used input fields against optional second array of field names allowed
+        // This is useful for limiting raw $_POST or $_GET data to only known fields
+        foreach ($data as $field => $value)
+        {
+            if (empty($fields) || (!empty($fields) && in_array($field, $fields)))
+            {
+                $this->_fields[$field] = $value;
+            }
+        }
+    }
+
+    /**
      *  Get array of error messages
      */
     public function errors($field = null)
@@ -494,10 +514,17 @@ class Validator
     /**
      * Run validations and return boolean result
      *
+     * @param $data
+     * @param array $fields
      * @return boolean
      */
-    public function validate()
+    public function validate($data = null, $fields = array())
     {
+        if(!empty($data))
+        {
+            $this->setData($data, $fields);
+        }
+
         foreach($this->_validations as $v) {
             foreach($v['fields'] as $field) {
                 $value = isset($this->_fields[$field]) ? $this->_fields[$field] : null;
@@ -526,7 +553,7 @@ class Validator
 
     /**
      * Determine whether a field is being validated by the given rule.
-     * 
+     *
      * @param string $name The name of the rule
      * @param string $field The name of the field
      * @return boolean
