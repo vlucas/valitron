@@ -435,16 +435,12 @@ class Validator
     /**
      *  Set the data that will be used for the call to validate
      */
-    public function setData($data, $fields = array())
+    public function setData(array $data, $fields = array())
     {
         if(empty($data))
         {
             $this->_fields = array();
             return;
-        }
-        elseif(!is_array($data))
-        {
-            throw new InvalidArgumentException("data to validate must be an array");
         }
 
         // Allows filtering of used input fields against optional second array of field names allowed
