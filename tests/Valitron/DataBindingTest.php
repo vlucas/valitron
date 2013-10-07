@@ -18,7 +18,7 @@ class DataBindingTest extends BaseTestCase
     {
         $v = new Validator(array ( 'foo' => 'bar' ));
         $this->assertEquals(array ( 'foo' => 'bar' ), $v->data());
-        $v->setData(null);
+        $v->setData(array());
         $this->assertEmpty($v->data());
     }
 

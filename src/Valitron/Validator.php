@@ -31,7 +31,7 @@ class Validator
     /**
      *  Setup validation
      */
-    public function __construct($data = null, $fields = array(), $lang = null, $langDir = null)
+    public function __construct($data = array(), $fields = array(), $lang = null, $langDir = null)
     {
         $this->setData($data, $fields);
 
