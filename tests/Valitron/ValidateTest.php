@@ -637,20 +637,6 @@ class ValidateTest extends BaseTestCase
         $v->rule('boolean', 'test');
         $this->assertFalse($v->validate());
     }
-    
-    public function testBooleanStringValid()
-    {
-        $v = new Validator(array('test' => "true"));
-        $v->rule('boolean', 'test', true);
-        $this->assertTrue($v->validate());
-    }
-
-    public function testBooleanStringInvalid()
-    {
-        $v = new Validator(array('test' => 'notrue'));
-        $v->rule('boolean', 'test', true);
-        $this->assertFalse($v->validate());
-    }
 }
 
 function sampleFunctionCallback($field, $value, array $params) {
