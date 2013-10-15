@@ -431,6 +431,23 @@ class Validator
     }
 
     /**
+     * Validate that a field contains a boolean.
+     * If $params[0] is true, it also check for string == true.
+     *
+     * @param  string  $field
+     * @param  mixed   $value
+     * @param  array   $params
+     * @return bool
+     */
+    protected function validateBoolean($field, $value, $params)
+    {
+        if(isset($params[0]) && $params[0] == true && $value == "true") {
+            $value = true;
+        }
+        return (is_bool($value)) ? true : false;
+    }
+
+    /**
      *  Get array of fields and data
      */
     public function data()

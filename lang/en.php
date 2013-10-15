@@ -23,7 +23,8 @@ return array(
     'dateFormat' => "must be date with format '%s'",
     'dateBefore' => "must be date before '%s'",
     'dateAfter' => "must be date after '%s'",
-    'contains' => "must contain %s"
+    'contains' => "must contain %s",
+    'boolean' => "must be a boolean",
 );
 
 
