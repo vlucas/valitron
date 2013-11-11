@@ -545,6 +545,23 @@ class ValidateTest extends BaseTestCase
         ), $v->errors());
     }
 
+    public function testCustomLabelArrayWithoutMessage()
+    {
+        $v = new Valitron\Validator(array(
+          'password' => 'foo',
+          'passwordConfirm' => 'bar'
+        ));
+        $v->rule('equals', 'password', 'passwordConfirm');
+        $v->labels(array(
+          'password' => 'Password',
+          'passwordConfirm' => 'Password Confirm'
+        ));
+        $v->validate();
+        $this->assertEquals(array(
+          'password' => array("Password must be the same as 'Password Confirm'"),
+        ), $v->errors());
+    }
+
     /**
      * Custom rules and callbacks
      */

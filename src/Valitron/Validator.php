@@ -465,6 +465,10 @@ class Validator
             if($param instanceof \DateTime) {
                 $param = $param->format('Y-m-d');
             }
+            // Use custom label instead of field name if set
+            if(isset($this->_labels[$param])) {
+                $param = $this->_labels[$param];
+            }
             $values[] = $param;
         }
 
