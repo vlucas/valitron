@@ -640,6 +640,20 @@ class ValidateTest extends BaseTestCase
         $v->rule('testRule', 'name', array('foo', 'bar'))->message('Invalid name selected.');
         $this->assertFalse($v->validate());
     }
+    
+    public function testBooleanValid()
+    {
+        $v = new Validator(array('test' => true));
+        $v->rule('boolean', 'test');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testBooleanInvalid()
+    {
+        $v = new Validator(array('test' => 'true'));
+        $v->rule('boolean', 'test');
+        $this->assertFalse($v->validate());
+    }
 }
 
 function sampleFunctionCallback($field, $value, array $params) {
