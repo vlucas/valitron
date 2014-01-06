@@ -140,6 +140,21 @@ class Validator
     }
 
     /**
+     * Validate the length of a string
+     *
+     * @param string $filed
+     * @param mixed  $value
+     * @param array  $params
+     *
+     * @return boolean
+     */
+    protected function validateLengthBetween($filed, $value, $params)
+    {
+        $length = $this->stringLength($value);
+        return $length >= $params[0] && $length <= $params[1];
+    }
+
+    /**
      * Validate that a field is numeric
      *
      * @param  string  $field
