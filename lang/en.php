@@ -18,7 +18,7 @@ return array(
     'alpha' => "must contain only letters a-z",
     'alphaNum' => "must contain only letters a-z and/or numbers 0-9",
     'slug' => "must contain only letters a-z, numbers 0-9, dashes and underscores",
-    'regex' => "contains invalid chatacters",
+    'regex' => "contains invalid characters",
     'date' => "is not a valid date",
     'dateFormat' => "must be date with format '%s'",
     'dateBefore' => "must be date before '%s'",
