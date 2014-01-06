@@ -90,7 +90,8 @@ V::lang('ar');
  * `accepted` - Checkbox or Radio must be accepted (yes, on, 1, true)
  * `numeric` - Must be numeric
  * `integer` - Must be integer number
- * `length` - String must be certain length or between given lengths
+ * `length` - String must be certain length
+ * `lengthBetween` - String must be between given lengths
  * `min` - Minimum
  * `max` - Maximum
  * `in` - Performs in_array check on given array values
