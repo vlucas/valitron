@@ -472,6 +472,15 @@ class Validator
         return (is_bool($value)) ? true : false;
     }
 
+    /**
+     * Validate that a field contains a valid credit card
+     * optionally filtered by an array
+     *
+     * @param string  $field
+     * @param string $value
+     * @param array $params
+     * @return bool
+     */
     protected function validateCreditCard($field, $value, $params)
     {
         /**
