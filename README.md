@@ -112,13 +112,14 @@ V::lang('ar');
  * `creditCard` - Field is a valid credit card number
 
 
- ## Credit Card Validation usage
+## Credit Card Validation usage
 
- Credit card validation currently allows you to validate a Visa `visa`,
- Mastercard `mastercard`, Dinersclub `dinersclub`, American Express `amex`
- or Discovery `discovery`
+Credit card validation currently allows you to validate a Visa `visa`,
+Mastercard `mastercard`, Dinersclub `dinersclub`, American Express `amex`
+or Discovery `discovery`
 
- This will check the credit card against each card type
+This will check the credit card against each card type
+
 ```php
 $v->rule('creditCard', 'credit_card');
 ```
