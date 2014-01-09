@@ -702,7 +702,7 @@ class ValidateTest extends BaseTestCase
                 $this->assertFalse($v->validate());
                 $v->rule('creditCard', 'test', 'invalidCardName', ['invalidCardName', 'mastercard', 'visa']);
                 $this->assertFalse($v->validate());
-                unset($d);
+                unset($v);
             }
         }
     }
