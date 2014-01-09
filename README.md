@@ -111,6 +111,7 @@ V::lang('ar');
  * `contains` - Field is a string and contains the given string
  * `creditCard` - Field is a valid credit card number
 
+
  ## Credit Card Validation usage
 
  Credit card validation currently allows you to validate a Visa `visa`,
