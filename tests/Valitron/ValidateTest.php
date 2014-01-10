@@ -668,11 +668,11 @@ class ValidateTest extends BaseTestCase
                 $v = new Validator(array('test' => $number));
                 $v->rule('creditCard', 'test');
                 $this->assertTrue($v->validate());
-                $v->rule('creditCard', 'test', [$type, 'mastercard', 'visa']);
+                $v->rule('creditCard', 'test', array($type, 'mastercard', 'visa'));
                 $this->assertTrue($v->validate());
                 $v->rule('creditCard', 'test', $type);
                 $this->assertTrue($v->validate());
-                $v->rule('creditCard', 'test', $type, [$type, 'mastercard', 'visa']);
+                $v->rule('creditCard', 'test', $type, array($type, 'mastercard', 'visa'));
                 $this->assertTrue($v->validate());
                 unset($v);
             }
@@ -692,15 +692,15 @@ class ValidateTest extends BaseTestCase
                 $v = new Validator(array('test' => $number));
                 $v->rule('creditCard', 'test');
                 $this->assertFalse($v->validate());
-                $v->rule('creditCard', 'test', [$type, 'mastercard', 'visa']);
+                $v->rule('creditCard', 'test', array($type, 'mastercard', 'visa'));
                 $this->assertFalse($v->validate());
                 $v->rule('creditCard', 'test', $type);
                 $this->assertFalse($v->validate());
-                $v->rule('creditCard', 'test', $type, [$type, 'mastercard', 'visa']);
+                $v->rule('creditCard', 'test', $type, array($type, 'mastercard', 'visa'));
                 $this->assertFalse($v->validate());
                 $v->rule('creditCard', 'test', 'invalidCardName');
                 $this->assertFalse($v->validate());
-                $v->rule('creditCard', 'test', 'invalidCardName', ['invalidCardName', 'mastercard', 'visa']);
+                $v->rule('creditCard', 'test', 'invalidCardName', array('invalidCardName', 'mastercard', 'visa'));
                 $this->assertFalse($v->validate());
                 unset($v);
             }
