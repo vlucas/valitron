@@ -25,6 +25,7 @@ return array(
     'dateAfter'     => "deve essere una data successiva al '%s'",
     'contains'      => "deve contenere %s",
     'boolean'       => "deve essere un booleano",
+    'lengthBetween' => "deve essere compreso tra %d e %d caratteri"
 );
 
 
