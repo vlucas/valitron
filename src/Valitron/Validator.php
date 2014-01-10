@@ -509,29 +509,29 @@ class Validator
          * @return bool
          */
         $numberIsValid = function () use ($value) {
-        $number = preg_replace('/[^0-9]+/', '', $value);
-        $sum = 0;
+            $number = preg_replace('/[^0-9]+/', '', $value);
+            $sum = 0;
 
-        $strlen = strlen($number);
-        if ($strlen < 13) {
-            return false;
-        }
-        for ($i = 0; $i < $strlen; $i++) {
-            $digit = (int) substr($number, $strlen - $i - 1, 1);
-            if ($i % 2 == 1) {
-                $sub_total = $digit * 2;
-                if ($sub_total > 9) {
-                    $sub_total = ($sub_total - 10) + 1;
-                }
-            } else {
-                $sub_total = $digit;
+            $strlen = strlen($number);
+            if ($strlen < 13) {
+                return false;
             }
-            $sum += $sub_total;
-        }
-        if ($sum > 0 && $sum % 10 == 0) {
-                return true;
-        }
-            return false;
+            for ($i = 0; $i < $strlen; $i++) {
+                $digit = (int) substr($number, $strlen - $i - 1, 1);
+                if ($i % 2 == 1) {
+                    $sub_total = $digit * 2;
+                    if ($sub_total > 9) {
+                        $sub_total = ($sub_total - 10) + 1;
+                    }
+                } else {
+                    $sub_total = $digit;
+                }
+                $sum += $sub_total;
+            }
+            if ($sum > 0 && $sum % 10 == 0) {
+                    return true;
+            }
+                return false;
         };
 
         if ($numberIsValid()) {
