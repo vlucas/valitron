@@ -654,6 +654,58 @@ class ValidateTest extends BaseTestCase
         $v->rule('boolean', 'test');
         $this->assertFalse($v->validate());
     }
+
+    public function testCreditCardValid()
+    {
+        $visa         = array(4539511619543489, 4532949059629052, 4024007171194938, 4929646403373269, 4539135861690622);
+        $mastercard   = array(5162057048081965, 5382687859049349, 5484388880142230, 5464941521226434, 5473481232685965);
+        $amex         = array(371442067262027, 340743030537918, 345509167493596, 343665795576848, 346087552944316);
+        $dinersclub   = array(30363194756249, 30160097740704, 38186521192206, 38977384214552, 38563220301454);
+        $discover     = array(6011712400392605, 6011536340491809, 6011785775263015, 6011984124619056, 6011320958064251);
+
+        foreach (compact('visa', 'mastercard', 'amex', 'dinersclub', 'discover') as $type => $numbers) {
+            foreach($numbers as $number) {
+                $v = new Validator(array('test' => $number));
+                $v->rule('creditCard', 'test');
+                $this->assertTrue($v->validate());
+                $v->rule('creditCard', 'test', array($type, 'mastercard', 'visa'));
+                $this->assertTrue($v->validate());
+                $v->rule('creditCard', 'test', $type);
+                $this->assertTrue($v->validate());
+                $v->rule('creditCard', 'test', $type, array($type, 'mastercard', 'visa'));
+                $this->assertTrue($v->validate());
+                unset($v);
+            }
+        }
+    }
+
+    public function testcreditCardInvalid()
+    {
+        $visa         = array(3539511619543489, 3532949059629052, 3024007171194938, 3929646403373269, 3539135861690622);
+        $mastercard   = array(4162057048081965, 4382687859049349, 4484388880142230, 4464941521226434, 4473481232685965);
+        $amex         = array(271442067262027, 240743030537918, 245509167493596, 243665795576848, 246087552944316);
+        $dinersclub   = array(20363194756249, 20160097740704, 28186521192206, 28977384214552, 28563220301454);
+        $discover     = array(5011712400392605, 5011536340491809, 5011785775263015, 5011984124619056, 5011320958064251);
+
+        foreach (compact('visa', 'mastercard', 'amex', 'dinersclub', 'discover') as $type => $numbers) {
+            foreach($numbers as $number) {
+                $v = new Validator(array('test' => $number));
+                $v->rule('creditCard', 'test');
+                $this->assertFalse($v->validate());
+                $v->rule('creditCard', 'test', array($type, 'mastercard', 'visa'));
+                $this->assertFalse($v->validate());
+                $v->rule('creditCard', 'test', $type);
+                $this->assertFalse($v->validate());
+                $v->rule('creditCard', 'test', $type, array($type, 'mastercard', 'visa'));
+                $this->assertFalse($v->validate());
+                $v->rule('creditCard', 'test', 'invalidCardName');
+                $this->assertFalse($v->validate());
+                $v->rule('creditCard', 'test', 'invalidCardName', array('invalidCardName', 'mastercard', 'visa'));
+                $this->assertFalse($v->validate());
+                unset($v);
+            }
+        }
+    }
 }
 
 function sampleFunctionCallback($field, $value, array $params) {
