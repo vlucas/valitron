@@ -49,7 +49,8 @@ class Validator
         // Load language file in directory
         $langFile = rtrim($langDir, '/') . '/' . $lang . '.php';
         if ( stream_resolve_include_path($langFile) ) {
-            static::$_ruleMessages = include $langFile;            
+            $langMessages = include $langFile;
+            static::$_ruleMessages = array_merge(static::$_ruleMessages, $langMessages);
         } else {
             throw new InvalidArgumentException("fail to load language file '$langFile'");
         }
