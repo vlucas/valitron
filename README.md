@@ -7,6 +7,8 @@ simple and pragmatic validation library you've been looking for.
 
 [![Build
 Status](https://travis-ci.org/vlucas/valitron.png?branch=master)](https://travis-ci.org/vlucas/valitron)
+[![Latest Stable Version](https://poser.pugx.org/vlucas/valitron/v/stable.png)](https://packagist.org/packages/vlucas/valitron)
+[![Total Downloads](https://poser.pugx.org/vlucas/valitron/downloads.png)](https://packagist.org/packages/vlucas/valitron)
 
 ## Why Valitron?
 
@@ -109,6 +111,42 @@ V::lang('ar');
  * `dateBefore` - Field is a valid date and is before the given date
  * `dateAfter` - Field is a valid date and is after the given date
  * `contains` - Field is a string and contains the given string
+ * `creditCard` - Field is a valid credit card number
+
+
+## Credit Card Validation usage
+
+Credit card validation currently allows you to validate a Visa `visa`,
+Mastercard `mastercard`, Dinersclub `dinersclub`, American Express `amex`
+or Discover `discover`
+
+This will check the credit card against each card type
+
+```php
+$v->rule('creditCard', 'credit_card');
+```
+
+To optionally filter card types, add the slug to an array as the next parameter:
+
+```php
+$v->rule('creditCard', 'credit_card', ['visa', 'mastercard']);
+```
+
+If you only want to validate one type of card, put it as a string:
+
+```php
+$v->rule('creditCard', 'credit_card', 'visa');
+```
+
+If the card type information is coming from the client, you might also want to
+still specify an array of valid card types:
+
+```php
+$cardType = 'amex';
+$v->rule('creditCard', 'credit_card', $cardType, ['visa', 'mastercard']);
+$v->validate(); // false
+```
+
 
 ## Adding Custom Validation Rules
 

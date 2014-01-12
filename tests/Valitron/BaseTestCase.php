@@ -11,6 +11,7 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
 	{
 		$this->resetProperty('_lang');
 		$this->resetProperty('_langDir');
+		$this->resetProperty('_rules', array());
 		$this->resetProperty('_ruleMessages', array());
 	}
 

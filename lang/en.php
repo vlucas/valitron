@@ -25,7 +25,8 @@ return array(
     'dateAfter' => "must be date after '%s'",
     'contains' => "must contain %s",
     'boolean' => "must be a boolean",
-    'lengthBetween' => "must be between %d and %d characters"
+    'lengthBetween' => "must be between %d and %d characters",
+    'creditCard' => "must be a valid credit card number"
 );
 
 
