@@ -116,7 +116,7 @@ V::lang('ar');
 
 Credit card validation currently allows you to validate a Visa `visa`,
 Mastercard `mastercard`, Dinersclub `dinersclub`, American Express `amex`
-or Discovery `discovery`
+or Discover `discover`
 
 This will check the credit card against each card type
 
