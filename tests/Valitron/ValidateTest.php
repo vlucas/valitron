@@ -706,6 +706,25 @@ class ValidateTest extends BaseTestCase
             }
         }
     }
+
+    public function testAcceptObject() {
+        $obj = new stdClass();
+        $obj->bool = false;
+        $obj->name = 'Andrew';
+        $obj->email = 'me@example.com';
+        $obj->id = 123456;
+
+        $rules = array(
+            'required' => 'name',
+            'boolean' => 'bool',
+            'email' => 'email',
+            'integer' => 'id',
+        );
+        $v = new Validator($obj);
+        $v->rules($rules);
+
+        $this->assertTrue($v->validate());
+    }
 }
 
 function sampleFunctionCallback($field, $value, array $params) {
