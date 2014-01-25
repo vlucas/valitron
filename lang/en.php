@@ -26,7 +26,9 @@ return array(
     'contains' => "must contain %s",
     'boolean' => "must be a boolean",
     'lengthBetween' => "must be between %d and %d characters",
-    'creditCard' => "must be a valid credit card number"
+    'creditCard' => "must be a valid credit card number",
+    "lengthMin" => "must contain greater than %d characters",
+    "lengthMax" => "must contain less than %d characters"
 );
 
 

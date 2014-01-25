@@ -141,21 +141,6 @@ class Validator
     }
 
     /**
-     * Validate the length of a string
-     *
-     * @param string $filed
-     * @param mixed  $value
-     * @param array  $params
-     *
-     * @return boolean
-     */
-    protected function validateLengthBetween($filed, $value, $params)
-    {
-        $length = $this->stringLength($value);
-        return $length >= $params[0] && $length <= $params[1];
-    }
-
-    /**
      * Validate that a field is numeric
      *
      * @param  string  $field
@@ -197,6 +182,49 @@ class Validator
         }
         // Length same
         return $length == $params[0];
+    }
+
+    /**
+     * Validate the length of a string (between)
+     *
+     * @param string $field
+     * @param mixed  $value
+     * @param array  $params
+     *
+     * @return boolean
+     */
+    protected function validateLengthBetween($field, $value, $params)
+    {
+        $length = $this->stringLength($value);
+        return $length >= $params[0] && $length <= $params[1];
+    }
+
+    /**
+     * Validate the length of a string (min)
+     *
+     * @param string $field
+     * @param mixed  $value
+     * @param array  $params
+     *
+     * @return boolean
+     */
+    protected function validateLengthMin($field, $value, $params)
+    {
+        return $this->stringLength($value) >= $params[0];
+    }
+
+    /**
+     * Validate the length of a string (max)
+     *
+     * @param string $field
+     * @param mixed  $value
+     * @param array  $params
+     *
+     * @return boolean
+     */
+    protected function validateLengthMax($field, $value, $params)
+    {
+        return $this->stringLength($value) <= $params[0];
     }
 
     /**
@@ -693,7 +721,7 @@ class Validator
 
     /**
      * Determine whether a field is being validated by the given rule.
-     * 
+     *
      * @param string $name The name of the rule
      * @param string $field The name of the field
      * @return boolean

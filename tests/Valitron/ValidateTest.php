@@ -147,6 +147,34 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testLengthMinValid()
+    {
+        $v = new Validator(array('str' => 'happy'));
+        $v->rule('lengthMin', 'str', 4);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testLengthMinInvalid()
+    {
+        $v = new Validator(array('str' => 'sad'));
+        $v->rule('lengthMin', 'str', 4);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testLengthMaxValid()
+    {
+        $v = new Validator(array('str' => 'sad'));
+        $v->rule('lengthMax', 'str', 4);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testLengthMaxInvalid()
+    {
+        $v = new Validator(array('str' => 'sad'));
+        $v->rule('lengthMax', 'str', 2);
+        $this->assertFalse($v->validate());
+    }
+
     public function testMinValid()
     {
         $v = new Validator(array('num' => 5));
@@ -640,7 +668,7 @@ class ValidateTest extends BaseTestCase
         $v->rule('testRule', 'name', array('foo', 'bar'))->message('Invalid name selected.');
         $this->assertFalse($v->validate());
     }
-    
+
     public function testBooleanValid()
     {
         $v = new Validator(array('test' => true));
