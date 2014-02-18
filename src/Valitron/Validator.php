@@ -671,7 +671,6 @@ class Validator
     public function validate()
     {
         $quit=false;
-        $result = true;
         foreach($this->_validations as $v) {
             if ($quit) {
                 continue;
