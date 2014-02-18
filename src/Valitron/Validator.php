@@ -661,6 +661,7 @@ class Validator
         $this->_errors = array();
         $this->_validations = array();
         $this->_labels = array();
+        $this->_skips = array();
     }
 
     /**
