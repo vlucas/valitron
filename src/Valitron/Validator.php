@@ -15,6 +15,7 @@ use InvalidArgumentException;
 class Validator
 {
     protected $_fields = array();
+    protected $_validFields = array();
     protected $_errors = array();
     protected $_validations = array();
     protected $_labels = array();
@@ -592,6 +593,14 @@ class Validator
     }
 
     /**
+     *  Get array of validated fields and data
+     */
+    public function validData()
+    {
+        return $this->_validFields;
+    }
+
+    /**
      * Get array of error messages
      *
      * @param null|string $field
@@ -685,6 +694,11 @@ class Validator
                 if(!$result) {
                     $this->error($field, $v['message'], $v['params']);
                 }
+            }
+            // if a field is successfully validated
+            if(false === $this->errors($field)){
+                // is added to valid field array
+                $this->_validFields[$field] = $this->_fields[$field];
             }
         }
 
