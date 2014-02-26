@@ -58,7 +58,7 @@ class ErrorMessages extends BaseTestCase
         $this->assertEquals($messages, $errors);
     }
 
-    public function testSkip()
+    public function testOnErrorSkipField()
     {
         $messages=array(
             'num' => array('Num must be greater than 6'),
@@ -66,7 +66,7 @@ class ErrorMessages extends BaseTestCase
         );
         $v = new Validator(array('num' => 5,'name' => ''));
         $v->rule('required', 'num');
-        $v->rule('min', 'num', 6)->skip();
+        $v->rule('min', 'num', 6)->onErrorSkipField();
         $v->rule('min', 'num', 7);
         $v->rule('required','name');
         $v->validate();
@@ -74,14 +74,14 @@ class ErrorMessages extends BaseTestCase
         $this->assertEquals($messages, $errors);
     }
 
-    public function testQuit()
+    public function testOnErrorQuit()
     {
         $messages=array(
             'num' => array('Num must be greater than 6')
         );
         $v = new Validator(array('num' => 5,'name' => ''));
         $v->rule('required', 'num');
-        $v->rule('min', 'num', 6)->quit();
+        $v->rule('min', 'num', 6)->onErrorQuit();
         $v->rule('min', 'num', 7);
         $v->rule('required','name');
         $v->validate();

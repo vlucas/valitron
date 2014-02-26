@@ -717,7 +717,7 @@ class Validator
      *
      * @return \Valitron\Validator
      */
-    public function skip( )
+    public function onErrorSkipField( )
     {
         $this->_validations[count($this->_validations)-1]['skip'] = self::SKIP_ONE;
         return $this;
@@ -728,7 +728,7 @@ class Validator
      *
      * @return \Valitron\Validator
      */
-    public function quit( )
+    public function onErrorQuit( )
     {
         $this->_validations[count($this->_validations)-1]['skip'] = self::SKIP_ALL;
         return $this;
