@@ -154,10 +154,24 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
+    public function testMinValidDecimal()
+    {
+        $v = new Validator(array('num' => 0.9));
+        $v->rule('min', 'num', 0.5);
+        $this->assertTrue($v->validate());
+    }
+
     public function testMinInvalid()
     {
         $v = new Validator(array('num' => 5));
         $v->rule('min', 'num', 6);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testMinInvalidDecimal()
+    {
+        $v = new Validator(array('num' => 0.5));
+        $v->rule('min', 'num', 0.9);
         $this->assertFalse($v->validate());
     }
 
@@ -168,10 +182,24 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
+    public function testMaxValidDecimal()
+    {
+        $v = new Validator(array('num' => 0.4));
+        $v->rule('max', 'num', 0.5);
+        $this->assertTrue($v->validate());
+    }
+
     public function testMaxInvalid()
     {
         $v = new Validator(array('num' => 5));
         $v->rule('max', 'num', 4);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testMaxInvalidDecimal()
+    {
+        $v = new Validator(array('num' => 0.9));
+        $v->rule('max', 'num', 0.5);
         $this->assertFalse($v->validate());
     }
 

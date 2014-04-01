@@ -224,7 +224,7 @@ class Validator
      */
     protected function validateMin($field, $value, $params)
     {
-        return (int) $value >= $params[0];
+        return $value >= $params[0];
     }
 
     /**
@@ -238,7 +238,7 @@ class Validator
      */
     protected function validateMax($field, $value, $params)
     {
-        return (int) $value <= $params[0];
+        return $value <= $params[0];
     }
 
     /**
