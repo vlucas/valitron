@@ -224,7 +224,7 @@ class Validator
      */
     protected function validateMin($field, $value, $params)
     {
-        return $value >= $params[0];
+        return !(bccomp($params[0], $value, 14) == 1);
     }
 
     /**
@@ -238,7 +238,7 @@ class Validator
      */
     protected function validateMax($field, $value, $params)
     {
-        return $value <= $params[0];
+        return !(bccomp($value, $params[0], 14) == 1);
     }
 
     /**
