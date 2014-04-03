@@ -152,6 +152,21 @@ class ValidateTest extends BaseTestCase
         $v = new Validator(array('num' => 5));
         $v->rule('min', 'num', 2);
         $this->assertTrue($v->validate());
+
+        $v = new Validator(array('num' => 5));
+        $v->rule('min', 'num', 5);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testMinValidFloat()
+    {
+        $v = new Validator(array('num' => 0.9));
+        $v->rule('min', 'num', 0.5);
+        $this->assertTrue($v->validate());
+
+        $v = new Validator(array('num' => 1 - 0.81));
+        $v->rule('min', 'num', 0.19);
+        $this->assertTrue($v->validate());
     }
 
     public function testMinInvalid()
@@ -161,10 +176,32 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testMinInvalidFloat()
+    {
+        $v = new Validator(array('num' => 0.5));
+        $v->rule('min', 'num', 0.9);
+        $this->assertFalse($v->validate());
+    }
+
     public function testMaxValid()
     {
         $v = new Validator(array('num' => 5));
         $v->rule('max', 'num', 6);
+        $this->assertTrue($v->validate());
+
+        $v = new Validator(array('num' => 5));
+        $v->rule('max', 'num', 5);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testMaxValidFloat()
+    {
+        $v = new Validator(array('num' => 0.4));
+        $v->rule('max', 'num', 0.5);
+        $this->assertTrue($v->validate());
+
+        $v = new Validator(array('num' => 1 - 0.83));
+        $v->rule('max', 'num', 0.17);
         $this->assertTrue($v->validate());
     }
 
@@ -172,6 +209,13 @@ class ValidateTest extends BaseTestCase
     {
         $v = new Validator(array('num' => 5));
         $v->rule('max', 'num', 4);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testMaxInvalidFloat()
+    {
+        $v = new Validator(array('num' => 0.9));
+        $v->rule('max', 'num', 0.5);
         $this->assertFalse($v->validate());
     }
 
