@@ -75,7 +75,7 @@ Setting language and language dir globally:
 
 // boot or config file
 
-use Valitron\Validator as V; 
+use Valitron\Validator as V;
 
 V::langDir(__DIR__.'/validator_lang'); // always set langDir before lang.
 V::lang('ar');
@@ -94,13 +94,15 @@ V::lang('ar');
  * `integer` - Must be integer number
  * `length` - String must be certain length
  * `lengthBetween` - String must be between given lengths
+ * `lengthMin` - String must be greater than given length
+ * `lengthMax` - String must be less than given length
  * `min` - Minimum
  * `max` - Maximum
  * `in` - Performs in_array check on given array values
  * `notIn` - Negation of `in` rule (not in array of values)
  * `ip` - Valid IP address
  * `email` - Valid email address
- * `url` - Valid URL 
+ * `url` - Valid URL
  * `urlActive` - Valid URL with active DNS record
  * `alpha` - Alphabetic characters only
  * `alphaNum` - Alphabetic and numeric characters only
