@@ -1,7 +1,7 @@
 <?php
 use Valitron\Validator;
 
-class ErrorMessagesTest extends BaseTestCase
+class ErrorMessages extends BaseTestCase
 {
     public function testErrorMessageIncludesFieldName()
     {
@@ -57,5 +57,35 @@ class ErrorMessagesTest extends BaseTestCase
         $errors = $v->errors();
         $this->assertEquals($messages, $errors);
     }
-}
 
+    public function testOnErrorSkipField()
+    {
+        $messages=array(
+            'num' => array('Num must be greater than 6'),
+            'name' => array('Name is required')
+        );
+        $v = new Validator(array('num' => 5,'name' => ''));
+        $v->rule('required', 'num');
+        $v->rule('min', 'num', 6)->onErrorSkipField();
+        $v->rule('min', 'num', 7);
+        $v->rule('required','name');
+        $v->validate();
+        $errors = $v->errors();
+        $this->assertEquals($messages, $errors);
+    }
+
+    public function testOnErrorQuit()
+    {
+        $messages=array(
+            'num' => array('Num must be greater than 6')
+        );
+        $v = new Validator(array('num' => 5,'name' => ''));
+        $v->rule('required', 'num');
+        $v->rule('min', 'num', 6)->onErrorQuit();
+        $v->rule('min', 'num', 7);
+        $v->rule('required','name');
+        $v->validate();
+        $errors = $v->errors();
+        $this->assertEquals($messages, $errors);
+    }
+}

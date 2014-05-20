@@ -18,6 +18,7 @@ class Validator
     protected $_errors = array();
     protected $_validations = array();
     protected $_labels = array();
+    protected $_skips = array();
 
     protected static $_lang;
     protected static $_langDir;
@@ -25,6 +26,10 @@ class Validator
     protected static $_ruleMessages = array();
 
     const ERROR_DEFAULT = 'Invalid';
+
+    const SKIP_CONTINUE = '0';
+    const SKIP_ONE = '1';
+    const SKIP_ALL = '2';
 
     protected $validUrlPrefixes = array('http://', 'https://', 'ftp://');
 
@@ -684,6 +689,7 @@ class Validator
         $this->_errors = array();
         $this->_validations = array();
         $this->_labels = array();
+        $this->_skips = array();
     }
 
     /**
@@ -693,8 +699,22 @@ class Validator
      */
     public function validate()
     {
+        $quit=false;
         foreach($this->_validations as $v) {
+            if ($quit) {
+                continue;
+            }
             foreach($v['fields'] as $field) {
+                 if (isset($this->_skips[$field])) {
+                     if ($this->_skips[$field] === self::SKIP_ALL) {
+                        $quit = true;
+                     }
+                     if ($this->_skips[$field] === self::SKIP_ONE || $quit) {
+                         continue;
+                     }
+
+                 }
+
                 $value = isset($this->_fields[$field]) ? $this->_fields[$field] : null;
 
                 // Don't validate if the field is not required and the value is empty
@@ -712,11 +732,34 @@ class Validator
                 $result = call_user_func($callback, $field, $value, $v['params']);
                 if(!$result) {
                     $this->error($field, $v['message'], $v['params']);
+                    $this->_skips[$field]=$v['skip'];
                 }
             }
         }
 
         return count($this->errors()) === 0;
+    }
+
+    /**
+     * If the validation for a field fails, skip all other checks for this field.
+     *
+     * @return \Valitron\Validator
+     */
+    public function onErrorSkipField( )
+    {
+        $this->_validations[count($this->_validations)-1]['skip'] = self::SKIP_ONE;
+        return $this;
+    }
+
+    /**
+     * If the validation of a field fails, stop the validation process.
+     *
+     * @return \Valitron\Validator
+     */
+    public function onErrorQuit( )
+    {
+        $this->_validations[count($this->_validations)-1]['skip'] = self::SKIP_ALL;
+        return $this;
     }
 
     /**
@@ -778,7 +821,8 @@ class Validator
             'rule' => $rule,
             'fields' => (array) $fields,
             'params' => (array) $params,
-            'message' => '{field} ' . $message
+            'message' => '{field} ' . $message,
+            'skip' => self::SKIP_CONTINUE
         );
         return $this;
     }
