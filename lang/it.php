@@ -1,4 +1,5 @@
 <?php
+
 return array(
     'required'      => "è obbligatorio",
     'equals'        => "deve essere uguale a '%s'",
