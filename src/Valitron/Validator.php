@@ -35,24 +35,25 @@ class Validator
     {
         // Allows filtering of used input fields against optional second array of field names allowed
         // This is useful for limiting raw $_POST or $_GET data to only known fields
-        foreach($data as $field => $value) {
-            if(empty($fields) || (!empty($fields) && in_array($field, $fields))) {
+        foreach ($data as $field => $value) {
+            if (empty($fields) || (!empty($fields) && in_array($field, $fields))) {
                 $this->_fields[$field] = $value;
             }
         }
 
         // set lang in the follow order: constructor param, static::$_lang, default to en
         $lang = $lang ?: static::lang();
+
         // set langDir in the follow order: constructor param, static::$_langDir, default to package lang dir
         $langDir = $langDir ?: static::langDir();
 
         // Load language file in directory
         $langFile = rtrim($langDir, '/') . '/' . $lang . '.php';
-        if ( stream_resolve_include_path($langFile) ) {
+        if (stream_resolve_include_path($langFile) ) {
             $langMessages = include $langFile;
             static::$_ruleMessages = array_merge(static::$_ruleMessages, $langMessages);
         } else {
-            throw new InvalidArgumentException("fail to load language file '$langFile'");
+            throw new \InvalidArgumentException("fail to load language file '$langFile'");
         }
     }
 
@@ -61,7 +62,7 @@ class Validator
      */
     public static function lang($lang = null)
     {
-        if($lang !== null) {
+        if ($lang !== null) {
             static::$_lang = $lang;
         }
         return static::$_lang ?: 'en';
@@ -72,7 +73,7 @@ class Validator
      */
     public static function langDir($dir = null)
     {
-        if($dir !== null) {
+        if ($dir !== null) {
             static::$_langDir = $dir;
         }
         return static::$_langDir ?: dirname(dirname(__DIR__)) . '/lang';
@@ -87,9 +88,9 @@ class Validator
      */
     protected function validateRequired($field, $value)
     {
-        if(is_null($value)) {
+        if (is_null($value)) {
             return false;
-        } elseif(is_string($value) and trim($value) === '') {
+        } elseif (is_string($value) && trim($value) === '') {
             return false;
         }
         return true;
@@ -161,7 +162,7 @@ class Validator
      */
     protected function validateInteger($field, $value)
     {
-        return filter_var($value, FILTER_VALIDATE_INT) !== false;
+        return filter_var($value, \FILTER_VALIDATE_INT) !== false;
     }
 
     /**
@@ -177,7 +178,7 @@ class Validator
     {
         $length = $this->stringLength($value);
         // Length between
-        if(isset($params[1])) {
+        if (isset($params[1])) {
             return $length >= $params[0] && $length <= $params[1];
         }
         // Length same
@@ -281,7 +282,7 @@ class Validator
     protected function validateIn($field, $value, $params)
     {
         $isAssoc = array_values($params[0]) !== $params[0];
-        if($isAssoc) {
+        if ($isAssoc) {
             $params[0] = array_keys($params[0]);
         }
         return in_array($value, $params[0]);
@@ -311,7 +312,7 @@ class Validator
      */
     protected function validateContains($field, $value, $params)
     {
-        if(!isset($params[0])) {
+        if (!isset($params[0])) {
             return false;
         }
         if (!is_string($params[0]) || !is_string($value)) {
@@ -329,7 +330,7 @@ class Validator
      */
     protected function validateIp($field, $value)
     {
-        return filter_var($value, FILTER_VALIDATE_IP) !== false;
+        return filter_var($value, \FILTER_VALIDATE_IP) !== false;
     }
 
     /**
@@ -341,7 +342,7 @@ class Validator
      */
     protected function validateEmail($field, $value)
     {
-        return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
+        return filter_var($value, \FILTER_VALIDATE_EMAIL) !== false;
     }
 
     /**
@@ -354,8 +355,8 @@ class Validator
     protected function validateUrl($field, $value)
     {
         foreach ($this->validUrlPrefixes as $prefix) {
-            if(strpos($value, $prefix) !== false) {
-                return filter_var($value, FILTER_VALIDATE_URL) !== false;
+            if (strpos($value, $prefix) !== false) {
+                return filter_var($value, \FILTER_VALIDATE_URL) !== false;
             }
         }
         return false;
@@ -371,7 +372,7 @@ class Validator
     protected function validateUrlActive($field, $value)
     {
         foreach ($this->validUrlPrefixes as $prefix) {
-            if(strpos($value, $prefix) !== false) {
+            if (strpos($value, $prefix) !== false) {
                 $url = str_replace($prefix, '', strtolower($value));
 
                 return checkdnsrr($url);
@@ -522,7 +523,7 @@ class Validator
              */
             if (is_array($params[0])) {
                 $cards = $params[0];
-            } else if (is_string($params[0])){
+            } elseif (is_string($params[0])){
                 $cardType  = $params[0];
                 if (isset($params[1]) && is_array($params[1])) {
                     $cards = $params[1];
@@ -560,7 +561,7 @@ class Validator
             if ($sum > 0 && $sum % 10 == 0) {
                     return true;
             }
-                return false;
+            return false;
         };
 
         if ($numberIsValid()) {
@@ -584,9 +585,9 @@ class Validator
                     // we only need to test against one card type
                     return (preg_match($cardRegex[$cardType], $value) === 1);
 
-                } else if (isset($cards)) {
+                } elseif (isset($cards)) {
                     // if we have cards, check our users card against only the ones we have
-                    foreach($cards as $card) {
+                    foreach ($cards as $card) {
                         if (in_array($card, array_keys($cardRegex))) {
                             // if the card is valid, we want to stop looping
                             if (preg_match($cardRegex[$card], $value) === 1) {
@@ -596,7 +597,7 @@ class Validator
                     }
                 } else {
                     // loop through every card
-                    foreach($cardRegex as $regex) {
+                    foreach ($cardRegex as $regex) {
                         // until we find a valid one
                         if (preg_match($regex, $value) === 1) {
                             return true;
@@ -627,7 +628,7 @@ class Validator
      */
     public function errors($field = null)
     {
-        if($field !== null) {
+        if ($field !== null) {
             return isset($this->_errors[$field]) ? $this->_errors[$field] : false;
         }
         return $this->_errors;
@@ -646,15 +647,15 @@ class Validator
 
         $values = array();
         // Printed values need to be in string format
-        foreach($params as $param) {
-            if(is_array($param)) {
+        foreach ($params as $param) {
+            if (is_array($param)) {
                 $param = "['" . implode("', '", $param) . "']";
             }
-            if($param instanceof \DateTime) {
+            if ($param instanceof \DateTime) {
                 $param = $param->format('Y-m-d');
             }
             // Use custom label instead of field name if set
-            if(isset($this->_labels[$param])) {
+            if (isset($this->_labels[$param])) {
                 $param = $this->_labels[$param];
             }
             $values[] = $param;
@@ -671,7 +672,7 @@ class Validator
      */
     public function message($msg)
     {
-        $this->_validations[count($this->_validations)-1]['message'] = $msg;
+        $this->_validations[count($this->_validations) - 1]['message'] = $msg;
         return $this;
     }
 
@@ -693,8 +694,8 @@ class Validator
      */
     public function validate()
     {
-        foreach($this->_validations as $v) {
-            foreach($v['fields'] as $field) {
+        foreach ($this->_validations as $v) {
+            foreach ($v['fields'] as $field) {
                 $value = isset($this->_fields[$field]) ? $this->_fields[$field] : null;
 
                 // Don't validate if the field is not required and the value is empty
@@ -703,14 +704,14 @@ class Validator
                 }
 
                 // Callback is user-specified or assumed method on class
-                if(isset(static::$_rules[$v['rule']])) {
+                if (isset(static::$_rules[$v['rule']])) {
                     $callback = static::$_rules[$v['rule']];
                 } else {
                     $callback = array($this, 'validate' . ucfirst($v['rule']));
                 }
 
                 $result = call_user_func($callback, $field, $value, $v['params']);
-                if(!$result) {
+                if (!$result) {
                     $this->error($field, $v['message'], $v['params']);
                 }
             }
@@ -728,7 +729,7 @@ class Validator
      */
     protected function hasRule($name, $field)
     {
-        foreach($this->_validations as $validation) {
+        foreach ($this->_validations as $validation) {
             if ($validation['rule'] == $name) {
                 if (in_array($field, $validation['fields'])) {
                     return true;
@@ -748,8 +749,8 @@ class Validator
      */
     public static function addRule($name, $callback, $message = self::ERROR_DEFAULT)
     {
-        if(!is_callable($callback)) {
-            throw new \InvalidArgumentException("Second argument must be a valid callback. Given argument was not callable.");
+        if (!is_callable($callback)) {
+            throw new \InvalidArgumentException('Second argument must be a valid callback. Given argument was not callable.');
         }
 
         static::$_rules[$name] = $callback;
@@ -761,9 +762,9 @@ class Validator
      */
     public function rule($rule, $fields)
     {
-        if(!isset(static::$_rules[$rule])) {
+        if (!isset(static::$_rules[$rule])) {
             $ruleMethod = 'validate' . ucfirst($rule);
-            if(!method_exists($this, $ruleMethod)) {
+            if (!method_exists($this, $ruleMethod)) {
                 throw new \InvalidArgumentException("Rule '" . $rule . "' has not been registered with " . __CLASS__ . "::addRule().");
             }
         }
@@ -790,7 +791,7 @@ class Validator
      */
     public function label($value)
     {
-        $lastRules = $this->_validations[count($this->_validations)-1]['fields'];
+        $lastRules = $this->_validations[count($this->_validations) - 1]['fields'];
         $this->labels(array($lastRules[0] => $value));
 
         return $this;
@@ -843,7 +844,7 @@ class Validator
             if (is_array($params)) {
                 foreach ($params as $innerParams) {
                     array_unshift($innerParams, $ruleType);
-                    call_user_func_array(array($this, "rule"), $innerParams);
+                    call_user_func_array(array($this, 'rule'), $innerParams);
                 }
             } else {
                 $this->rule($ruleType, $params);
