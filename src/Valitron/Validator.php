@@ -812,6 +812,7 @@ class Validator
      * @param string $fule
      * @param array $fields
      * @return $this
+     * @throws \InvalidArgumentException
      */
     public function rule($rule, $fields)
     {
