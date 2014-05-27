@@ -1,4 +1,5 @@
 <?php
+
 namespace Valitron;
 
 use InvalidArgumentException;
@@ -14,22 +15,64 @@ use InvalidArgumentException;
  */
 class Validator
 {
-    protected $_fields = array();
-    protected $_errors = array();
-    protected $_validations = array();
-    protected $_labels = array();
-
-    protected static $_lang;
-    protected static $_langDir;
-    protected static $_rules = array();
-    protected static $_ruleMessages = array();
-
+    /**
+     * @var string
+     */
     const ERROR_DEFAULT = 'Invalid';
 
+    /**
+     * @var array
+     */
+    protected $_fields = array();
+
+    /**
+     * @var array
+     */
+    protected $_errors = array();
+
+    /**
+     * @var array
+     */
+    protected $_validations = array();
+
+    /**
+     * @var array
+     */
+    protected $_labels = array();
+
+    /**
+     * @var string
+     */
+    protected static $_lang;
+
+    /**
+     * @var string
+     */
+    protected static $_langDir;
+
+    /**
+     * @var array
+     */
+    protected static $_rules = array();
+
+    /**
+     * @var array
+     */
+    protected static $_ruleMessages = array();
+
+    /**
+     * @var array
+     */
     protected $validUrlPrefixes = array('http://', 'https://', 'ftp://');
 
     /**
-     *  Setup validation
+     * Setup validation
+     *
+     * @param array $data
+     * @param array $fields
+     * @param string $lang
+     * @param string $langDir
+     * @throws \InvalidArgumentException
      */
     public function __construct($data, $fields = array(), $lang = null, $langDir = null)
     {
@@ -59,6 +102,9 @@ class Validator
 
     /**
      * Get/set language to use for validation messages
+     *
+     * @param string $Lang
+     * @return string
      */
     public static function lang($lang = null)
     {
@@ -70,6 +116,9 @@ class Validator
 
     /**
      * Get/set language file path
+     *
+     * @param string $dir
+     * @return string
      */
     public static function langDir($dir = null)
     {
@@ -82,8 +131,8 @@ class Validator
     /**
      * Required field validator
      *
-     * @param $field
-     * @param $value
+     * @param string $field
+     * @param mixed $value
      * @return bool
      */
     protected function validateRequired($field, $value)
@@ -99,8 +148,8 @@ class Validator
     /**
      * Validate that two values match
      *
-     * @param  string $field
-     * @param  mixed $value
+     * @param string $field
+     * @param mixed $value
      * @param array $params
      * @internal param array $fields
      * @return bool
@@ -114,8 +163,8 @@ class Validator
     /**
      * Validate that a field is different from another field
      *
-     * @param  string $field
-     * @param  mixed $value
+     * @param string $field
+     * @param mixed $value
      * @param array $params
      * @internal param array $fields
      * @return bool
@@ -131,8 +180,8 @@ class Validator
      *
      * This validation rule implies the field is "required"
      *
-     * @param  string  $field
-     * @param  mixed   $value
+     * @param string $field
+     * @param mixed $value
      * @return bool
      */
     protected function validateAccepted($field, $value)
@@ -144,8 +193,8 @@ class Validator
     /**
      * Validate that a field is numeric
      *
-     * @param  string  $field
-     * @param  mixed   $value
+     * @param string $field
+     * @param mixed $value
      * @return bool
      */
     protected function validateNumeric($field, $value)
@@ -156,8 +205,8 @@ class Validator
     /**
      * Validate that a field is an integer
      *
-     * @param  string  $field
-     * @param  mixed   $value
+     * @param string $field
+     * @param mixed $value
      * @return bool
      */
     protected function validateInteger($field, $value)
@@ -168,9 +217,9 @@ class Validator
     /**
      * Validate the length of a string
      *
-     * @param  string $field
-     * @param  mixed $value
-     * @param $params
+     * @param string $field
+     * @param mixed $value
+     * @param array $params
      * @internal param array $fields
      * @return bool
      */
@@ -189,9 +238,8 @@ class Validator
      * Validate the length of a string (between)
      *
      * @param string $field
-     * @param mixed  $value
-     * @param array  $params
-     *
+     * @param mixed $value
+     * @param array $params
      * @return boolean
      */
     protected function validateLengthBetween($field, $value, $params)
@@ -204,8 +252,8 @@ class Validator
      * Validate the length of a string (min)
      *
      * @param string $field
-     * @param mixed  $value
-     * @param array  $params
+     * @param mixed $value
+     * @param array $params
      *
      * @return boolean
      */
@@ -218,8 +266,8 @@ class Validator
      * Validate the length of a string (max)
      *
      * @param string $field
-     * @param mixed  $value
-     * @param array  $params
+     * @param mixed $value
+     * @param array $params
      *
      * @return boolean
      */
@@ -231,7 +279,7 @@ class Validator
     /**
      * Get the length of a string
      *
-     * @param  string  $value
+     * @param string $value
      * @return int
      */
     protected function stringLength($value)
@@ -245,9 +293,9 @@ class Validator
     /**
      * Validate the size of a field is greater than a minimum value.
      *
-     * @param  string $field
-     * @param  mixed $value
-     * @param $params
+     * @param string $field
+     * @param mixed $value
+     * @param array $params
      * @internal param array $fields
      * @return bool
      */
@@ -259,9 +307,9 @@ class Validator
     /**
      * Validate the size of a field is less than a maximum value
      *
-     * @param  string $field
-     * @param  mixed $value
-     * @param $params
+     * @param string $field
+     * @param mixed $value
+     * @param array $params
      * @internal param array $fields
      * @return bool
      */
@@ -273,9 +321,9 @@ class Validator
     /**
      * Validate a field is contained within a list of values
      *
-     * @param  string $field
-     * @param  mixed $value
-     * @param $params
+     * @param string $field
+     * @param mixed $value
+     * @param array $params
      * @internal param array $fields
      * @return bool
      */
@@ -291,9 +339,9 @@ class Validator
     /**
      * Validate a field is not contained within a list of values
      *
-     * @param  string $field
-     * @param  mixed $value
-     * @param $params
+     * @param string $field
+     * @param mixed $value
+     * @param array $params
      * @internal param array $fields
      * @return bool
      */
@@ -305,9 +353,9 @@ class Validator
     /**
      * Validate a field contains a given string
      *
-     * @param  string $field
-     * @param  mixed  $value
-     * @param  array  $params
+     * @param string $field
+     * @param mixed $value
+     * @param array $params
      * @return bool
      */
     protected function validateContains($field, $value, $params)
@@ -324,8 +372,8 @@ class Validator
     /**
      * Validate that a field is a valid IP address
      *
-     * @param  string  $field
-     * @param  mixed   $value
+     * @param string $field
+     * @param mixed $value
      * @return bool
      */
     protected function validateIp($field, $value)
@@ -336,8 +384,8 @@ class Validator
     /**
      * Validate that a field is a valid e-mail address
      *
-     * @param  string  $field
-     * @param  mixed   $value
+     * @param string $field
+     * @param mixed $value
      * @return bool
      */
     protected function validateEmail($field, $value)
@@ -348,8 +396,8 @@ class Validator
     /**
      * Validate that a field is a valid URL by syntax
      *
-     * @param  string  $field
-     * @param  mixed   $value
+     * @param string $field
+     * @param mixed $value
      * @return bool
      */
     protected function validateUrl($field, $value)
@@ -365,8 +413,8 @@ class Validator
     /**
      * Validate that a field is an active URL by verifying DNS record
      *
-     * @param  string  $field
-     * @param  mixed   $value
+     * @param string $field
+     * @param mixed $value
      * @return bool
      */
     protected function validateUrlActive($field, $value)
@@ -384,8 +432,8 @@ class Validator
     /**
      * Validate that a field contains only alphabetic characters
      *
-     * @param  string  $field
-     * @param  mixed   $value
+     * @param string $field
+     * @param mixed $value
      * @return bool
      */
     protected function validateAlpha($field, $value)
@@ -396,8 +444,8 @@ class Validator
     /**
      * Validate that a field contains only alpha-numeric characters
      *
-     * @param  string  $field
-     * @param  mixed   $value
+     * @param string $field
+     * @param mixed $value
      * @return bool
      */
     protected function validateAlphaNum($field, $value)
@@ -408,8 +456,8 @@ class Validator
     /**
      * Validate that a field contains only alpha-numeric characters, dashes, and underscores
      *
-     * @param  string  $field
-     * @param  mixed   $value
+     * @param string $field
+     * @param mixed $value
      * @return bool
      */
     protected function validateSlug($field, $value)
@@ -420,9 +468,9 @@ class Validator
     /**
      * Validate that a field passes a regular expression check
      *
-     * @param  string $field
-     * @param  mixed $value
-     * @param $params
+     * @param string $field
+     * @param mixed $value
+     * @param array $params
      * @return bool
      */
     protected function validateRegex($field, $value, $params)
@@ -433,8 +481,8 @@ class Validator
     /**
      * Validate that a field is a valid date
      *
-     * @param  string  $field
-     * @param  mixed   $value
+     * @param string $field
+     * @param mixed $value
      * @return bool
      */
     protected function validateDate($field, $value)
@@ -445,9 +493,9 @@ class Validator
     /**
      * Validate that a field matches a date format
      *
-     * @param  string $field
-     * @param  mixed $value
-     * @param $params
+     * @param string $field
+     * @param mixed $value
+     * @param array $params
      * @internal param array $fields
      * @return bool
      */
@@ -461,9 +509,9 @@ class Validator
     /**
      * Validate the date is before a given date
      *
-     * @param  string $field
-     * @param  mixed $value
-     * @param $params
+     * @param string $field
+     * @param mixed $value
+     * @param array $params
      * @internal param array $fields
      * @return bool
      */
@@ -477,9 +525,9 @@ class Validator
     /**
      * Validate the date is after a given date
      *
-     * @param  string $field
-     * @param  mixed $value
-     * @param $params
+     * @param string $field
+     * @param mixed $value
+     * @param array $params
      * @internal param array $fields
      * @return bool
      */
@@ -493,8 +541,8 @@ class Validator
     /**
      * Validate that a field contains a boolean.
      *
-     * @param  string  $field
-     * @param  mixed   $value
+     * @param string $field
+     * @param mixed $value
      * @return bool
      */
     protected function validateBoolean($field, $value)
@@ -506,8 +554,8 @@ class Validator
      * Validate that a field contains a valid credit card
      * optionally filtered by an array
      *
-     * @param string  $field
-     * @param string $value
+     * @param string $field
+     * @param mixed $value
      * @param array $params
      * @return bool
      */
@@ -614,6 +662,8 @@ class Validator
 
     /**
      *  Get array of fields and data
+     *
+     * @return array
      */
     public function data()
     {
@@ -637,8 +687,8 @@ class Validator
     /**
      * Add an error to error messages array
      *
-     * @param $field
-     * @param $msg
+     * @param string $field
+     * @param string $msg
      * @param array $params
      */
     public function error($field, $msg, array $params = array())
@@ -743,7 +793,7 @@ class Validator
      * Register new validation rule callback
      *
      * @param string $name
-     * @param $callback
+     * @param mixed $callback
      * @param string $message
      * @throws \InvalidArgumentException
      */
@@ -759,6 +809,11 @@ class Validator
 
     /**
      * Convenience method to add a single validation rule
+     *
+     * @param string $fule
+     * @param array $fields
+     * @return $this
+     * @throws \InvalidArgumentException
      */
     public function rule($rule, $fields)
     {
@@ -785,7 +840,7 @@ class Validator
     }
 
     /**
-     * @param $value
+     * @param string $value
      * @internal param array $labels
      * @return $this
      */
@@ -799,7 +854,7 @@ class Validator
 
     /**
      * @param array $labels
-     * @return $this
+     * @return string
      */
     public function labels($labels = array())
     {
@@ -808,9 +863,9 @@ class Validator
     }
 
     /**
-     * @param $field
-     * @param $msg
-     * @param $params
+     * @param string $field
+     * @param string $msg
+     * @param array $params
      * @return array
      */
     private function checkAndSetLabel($field, $msg, $params)
@@ -836,6 +891,7 @@ class Validator
 
     /**
      * Convenience method to add multiple validation rules with an array
+     *
      * @param array $rules
      */
     public function rules($rules)
