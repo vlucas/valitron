@@ -727,6 +727,20 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testZeroStillTriggersValidation()
+    {
+        $v = new Validator(array('test' => 0));
+        $v->rule('min', 'test', 1);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testFalseStillTriggersValidation()
+    {
+        $v = new Validator(array('test' => FALSE));
+        $v->rule('min', 'test', 5);
+        $this->assertFalse($v->validate());
+    }
+
     public function testCreditCardValid()
     {
         $visa         = array(4539511619543489, 4532949059629052, 4024007171194938, 4929646403373269, 4539135861690622);
