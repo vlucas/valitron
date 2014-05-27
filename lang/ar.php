@@ -1,4 +1,5 @@
 <?php
+
 return array(
     'required'      => "مطلوب",
     'equals'        => "يجب أن يكون مساوي لي '%s'",
