@@ -84,7 +84,7 @@ class Validator
      */
     protected function validateRequired($field, $value)
     {
-        if (is_null($value) || (is_string($value) and trim($value) === '')) {
+        if (is_null($value) || (is_string($value) && trim($value) === '')) {
             return false;
         }
         return true;
