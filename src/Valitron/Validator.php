@@ -103,7 +103,7 @@ class Validator
     /**
      * Get/set language to use for validation messages
      *
-     * @param string $Lang
+     * @param string $lang
      * @return string
      */
     public static function lang($lang = null)
@@ -810,7 +810,7 @@ class Validator
     /**
      * Convenience method to add a single validation rule
      *
-     * @param string $fule
+     * @param string $rule
      * @param array $fields
      * @return $this
      * @throws \InvalidArgumentException
