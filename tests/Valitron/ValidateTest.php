@@ -188,6 +188,10 @@ class ValidateTest extends BaseTestCase
 
     public function testMinValidFloat()
     {
+        if (!function_exists('bccomp')) {
+            $this->markTestSkipped("Floating point comparison requires the BC Math extension to be installed");
+        }
+
         $v = new Validator(array('num' => 0.9));
         $v->rule('min', 'num', 0.5);
         $this->assertTrue($v->validate());
@@ -224,6 +228,10 @@ class ValidateTest extends BaseTestCase
 
     public function testMaxValidFloat()
     {
+        if (!function_exists('bccomp')) {
+            $this->markTestSkipped("Accurate floating point comparison requires the BC Math extension to be installed");
+        }
+
         $v = new Validator(array('num' => 0.4));
         $v->rule('max', 'num', 0.5);
         $this->assertTrue($v->validate());
