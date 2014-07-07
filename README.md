@@ -106,7 +106,7 @@ V::lang('ar');
  * `urlActive` - Valid URL with active DNS record
  * `alpha` - Alphabetic characters only
  * `alphaNum` - Alphabetic and numeric characters only
- * `slug` - URL slug characters (a-z, 0-9, -, _)
+ * `slug` - URL slug characters (a-z, 0-9, -, \_)
  * `regex` - Field matches given regex pattern
  * `date` - Field is a valid date
  * `dateFormat` - Field is a valid date in the given format
@@ -115,6 +115,11 @@ V::lang('ar');
  * `contains` - Field is a string and contains the given string
  * `creditCard` - Field is a valid credit card number
 
+**NOTE**: If you are comparing floating-point numbers with min/max validators, you
+should install the [BCMath](http://us3.php.net/manual/en/book.bc.php)
+extension for greater accuracy and reliability. The extension is not required
+for Valitron to work, but Valitron will use it if available, and it is highly
+recommended.
 
 ## Credit Card Validation usage
 
