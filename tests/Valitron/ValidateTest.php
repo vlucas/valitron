@@ -749,8 +749,6 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
-/*
-
     public function testCreditCardValid()
     {
         $visa         = array(4539511619543489, 4532949059629052, 4024007171194938, 4929646403373269, 4539135861690622);
@@ -802,7 +800,6 @@ class ValidateTest extends BaseTestCase
             }
         }
     }
- */
 
     public function testInstanceOfValidWithString()
     {
@@ -829,6 +826,29 @@ class ValidateTest extends BaseTestCase
     {
       $v = new Validator(array('attributeName' => new stdClass()));
       $v->rule('instanceOf', 'attributeName', 'SomeOtherClass');
+      $this->assertFalse($v->validate());
+    }
+
+    public function testInstanceOfWithAlternativeSyntaxValid()
+    {
+      $v = new Validator(array('attributeName' => new stdClass()));
+      $v->rules(array(
+        'instanceOf' => array(
+            array('attributeName', 'stdClass')
+        )
+      ));
+      $this->assertTrue($v->validate());
+    }
+
+    public function testInstanceOfWithAlternativeSyntaxInvalid()
+    {
+      $v = new Validator(array('attributeName' => new stdClass()));
+      $v->rules(array(
+        'instanceOf' => array(
+          array('attributeName', 'SomeOtherClassInAlternativeSyntaxInvalid')
+        )
+      ));
+      $v->validate();
       $this->assertFalse($v->validate());
     }
 
