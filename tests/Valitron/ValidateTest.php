@@ -413,6 +413,13 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
+    public function testDateValidWithDateTimeObject()
+    {
+        $v = new Validator(array('date' => new DateTime()));
+        $v->rule('date', 'date');
+        $this->assertTrue($v->validate());
+    }
+
     public function testDateInvalid()
     {
         $v = new Validator(array('date' => 'no thanks'));
@@ -800,6 +807,58 @@ class ValidateTest extends BaseTestCase
             }
         }
     }
+
+    public function testInstanceOfValidWithString()
+    {
+      $v = new Validator(array('attributeName' => new stdClass()));
+      $v->rule('instanceOf', 'attributeName', 'stdClass');
+      $this->assertTrue($v->validate());
+    }
+
+    public function testInstanceOfInvalidWithInstance()
+    {
+      $v = new Validator(array('attributeName' => new stdClass()));
+      $v->rule('instanceOf', 'attributeName', new Validator(array()));
+      $this->assertFalse($v->validate());
+    }
+
+    public function testInstanceOfValidWithInstance()
+    {
+      $v = new Validator(array('attributeName' => new stdClass()));
+      $v->rule('instanceOf', 'attributeName', new stdClass());
+      $this->assertTrue($v->validate());
+    }
+
+    public function testInstanceOfInvalidWithString()
+    {
+      $v = new Validator(array('attributeName' => new stdClass()));
+      $v->rule('instanceOf', 'attributeName', 'SomeOtherClass');
+      $this->assertFalse($v->validate());
+    }
+
+    public function testInstanceOfWithAlternativeSyntaxValid()
+    {
+      $v = new Validator(array('attributeName' => new stdClass()));
+      $v->rules(array(
+        'instanceOf' => array(
+            array('attributeName', 'stdClass')
+        )
+      ));
+      $this->assertTrue($v->validate());
+    }
+
+    public function testInstanceOfWithAlternativeSyntaxInvalid()
+    {
+      $v = new Validator(array('attributeName' => new stdClass()));
+      $v->rules(array(
+        'instanceOf' => array(
+          array('attributeName', 'SomeOtherClassInAlternativeSyntaxInvalid')
+        )
+      ));
+      $v->validate();
+      $this->assertFalse($v->validate());
+    }
+
 }
 
 function sampleFunctionCallback($field, $value, array $params) {

@@ -495,7 +495,13 @@ class Validator
      */
     protected function validateDate($field, $value)
     {
-        return strtotime($value) !== false;
+        $isDate = false;
+        if($value instanceof \DateTime) {
+            $isDate = true;
+        } else {
+            $isDate = strtotime($value) !== false;
+        }
+        return $isDate;
     }
 
     /**
@@ -667,6 +673,25 @@ class Validator
         return false;
     }
 
+    protected function validateInstanceOf($field, $value, $params)
+    {
+        $isInstanceOf = false;
+        if(is_object($value)) {
+            if(is_object($params[0]) && $value instanceof $params[0]) {
+                $isInstanceOf = true;
+            }
+            if(get_class($value) === $params[0]) {
+                $isInstanceOf = true;
+            }
+        }
+        if(is_string($value)) {
+            if(is_string($params[0]) && get_class($value) === $params[0]) {
+                $isInstanceOf = true;
+            }
+        }
+        return $isInstanceOf;
+    }
+
 
     /**
      *  Get array of fields and data
@@ -713,8 +738,10 @@ class Validator
                 $param = $param->format('Y-m-d');
             }
             // Use custom label instead of field name if set
-            if (isset($this->_labels[$param])) {
-                $param = $this->_labels[$param];
+            if(is_string($params[0])) {
+                if (isset($this->_labels[$param])) {
+                    $param = $this->_labels[$param];
+                }
             }
             $values[] = $param;
         }
