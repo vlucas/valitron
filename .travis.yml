@@ -10,4 +10,4 @@ before_script:
   - composer install
 
 # Script to run tests
-script: phpunit
+script: ./vendor/bin/phpunit
