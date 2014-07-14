@@ -495,7 +495,13 @@ class Validator
      */
     protected function validateDate($field, $value)
     {
-        return strtotime($value) !== false;
+        $isDate = false;
+        if($value instanceof \DateTime) {
+            $isDate = true;
+        } else {
+            $isDate = strtotime($value) !== false;
+        }
+        return $isDate;
     }
 
     /**

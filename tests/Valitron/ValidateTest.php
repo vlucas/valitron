@@ -413,6 +413,13 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
+    public function testDateValidWithDateTimeObject()
+    {
+        $v = new Validator(array('date' => new DateTime()));
+        $v->rule('date', 'date');
+        $this->assertTrue($v->validate());
+    }
+
     public function testDateInvalid()
     {
         $v = new Validator(array('date' => 'no thanks'));
