@@ -800,6 +800,35 @@ class ValidateTest extends BaseTestCase
             }
         }
     }
+
+    public function testInstanceOfValidWithString()
+    {
+      $v = new Validator(['attributeName' => new stdClass()]);
+      $v->rule('instanceOf', 'attributeName', 'stdClass');
+      $this->assertTrue($v->validate());
+    }
+
+    public function testInstanceOfInvalidWithInstance()
+    {
+      $v = new Validator(['attributeName' => new stdClass()]);
+      $v->rule('instanceOf', 'attributeName', new Validator([]));
+      $this->assertFalse($v->validate());
+    }
+
+    public function testInstanceOfValidWithInstance()
+    {
+      $v = new Validator(['attributeName' => new stdClass()]);
+      $v->rule('instanceOf', 'attributeName', new stdClass());
+      $this->assertTrue($v->validate());
+    }
+
+    public function testInstanceOfInvalidWithString()
+    {
+      $v = new Validator(['attributeName' => new stdClass()]);
+      $v->rule('instanceOf', 'attributeName', 'SomeOtherClass');
+      $this->assertFalse($v->validate());
+    }
+
 }
 
 function sampleFunctionCallback($field, $value, array $params) {
