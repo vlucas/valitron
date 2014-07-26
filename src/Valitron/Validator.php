@@ -517,7 +517,7 @@ class Validator
     {
         $parsed = date_parse_from_format($params[0], $value);
 
-        return $parsed['error_count'] === 0;
+        return $parsed['error_count'] === 0 && $parsed['warning_count'] === 0;
     }
 
     /**
