@@ -449,6 +449,10 @@ class ValidateTest extends BaseTestCase
         $v = new Validator(array('date' => 'no thanks'));
         $v->rule('dateFormat', 'date', 'Y-m-d');
         $this->assertFalse($v->validate());
+
+        $v = new Validator(array('date' => '2013-27-01'));
+        $v->rule('dateFormat', 'date', 'Y-m-d');
+        $this->assertFalse($v->validate());
     }
 
     public function testDateBeforeValid()
