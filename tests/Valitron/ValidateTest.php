@@ -829,6 +829,19 @@ class ValidateTest extends BaseTestCase
       $this->assertTrue($v->validate());
     }
 
+    public function testInstanceOfErrorMessageShowsInstanceName()
+    {
+      $v = new Validator(array('attributeName' => new Validator(array())));
+      $v->rule('instanceOf', 'attributeName', new stdClass());
+      $v->validate();
+      $expected_error = array(
+        "attributeName" => array(
+          "AttributeName must be an instance of 'stdClass'"
+        )
+      );
+      $this->assertEquals($expected_error, $v->errors());
+    }
+
     public function testInstanceOfInvalidWithString()
     {
       $v = new Validator(array('attributeName' => new stdClass()));

@@ -736,6 +736,10 @@ class Validator
             }
             if ($param instanceof \DateTime) {
                 $param = $param->format('Y-m-d');
+            } else {
+                if(is_object($param)) {
+                    $param = get_class($param);
+                }
             }
             // Use custom label instead of field name if set
             if(is_string($params[0])) {
