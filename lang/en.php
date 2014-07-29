@@ -29,5 +29,6 @@ return array(
     'lengthBetween' => "must be between %d and %d characters",
     'creditCard'    => "must be a valid credit card number",
     "lengthMin"     => "must contain greater than %d characters",
-    "lengthMax"     => "must contain less than %d characters"
+    "lengthMax"     => "must contain less than %d characters",
+    "instanceOf"    => "must be an instance of '%s'"
 );
