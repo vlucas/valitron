@@ -78,11 +78,7 @@ class Validator
     {
         // Allows filtering of used input fields against optional second array of field names allowed
         // This is useful for limiting raw $_POST or $_GET data to only known fields
-        foreach ($data as $field => $value) {
-            if (empty($fields) || (!empty($fields) && in_array($field, $fields))) {
-                $this->_fields[$field] = $value;
-            }
-        }
+        $this->_fields = !empty($fields) ? array_intersect_key($data, array_flip($fields)) : $data;        
 
         // set lang in the follow order: constructor param, static::$_lang, default to en
         $lang = $lang ?: static::lang();
