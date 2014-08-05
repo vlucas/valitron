@@ -21,9 +21,9 @@ class Validator
     const ERROR_DEFAULT = 'Invalid';
 
     /**
-     * @var array
+     * @var object
      */
-    protected $_fields = array();
+    protected $_data = null;
 
     /**
      * @var array
@@ -66,9 +66,9 @@ class Validator
     protected $validUrlPrefixes = array('http://', 'https://', 'ftp://');
 
     /**
-     * Setup validation
+     * Setup validation.
      *
-     * @param array $data
+     * @param object $data
      * @param array $fields
      * @param string $lang
      * @param string $langDir
@@ -76,12 +76,17 @@ class Validator
      */
     public function __construct($data, $fields = array(), $lang = null, $langDir = null)
     {
-        // Allows filtering of used input fields against optional second array of field names allowed
-        // This is useful for limiting raw $_POST or $_GET data to only known fields
-        foreach ($data as $field => $value) {
-            if (empty($fields) || (!empty($fields) && in_array($field, $fields))) {
-                $this->_fields[$field] = $value;
+        if(is_array($data)){
+            // Allows filtering of used input fields against optional second array of field names allowed
+            // This is useful for limiting raw $_POST or $_GET data to only known fields
+            $this->_data = array();
+            foreach ($data as $field => $value) {
+                if(empty($fields) || (!empty($fields) && in_array($field, $fields))) {
+                    $this->_data[$field] = $value;
+                }
             }
+        }else{
+            $this->_data = $data;
         }
 
         // set lang in the follow order: constructor param, static::$_lang, default to en
@@ -129,6 +134,36 @@ class Validator
     }
 
     /**
+    * Check if a field is set
+    *
+    * @param string $field
+    * @return bool
+    */
+    protected function fieldSet($field){
+        if(is_array($this->_data)){
+            return isset($this->_data[$field]);
+
+        }else{
+            return isset($this->_data->$field);
+
+        }
+    }
+
+    /**
+    * Get a field
+    *
+    * @param string $field
+    * @return object
+    */
+    protected function getField($field){
+        if(is_array($this->_data)){
+            return $this->_data[$field];
+        }else{
+            return $this->_data->$field;
+        }
+    }
+
+    /**
      * Required field validator
      *
      * @param string $field
@@ -157,7 +192,7 @@ class Validator
     protected function validateEquals($field, $value, array $params)
     {
         $field2 = $params[0];
-        return isset($this->_fields[$field2]) && $value == $this->_fields[$field2];
+        return $this->fieldSet($field2) && $value == $this->getField($field2);
     }
 
     /**
@@ -172,7 +207,7 @@ class Validator
     protected function validateDifferent($field, $value, array $params)
     {
         $field2 = $params[0];
-        return isset($this->_fields[$field2]) && $value != $this->_fields[$field2];
+        return $this->fieldSet($field2) && $value != $this->getField($field2);
     }
 
     /**
@@ -694,13 +729,13 @@ class Validator
 
 
     /**
-     *  Get array of fields and data
+     *  Get array or object of fields and data
      *
-     * @return array
+     * @return object
      */
     public function data()
     {
-        return $this->_fields;
+        return $this->_data;
     }
 
     /**
@@ -770,7 +805,7 @@ class Validator
      */
     public function reset()
     {
-        $this->_fields = array();
+        $this->_data = null;
         $this->_errors = array();
         $this->_validations = array();
         $this->_labels = array();
@@ -785,7 +820,7 @@ class Validator
     {
         foreach ($this->_validations as $v) {
             foreach ($v['fields'] as $field) {
-                $value = isset($this->_fields[$field]) ? $this->_fields[$field] : null;
+                $value = $this->fieldSet($field) ? $this->getField($field) : null;
 
                 // Don't validate if the field is not required and the value is empty
                 if ($v['rule'] !== 'required' && !$this->hasRule('required', $field) && (! isset($value) || $value === '')) {

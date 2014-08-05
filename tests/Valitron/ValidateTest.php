@@ -876,8 +876,63 @@ class ValidateTest extends BaseTestCase
       $this->assertFalse($v->validate());
     }
 
+    public function testObjectValid()
+    {
+        $obj = new MagicGetterClass('1234');
+
+
+        $v = new Validator($obj);
+        $v->rule('required', 'num');
+        $v->rule('integer', 'num');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testObjectInvalid()
+    {
+        $obj = new MagicGetterClass('nope');
+
+        $v = new Validator($obj);
+
+        $v->rule('required', 'num');
+        $v->rule('integer', 'num');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testObjectNoAttribute()
+    {
+        $obj = new MagicGetterClass('nope');
+
+        $v = new Validator($obj);
+
+        $v->rule('required', 'noexist');
+        $v->rule('integer', 'noexist');
+
+        $this->assertFalse($v->validate());
+    }
+
 }
 
 function sampleFunctionCallback($field, $value, array $params) {
   return true;
+}
+
+class MagicGetterClass{
+    private $num;
+    function __construct($val){
+        $this->num = $val;
+    }
+
+    public function __get($property)
+    {
+        return $this->$property;
+    } 
+     
+    public function __set($property, $value)
+    { 
+        $this->$property = $value;
+    }
+
+    public function __isset($property){
+        return isset($this->$property);
+    }
 }
