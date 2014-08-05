@@ -76,18 +76,9 @@ class Validator
      */
     public function __construct($data, $fields = array(), $lang = null, $langDir = null)
     {
-        if(is_array($data)){
-            // Allows filtering of used input fields against optional second array of field names allowed
-            // This is useful for limiting raw $_POST or $_GET data to only known fields
-            $this->_data = array();
-            foreach ($data as $field => $value) {
-                if(empty($fields) || (!empty($fields) && in_array($field, $fields))) {
-                    $this->_data[$field] = $value;
-                }
-            }
-        }else{
-            $this->_data = $data;
-        }
+        // Allows filtering of used input fields against optional second array of field names allowed
+        // This is useful for limiting raw $_POST or $_GET data to only known fields
+        $this->_data = !empty($fields) ? array_intersect_key($data, array_flip($fields)) : $data;
 
         // set lang in the follow order: constructor param, static::$_lang, default to en
         $lang = $lang ?: static::lang();
