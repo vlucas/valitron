@@ -29,6 +29,6 @@ return array(
     'lengthBetween' => "debe ser entre %d y %d caracteres",
     'creditCard'    => "debe ser un numero de tarjeta de credito valido",
     "lengthMin"     => "debe contener mas de %d caracteres",
-    "lengthMax"     => "debe contener menos de %d caracteres"
+    "lengthMax"     => "debe contener menos de %d caracteres",
     "instanceOf"    => "debe ser una instancia de '%s'"
 );
