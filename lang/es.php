@@ -8,7 +8,7 @@ return array(
     'numeric'       => "debe ser numérico",
     'integer'       => "debe ser un entero (0-9)",
     'length'        => "debe ser mas largo de %d",
-    'min'           => "debe ser mayor a %s",v
+    'min'           => "debe ser mayor a %s",
     'max'           => "debe ser menor a %s",
     'in'            => "contiene un valor invalido",
     'notIn'         => "contiene un valor invalido",
