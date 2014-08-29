@@ -732,6 +732,29 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+     public function testAddRuleCallbackWithConditionalRequire()
+    {
+        $v = new Validator(array('name' => 'Chester Tester'));
+        $v->addRule('requiredIf', 'conditionalCallbackSample');
+        $v->rule('requiredIf', 'name', true);
+        $this->assertTrue($v->validate());
+    }
+    public function testAddRuleCallbackWithConditionalRequireNonExistantField()
+    {
+        $v = new Validator(array('name' => 'Chester Tester'));
+        $v->addRule('requiredIf', 'conditionalCallbackSample');
+        $v->rule('requiredIf', 'nonexistent_field', true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testAddRuleCallbackWithConditionalRequireFalse()
+    {
+        $v = new Validator(array('name' => 'Chester Tester'));
+        $v->addRule('requiredIf', 'conditionalCallbackSample');
+        $v->rule('requiredIf', 'nonexistent_field', false);
+        $this->assertTrue($v->validate());
+    }
+
     public function testBooleanValid()
     {
         $v = new Validator(array('test' => true));
@@ -880,4 +903,15 @@ class ValidateTest extends BaseTestCase
 
 function sampleFunctionCallback($field, $value, array $params) {
   return true;
+}
+
+function conditionalCallbackSample($field, $value, array $params) {
+    if ($params[0]) {
+        // check
+        if (is_null($value) || (is_string($value) && trim($value) === '')) {
+            return false;
+        }
+    }
+    // passed in condition was false or value was present
+    return true;
 }
