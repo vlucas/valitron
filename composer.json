@@ -20,8 +20,8 @@
         "phpunit/phpunit": "@stable"
     },
     "autoload": {
-        "psr-0": {
-            "Valitron": "src/"
+        "psr-4": {
+            "Valitron\\": "src"
         }
     }
 }
