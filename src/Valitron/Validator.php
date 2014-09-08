@@ -803,6 +803,11 @@ class Validator
 
     protected function getPart($data, $identifiers)
     {
+        // Catches the case where the field is an array of discrete values
+        if (is_array($identifiers) && count($identifiers) === 0) {
+            return array($data, false);
+        }
+
         $identifier = array_shift($identifiers);
 
         // Glob match
