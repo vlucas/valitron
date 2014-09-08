@@ -308,6 +308,35 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testForeachDiscreteValues()
+    {
+        $v = new Validator(array('values' => array(5, 10, 15, 20, 25)));
+        $v->rule('integer', 'values.*');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testForeachAssocValues()
+    {
+        $v = new Validator(array('values' => array(
+            'foo' => 5,
+            'bar' => 10,
+            'baz' => 15
+        )));
+        $v->rule('integer', 'values.*');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testForeachAssocValuesFails()
+    {
+        $v = new Validator(array('values' => array(
+            'foo' => 5,
+            'bar' => 10,
+            'baz' => 'faz'
+        )));
+        $v->rule('integer', 'values.*');
+        $this->assertFalse($v->validate());
+    }
+
     public function testForeachArrayAccess()
     {
         $v = new Validator(array('settings' => array(
