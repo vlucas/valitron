@@ -187,6 +187,18 @@ class Validator
     }
 
     /**
+     * Validate that a field is an array
+     *
+     * @param string $field
+     * @param mixed $value
+     * @return bool
+     */
+    protected function validateArray($field, $value)
+    {
+        return is_array($value);
+    }
+
+    /**
      * Validate that a field is numeric
      *
      * @param string $field
@@ -772,6 +784,47 @@ class Validator
         $this->_labels = array();
     }
 
+    private function get($data, $identifiers) {
+        $identifier = array_shift($identifiers);
+
+        // Glob match
+        if ($identifier === '*')
+        {
+            $values = array();
+            foreach($data as $row)
+            {
+                list($value, $multiple) = $this->get($row, $identifiers);
+                if ($multiple)
+                {
+                    $values = array_merge($values, $value);
+                }
+                else
+                {
+                    $values[] = $value;
+                }
+            }
+            return array($values, true);
+        }
+
+        // Dead end, abort
+        elseif ($identifier === NULL || ! isset($data[$identifier]))
+        {
+            return array(NULL, false);
+        }
+
+        // Match array element
+        elseif (count($identifiers) === 0)
+        {
+            return array($data[$identifier], false);
+        }
+
+        // We need to go deeper
+        else
+        {
+            return $this->get($data[$identifier], $identifiers);
+        }
+    }
+
     /**
      * Run validations and return boolean result
      *
@@ -781,10 +834,10 @@ class Validator
     {
         foreach ($this->_validations as $v) {
             foreach ($v['fields'] as $field) {
-                $value = isset($this->_fields[$field]) ? $this->_fields[$field] : null;
+                list($values, $multiple) = $this->get($this->_fields, explode('.', $field));
 
                 // Don't validate if the field is not required and the value is empty
-                if ($v['rule'] !== 'required' && !$this->hasRule('required', $field) && (! isset($value) || $value === '')) {
+                if ($v['rule'] !== 'required' && !$this->hasRule('required', $field) && (! isset($values) || $values === '' || ($multiple && count($values) == 0))) {
                     continue;
                 }
 
@@ -795,7 +848,16 @@ class Validator
                     $callback = array($this, 'validate' . ucfirst($v['rule']));
                 }
 
-                $result = call_user_func($callback, $field, $value, $v['params']);
+                if (! $multiple)
+                {
+                    $values = array($values);
+                }
+
+                $result = true;
+                foreach($values as $value)
+                {
+                    $result = $result && call_user_func($callback, $field, $value, $v['params']);
+                }
                 if (!$result) {
                     $this->error($field, $v['message'], $v['params']);
                 }
