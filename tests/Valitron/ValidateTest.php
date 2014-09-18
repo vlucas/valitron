@@ -578,6 +578,32 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
+    public function testDateWarningsWithObjectParams()
+    {
+        $v = new Validator(array('startDate' => '2013-01-27', 'endDate' => '2013-05-08'));
+        $v->rule(
+            'date',
+            [
+                'startDate',
+                'endDate'
+            ]
+        );
+
+        $v->rule(
+            'dateBefore',
+            'endDate',
+             new DateTime('2013-04-08')
+        )->label('End date')->message('{field} must be before the end of the fiscal year, %s.');
+
+        $v->rule(
+            'dateAfter',
+            'startDate',
+            new DateTime('2013-02-17')
+        )->label('Start date')->message('{field} must be after the beginning of the fiscal year, %s.');
+
+        $this->assertFalse($v->validate());
+    }
+
     public function testDateBeforeInvalid()
     {
         $v = new Validator(array('date' => '2013-01-27'));
