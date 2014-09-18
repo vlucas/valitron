@@ -273,6 +273,122 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
+    public function testArrayValid()
+    {
+        $v = new Validator(array('colors' => array('yellow')));
+        $v->rule('array', 'colors');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testAssocArrayValid()
+    {
+        $v = new Validator(array('settings' => array('color' => 'yellow')));
+        $v->rule('array', 'settings');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testArrayInvalid()
+    {
+        $v = new Validator(array('colors' => 'yellow'));
+        $v->rule('array', 'colors');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testArrayAccess()
+    {
+        $v = new Validator(array('settings' => array('enabled' => true)));
+        $v->rule('boolean', 'settings.enabled');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testArrayAccessInvalid()
+    {
+        $v = new Validator(array('settings' => array('threshold' => 500)));
+        $v->rule('max', 'settings.threshold', 100);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testForeachDiscreteValues()
+    {
+        $v = new Validator(array('values' => array(5, 10, 15, 20, 25)));
+        $v->rule('integer', 'values.*');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testForeachAssocValues()
+    {
+        $v = new Validator(array('values' => array(
+            'foo' => 5,
+            'bar' => 10,
+            'baz' => 15
+        )));
+        $v->rule('integer', 'values.*');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testForeachAssocValuesFails()
+    {
+        $v = new Validator(array('values' => array(
+            'foo' => 5,
+            'bar' => 10,
+            'baz' => 'faz'
+        )));
+        $v->rule('integer', 'values.*');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testForeachArrayAccess()
+    {
+        $v = new Validator(array('settings' => array(
+            array('enabled' => true),
+            array('enabled' => true)
+        )));
+        $v->rule('boolean', 'settings.*.enabled');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testForeachArrayAccessInvalid()
+    {
+        $v = new Validator(array('settings' => array(
+            array('threshold' => 50),
+            array('threshold' => 500)
+        )));
+        $v->rule('max', 'settings.*.threshold', 100);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testNestedForeachArrayAccess()
+    {
+        $v = new Validator(array('widgets' => array(
+            array('settings' => array(
+                array('enabled' => true),
+                array('enabled' => true)
+            )),
+            array('settings' => array(
+                array('enabled' => true),
+                array('enabled' => true)
+            ))
+        )));
+        $v->rule('boolean', 'widgets.*.settings.*.enabled');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testNestedForeachArrayAccessInvalid()
+    {
+        $v = new Validator(array('widgets' => array(
+            array('settings' => array(
+                array('threshold' => 50),
+                array('threshold' => 90)
+            )),
+            array('settings' => array(
+                array('threshold' => 40),
+                array('threshold' => 500)
+            ))
+        )));
+        $v->rule('max', 'widgets.*.settings.*.threshold', 100);
+        $this->assertFalse($v->validate());
+    }
+
     public function testInInvalid()
     {
         $v = new Validator(array('color' => 'yellow'));
