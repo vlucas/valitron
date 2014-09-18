@@ -583,10 +583,10 @@ class ValidateTest extends BaseTestCase
         $v = new Validator(array('startDate' => '2013-01-27', 'endDate' => '2013-05-08'));
         $v->rule(
             'date',
-            [
+            array(
                 'startDate',
                 'endDate'
-            ]
+            )
         );
 
         $v->rule(
