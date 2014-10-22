@@ -782,6 +782,20 @@ class Validator
         foreach ($this->_validations as $v) {
             foreach ($v['fields'] as $field) {
                 $value = isset($this->_fields[$field]) ? $this->_fields[$field] : null;
+                
+                // check for array value
+                if($value==null) {
+                    if(strpos($field, '[')!==FALSE) 
+                    {
+                        // 1D array value
+                        if(substr_count($field, '[')==1) 
+                        {
+                            $field_name = substr($field, 0, strpos($field, '['));
+                            $array_key = trim(substr($field, strpos($field, '[')),'[]');
+                            $value = isset($this->_fields[$field_name][$array_key]) ? $this->_fields[$field_name][$array_key] : null;
+                        }
+                    }
+                }
 
                 // Don't validate if the field is not required and the value is empty
                 if ($v['rule'] !== 'required' && !$this->hasRule('required', $field) && (! isset($value) || $value === '')) {
