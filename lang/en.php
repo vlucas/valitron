@@ -8,7 +8,7 @@ return array(
     'numeric'       => "must be numeric",
     'integer'       => "must be an integer (0-9)",
     'length'        => "must be longer than %d",
-    'min'           => "must be at least than %s",
+    'min'           => "must be at least %s",
     'max'           => "must be no more than %s",
     'in'            => "contains invalid value",
     'notIn'         => "contains invalid value",
