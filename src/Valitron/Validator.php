@@ -350,14 +350,14 @@ class Validator
      * @internal param array $fields
      * @return bool
      */
-    protected function validateIn($field, $value, $params)
+    protected function validateIn($field, $value, $params, $strict = false)
     {
         $isAssoc = array_values($params[0]) !== $params[0];
         if ($isAssoc) {
             $params[0] = array_keys($params[0]);
         }
 
-        return in_array($value, $params[0]);
+        return in_array($value, $params[0], $strict);
     }
 
     /**
