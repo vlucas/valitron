@@ -62,6 +62,13 @@ class Validator
     /**
      * @var array
      */
+    protected static $_config = array(
+        'messageFieldFilter' => 'titleCase',
+    );
+
+    /**
+     * @var array
+     */
     protected $validUrlPrefixes = array('http://', 'https://', 'ftp://');
 
     /**
@@ -93,6 +100,19 @@ class Validator
         } else {
             throw new \InvalidArgumentException("fail to load language file '$langFile'");
         }
+    }
+
+    /**
+     * Get/set configuration values
+     *
+     * @param  string $lang
+     * @return string
+     */
+    public static function config($name, $value = null)
+    {
+        if ($value === null) return isset(self::$_config[$name]) ? self::$_config[$name] : null;
+
+        self::$_config[$name] = $value;
     }
 
     /**
@@ -1003,7 +1023,12 @@ class Validator
                 }
             }
         } else {
-            $msg = str_replace('{field}', ucwords(str_replace('_', ' ', $field)), $msg);
+            $filter = self::config('messageFieldFilter');
+            if ($filter == 'titleCase') {
+                $msg = str_replace('{field}', ucwords(str_replace('_', ' ', $field)), $msg);
+            } else if ($filter == 'none') {
+                $msg = str_replace('{field}', $field, $msg);
+            }
         }
 
         return $msg;
