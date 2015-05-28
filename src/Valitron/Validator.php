@@ -63,9 +63,7 @@ class Validator
      * @var array
      */
     protected static $_config = array(
-        'messageFieldFilter' => function($field, $msg) {
-            return str_replace('{field}', ucwords(str_replace('_', ' ', $field)), $msg);
-        },
+        'messageFieldFilter' => array(__NAMESPACE__ .'\Validator', 'defaultMessageFieldFilter'),
     );
 
     /**
@@ -102,6 +100,10 @@ class Validator
         } else {
             throw new \InvalidArgumentException("fail to load language file '$langFile'");
         }
+    }
+
+    static protected function defaultMessageFieldFilter($field, $msg) {
+        return str_replace('{field}', ucwords(str_replace('_', ' ', $field)), $msg);
     }
 
     /**
@@ -1025,8 +1027,15 @@ class Validator
                 }
             }
         } else {
-            $filter = self::config('messageFieldFilter');
-            $msg = $filter($field, $msg);
+            $msg = call_user_func(self::config('messageFieldFilter'), $field, $msg);
+
+            //$msg = $filter($field, $msg);
+            // $filter = self::config('messageFieldFilter');
+            // if ($filter == 'titleCase') {
+            //     $msg = str_replace('{field}', ucwords(str_replace('_', ' ', $field)), $msg);
+            // } else if ($filter == 'none') {
+            //     $msg = str_replace('{field}', $field, $msg);
+            // }
         }
 
         return $msg;
