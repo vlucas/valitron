@@ -63,7 +63,9 @@ class Validator
      * @var array
      */
     protected static $_config = array(
-        'messageFieldFilter' => 'titleCase',
+        'messageFieldFilter' => function($field, $msg) {
+            return str_replace('{field}', ucwords(str_replace('_', ' ', $field)), $msg);
+        },
     );
 
     /**
@@ -1024,11 +1026,7 @@ class Validator
             }
         } else {
             $filter = self::config('messageFieldFilter');
-            if ($filter == 'titleCase') {
-                $msg = str_replace('{field}', ucwords(str_replace('_', ' ', $field)), $msg);
-            } else if ($filter == 'none') {
-                $msg = str_replace('{field}', $field, $msg);
-            }
+            $msg = $filter($field, $msg);
         }
 
         return $msg;
