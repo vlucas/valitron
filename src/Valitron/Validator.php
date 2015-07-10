@@ -556,8 +556,11 @@ class Validator
      */
     protected function validateDateBefore($field, $value, $params)
     {
-        $vtime = ($value instanceof \DateTime) ? $value->getTimestamp() : strtotime($value);
-        $ptime = ($params[0] instanceof \DateTime) ? $params[0]->getTimestamp() : strtotime($params[0]);
+        $format = isset($params[1]) ? $params[1] : 'Y-m-d';
+
+        $vtime = ($value instanceof \DateTime) ? $value->getTimestamp() : \DateTime::createFromFormat($format, $value)->getTimestamp();
+
+        $ptime = ($params[0] instanceof \DateTime) ? $params[0]->getTimestamp() : \DateTime::createFromFormat($format, $params[0])->getTimestamp();
 
         return $vtime < $ptime;
     }
@@ -573,8 +576,11 @@ class Validator
      */
     protected function validateDateAfter($field, $value, $params)
     {
-        $vtime = ($value instanceof \DateTime) ? $value->getTimestamp() : strtotime($value);
-        $ptime = ($params[0] instanceof \DateTime) ? $params[0]->getTimestamp() : strtotime($params[0]);
+        $format = isset($params[1]) ? $params[1] : 'Y-m-d';
+
+        $vtime = ($value instanceof \DateTime) ? $value->getTimestamp() : \DateTime::createFromFormat($format, $value)->getTimestamp();
+
+        $ptime = ($params[0] instanceof \DateTime) ? $params[0]->getTimestamp() : \DateTime::createFromFormat($format, $params[0])->getTimestamp();
 
         return $vtime > $ptime;
     }
