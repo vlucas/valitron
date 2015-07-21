@@ -7,7 +7,7 @@ return array(
     'accepted'      => "deve ser aceito",
     'numeric'       => "deve ser um número",
     'integer'       => "deve ser um inteiro (0-9)",
-    'length'        => "deve ter mais que %d caracteres",
+    'length'        => "deve ter %d caracteres",
     'min'           => "deve ser maior que %s",
     'max'           => "deve ser menor que %s",
     'in'            => "contém um valor inválido",
