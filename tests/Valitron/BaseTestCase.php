@@ -4,7 +4,6 @@ class BaseTestCase extends \PHPUnit_Framework_TestCase
 {
 	public function setUp()
 	{
-		$this->tearDown();
 	}
 
 	public function tearDown()
