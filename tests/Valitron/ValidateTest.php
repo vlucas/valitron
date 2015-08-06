@@ -468,7 +468,7 @@ class ValidateTest extends BaseTestCase
 
     public function testUrlInactive()
     {
-        $v = new Validator(array('website' => 'http://sonotgoogleitsnotevenfunny.dev'));
+        $v = new Validator(array('website' => 'http://example-test-domain-' . md5(time()) . '.com'));
         $v->rule('urlActive', 'website');
         $this->assertFalse($v->validate());
     }
