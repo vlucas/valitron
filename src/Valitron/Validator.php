@@ -452,9 +452,9 @@ class Validator
     {
         foreach ($this->validUrlPrefixes as $prefix) {
             if (strpos($value, $prefix) !== false) {
-                $url = str_replace($prefix, '', strtolower($value));
-
-                return checkdnsrr($url);
+                $host = parse_url(strtolower($value), PHP_URL_HOST);
+                
+                return checkdnsrr($host, 'A') || checkdnsrr($host, 'AAAA') || checkdnsrr($host, 'CNAME');
             }
         }
 
