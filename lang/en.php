@@ -7,7 +7,7 @@ return array(
     'accepted'      => "must be accepted",
     'numeric'       => "must be numeric",
     'integer'       => "must be an integer (0-9)",
-    'length'        => "must be longer than %d",
+    'length'        => "must be at least %d long",
     'min'           => "must be at least %s",
     'max'           => "must be no more than %s",
     'in'            => "contains invalid value",
