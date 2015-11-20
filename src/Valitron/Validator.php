@@ -322,7 +322,9 @@ class Validator
      */
     protected function validateMin($field, $value, $params)
     {
-        if (function_exists('bccomp')) {
+        if (!is_numeric($value)) {
+            return false;
+        } elseif (function_exists('bccomp')) {
             return !(bccomp($params[0], $value, 14) == 1);
         } else {
             return $params[0] <= $value;
@@ -340,7 +342,9 @@ class Validator
      */
     protected function validateMax($field, $value, $params)
     {
-        if (function_exists('bccomp')) {
+        if (!is_numeric($value)) {
+            return false;
+        } elseif (function_exists('bccomp')) {
             return !(bccomp($value, $params[0], 14) == 1);
         } else {
             return $params[0] >= $value;

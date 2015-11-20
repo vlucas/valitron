@@ -222,6 +222,14 @@ class ValidateTest extends BaseTestCase
         $v = new Validator(array('num' => 5));
         $v->rule('min', 'num', 6);
         $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => array()));
+        $v->rule('min', 'test', 1);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => new stdClass));
+        $v->rule('min', 'test', 1);
+        $this->assertFalse($v->validate());
     }
 
     public function testMinInvalidFloat()
@@ -261,6 +269,14 @@ class ValidateTest extends BaseTestCase
     {
         $v = new Validator(array('num' => 5));
         $v->rule('max', 'num', 4);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => array()));
+        $v->rule('min', 'test', 1);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => new stdClass));
+        $v->rule('min', 'test', 1);
         $this->assertFalse($v->validate());
     }
 
