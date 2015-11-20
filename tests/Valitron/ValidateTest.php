@@ -1025,6 +1025,34 @@ class ValidateTest extends BaseTestCase
       $this->assertFalse($v->validate());
     }
 
+    /**
+     * @dataProvider dataProviderFor_testError
+     */
+    public function testError($expected, $input, $test, $message)
+    {
+        $v = new Validator(array('test' => $input));
+        $v->error('test', $message, $test);
+
+        $this->assertEquals(array('test' => array($expected)), $v->errors());
+    }
+
+    public function dataProviderFor_testError()
+    {
+        return array(
+            array(
+                'expected' => 'Test must be at least 140 long',
+                'input'    => 'tweeet',
+                'test'     => array(140),
+                'message'  => '{field} must be at least %d long',
+            ),
+            array(
+                'expected' => 'Test must be between 1 and 140 characters',
+                'input'    => array(1, 2, 3),
+                'test'     => array(1, 140),
+                'message'  => 'Test must be between %d and %d characters',
+            ),
+        );
+    }
 }
 
 function sampleFunctionCallback($field, $value, array $params) {
