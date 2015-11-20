@@ -131,6 +131,14 @@ class ValidateTest extends BaseTestCase
         $v = new Validator(array('str' => 'sad'));
         $v->rule('length', 'str', 6);
         $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => array()));
+        $v->rule('length', 'test', 1);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => new stdClass));
+        $v->rule('length', 'test', 1);
+        $this->assertFalse($v->validate());
     }
 
     public function testLengthBetweenValid()
@@ -144,6 +152,14 @@ class ValidateTest extends BaseTestCase
     {
         $v = new Validator(array('str' => 'sad'));
         $v->rule('lengthBetween', 'str', 4, 10);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => array()));
+        $v->rule('lengthBetween', 'test', 50, 60);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => new stdClass));
+        $v->rule('lengthBetween', 'test', 99, 100);
         $this->assertFalse($v->validate());
     }
 
