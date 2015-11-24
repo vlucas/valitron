@@ -131,6 +131,14 @@ class ValidateTest extends BaseTestCase
         $v = new Validator(array('str' => 'sad'));
         $v->rule('length', 'str', 6);
         $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => array()));
+        $v->rule('length', 'test', 1);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => new stdClass));
+        $v->rule('length', 'test', 1);
+        $this->assertFalse($v->validate());
     }
 
     public function testLengthBetweenValid()
@@ -144,6 +152,14 @@ class ValidateTest extends BaseTestCase
     {
         $v = new Validator(array('str' => 'sad'));
         $v->rule('lengthBetween', 'str', 4, 10);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => array()));
+        $v->rule('lengthBetween', 'test', 50, 60);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => new stdClass));
+        $v->rule('lengthBetween', 'test', 99, 100);
         $this->assertFalse($v->validate());
     }
 
@@ -206,6 +222,14 @@ class ValidateTest extends BaseTestCase
         $v = new Validator(array('num' => 5));
         $v->rule('min', 'num', 6);
         $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => array()));
+        $v->rule('min', 'test', 1);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => new stdClass));
+        $v->rule('min', 'test', 1);
+        $this->assertFalse($v->validate());
     }
 
     public function testMinInvalidFloat()
@@ -245,6 +269,14 @@ class ValidateTest extends BaseTestCase
     {
         $v = new Validator(array('num' => 5));
         $v->rule('max', 'num', 4);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => array()));
+        $v->rule('min', 'test', 1);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => new stdClass));
+        $v->rule('min', 'test', 1);
         $this->assertFalse($v->validate());
     }
 
@@ -1025,6 +1057,34 @@ class ValidateTest extends BaseTestCase
       $this->assertFalse($v->validate());
     }
 
+    /**
+     * @dataProvider dataProviderFor_testError
+     */
+    public function testError($expected, $input, $test, $message)
+    {
+        $v = new Validator(array('test' => $input));
+        $v->error('test', $message, $test);
+
+        $this->assertEquals(array('test' => array($expected)), $v->errors());
+    }
+
+    public function dataProviderFor_testError()
+    {
+        return array(
+            array(
+                'expected' => 'Test must be at least 140 long',
+                'input'    => 'tweeet',
+                'test'     => array(140),
+                'message'  => '{field} must be at least %d long',
+            ),
+            array(
+                'expected' => 'Test must be between 1 and 140 characters',
+                'input'    => array(1, 2, 3),
+                'test'     => array(1, 140),
+                'message'  => 'Test must be between %d and %d characters',
+            ),
+        );
+    }
 }
 
 function sampleFunctionCallback($field, $value, array $params) {
