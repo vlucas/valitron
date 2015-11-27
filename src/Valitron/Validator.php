@@ -65,6 +65,11 @@ class Validator
     protected $validUrlPrefixes = array('http://', 'https://', 'ftp://');
 
     /**
+     * @var boolean
+     */
+    protected $forceValidateEmptyValues = false;
+
+    /**
      * Setup validation
      *
      * @param  array                     $data
@@ -857,6 +862,19 @@ class Validator
     }
 
     /**
+     * Force Validate Empty Values
+     *
+     * @param boolean $flag
+     */
+    public function forceValidateEmptyValues($flag)
+    {
+        if (!is_bool($flag)) {
+            throw new LogicException('invalid parametor has specified');
+        }
+        $this->forceValidateEmptyValues = $flag;
+    }
+
+    /**
      * Run validations and return boolean result
      *
      * @return boolean
@@ -868,7 +886,7 @@ class Validator
                  list($values, $multiple) = $this->getPart($this->_fields, explode('.', $field));
 
                 // Don't validate if the field is not required and the value is empty
-                if ($v['rule'] !== 'required' && !$this->hasRule('required', $field) && (! isset($values) || $values === '' || ($multiple && count($values) == 0))) {
+                if ($this->forceValidateEmptyValues === false && $v['rule'] !== 'required' && !$this->hasRule('required', $field) && (! isset($values) || $values === '' || ($multiple && count($values) == 0))) {
                     continue;
                 }
 
