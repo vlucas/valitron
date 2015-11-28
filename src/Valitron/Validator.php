@@ -869,7 +869,7 @@ class Validator
     public function forceValidateEmptyValues($flag)
     {
         if (!is_bool($flag)) {
-            throw new LogicException('invalid parametor has specified');
+            throw new \InvalidArgumentException('First parameter must be a boolean true/false');
         }
         $this->forceValidateEmptyValues = $flag;
     }
