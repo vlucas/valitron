@@ -962,7 +962,7 @@ class Validator
             'rule' => $rule,
             'fields' => (array) $fields,
             'params' => (array) $params,
-            'message' => '{field} ' . $message
+            'message' => $message
         );
 
         return $this;
