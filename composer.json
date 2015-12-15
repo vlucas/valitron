@@ -22,5 +22,8 @@
         "psr-0": {
             "Valitron": "src/"
         }
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit"
     }
 }
