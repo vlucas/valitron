@@ -592,6 +592,14 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
+    public function testDateValidWhenEmptyButNotRequiredAndForceValidateEmptyValuesIsEnabled()
+    {
+        $v = new Validator(array('date' => ''));
+        $v->rule('date', 'date');
+        $v->forceValidateEmptyValues(true);
+        $this->assertFalse($v->validate());
+    }
+
     public function testDateFormatValid()
     {
         $v = new Validator(array('date' => '2013-01-27'));
