@@ -1006,7 +1006,7 @@ class Validator
      * @param  array  $params
      * @return array
      */
-    private function checkAndSetLabel($field, $msg, $params)
+    protected function checkAndSetLabel($field, $msg, $params)
     {
         if (isset($this->_labels[$field])) {
             $msg = str_replace('{field}', $this->_labels[$field], $msg);
