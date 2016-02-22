@@ -731,6 +731,12 @@ class Validator
         return $isInstanceOf;
     }
 
+    //Validate optional field
+    protected function validateOptional($field, $value, $params) {
+        //Always return true
+        return true;
+    }
+
     /**
      *  Get array of fields and data
      *
@@ -868,7 +874,9 @@ class Validator
                  list($values, $multiple) = $this->getPart($this->_fields, explode('.', $field));
 
                 // Don't validate if the field is not required and the value is empty
-                if ($v['rule'] !== 'required' && !$this->hasRule('required', $field) && (! isset($values) || $values === '' || ($multiple && count($values) == 0))) {
+                if ($this->hasRule('optional', $field) && isset($values)) {
+                    //Continue with execution below if statement
+                } elseif ($v['rule'] !== 'required' && !$this->hasRule('required', $field) && (! isset($values) || $values === '' || ($multiple && count($values) == 0))) {
                     continue;
                 }
 
