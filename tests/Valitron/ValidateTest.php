@@ -1085,6 +1085,27 @@ class ValidateTest extends BaseTestCase
             ),
         );
     }
+
+    public function testOptionalProvidedValid()
+    {
+        $v = new Validator(array('address' =>  'user@example.com'));   
+        $v->rule('optional', 'address')->rule('email', 'address');        
+        $this->assertTrue($v->validate());
+    }
+
+    public function testOptionalProvidedInvalid()
+    {
+        $v = new Validator(array('address' =>  'userexample.com'));   
+        $v->rule('optional', 'address')->rule('email', 'address');        
+        $this->assertFalse($v->validate());
+    }
+
+    public function testOptionalNotProvided()
+    {
+        $v = new Validator(array());   
+        $v->rule('optional', 'address')->rule('email', 'address');        
+        $this->assertTrue($v->validate());
+    }    
 }
 
 function sampleFunctionCallback($field, $value, array $params) {
