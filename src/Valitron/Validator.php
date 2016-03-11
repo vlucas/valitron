@@ -186,7 +186,7 @@ class Validator
      */
     protected function validateAccepted($field, $value)
     {
-        $acceptable = array('yes', 'on', 1, true);
+        $acceptable = array('yes', 'on', 1, '1', true);
 
         return $this->validateRequired($field, $value) && in_array($value, $acceptable, true);
     }
