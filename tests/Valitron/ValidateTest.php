@@ -287,6 +287,42 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testBetweenValid()
+    {
+        $v = new Validator(array('num' => 5));
+        $v->rule('between', 'num', array(3, 7));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testBetweenInvalid()
+    {
+        $v = new Validator(array('num' => 3));
+        $v->rule('between', 'num', array(5, 10));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testBetweenInvalidValue()
+    {
+        $v = new Validator(array('num' => array(3)));
+        $v->rule('between', 'num', array(5, 10));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testBetweenInvalidRange()
+    {
+        $v = new Validator(array('num' => 3));
+        $v->rule('between', 'num');
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('num' => 3));
+        $v->rule('between', 'num', 5);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('num' => 3));
+        $v->rule('between', 'num', array(5));
+        $this->assertFalse($v->validate());
+    }
+
     public function testInValid()
     {
         $v = new Validator(array('color' => 'green'));
@@ -666,8 +702,15 @@ class ValidateTest extends BaseTestCase
 
     public function testContainsValid()
     {
-        $v = new Validator(array('test_string' => 'this is a test'));
+        $v = new Validator(array('test_string' => 'this is a Test'));
         $v->rule('contains', 'test_string', 'a test');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testContainsStrictValid()
+    {
+        $v = new Validator(array('test_string' => 'this is a Test'));
+        $v->rule('contains', 'test_string', 'Test', true);
         $this->assertTrue($v->validate());
     }
 
@@ -675,6 +718,13 @@ class ValidateTest extends BaseTestCase
     {
         $v = new Validator(array('test_string' => 'this is a test'));
         $v->rule('contains', 'test_string', 'foobar');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testContainsStrictNotFound()
+    {
+        $v = new Validator(array('test_string' => 'this is a Test'));
+        $v->rule('contains', 'test_string', 'test', true);
         $this->assertFalse($v->validate());
     }
 
@@ -965,7 +1015,7 @@ class ValidateTest extends BaseTestCase
         }
     }
 
-    public function testcreditCardInvalid()
+    public function testCreditCardInvalid()
     {
         $visa         = array(3539511619543489, 3532949059629052, 3024007171194938, 3929646403373269, 3539135861690622);
         $mastercard   = array(4162057048081965, 4382687859049349, 4484388880142230, 4464941521226434, 4473481232685965);

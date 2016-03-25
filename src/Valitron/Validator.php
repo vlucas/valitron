@@ -1,16 +1,14 @@
 <?php
 namespace Valitron;
 
-use InvalidArgumentException;
-
 /**
  * Validation Class
  *
  * Validates input against certain criteria
  *
  * @package Valitron
- * @author Vance Lucas <vance@vancelucas.com>
- * @link http://www.vancelucas.com/
+ * @author  Vance Lucas <vance@vancelucas.com>
+ * @link    http://www.vancelucas.com/
  */
 class Validator
 {
@@ -91,7 +89,7 @@ class Validator
             $langMessages = include $langFile;
             static::$_ruleMessages = array_merge(static::$_ruleMessages, $langMessages);
         } else {
-            throw new \InvalidArgumentException("fail to load language file '$langFile'");
+            throw new \InvalidArgumentException("Fail to load language file '" . $langFile . "'");
         }
     }
 
@@ -325,7 +323,7 @@ class Validator
         if (!is_numeric($value)) {
             return false;
         } elseif (function_exists('bccomp')) {
-            return !(bccomp($params[0], $value, 14) == 1);
+            return !(bccomp($params[0], $value, 14) === 1);
         } else {
             return $params[0] <= $value;
         }
@@ -345,10 +343,33 @@ class Validator
         if (!is_numeric($value)) {
             return false;
         } elseif (function_exists('bccomp')) {
-            return !(bccomp($value, $params[0], 14) == 1);
+            return !(bccomp($value, $params[0], 14) === 1);
         } else {
             return $params[0] >= $value;
         }
+    }
+
+    /**
+     * Validate the size of a field is between min and max values
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @param  array  $params
+
+     * @return bool
+     */
+    protected function validateBetween($field, $value, $params)
+    {
+        if (!is_numeric($value)) {
+            return false;
+        }
+        if (!isset($params[0]) || !is_array($params[0]) || count($params[0]) !== 2) {
+            return false;
+        }
+
+        list($min, $max) = $params[0];
+
+        return $this->validateMin($field, $value, array($min)) && $this->validateMax($field, $value, array($max));
     }
 
     /**
@@ -406,7 +427,26 @@ class Validator
             return false;
         }
 
-        return (strpos($value, $params[0]) !== false);
+        $strict = false;
+        if (isset($params[1])) {
+            $strict = (bool) $params[1];
+        }
+
+        $isContains = false;
+        if ($strict) {
+            if (function_exists('mb_strpos')) {
+                $isContains = mb_strpos($value, $params[0]) !== false;
+            } else {
+                $isContains = strpos($value, $params[0]) !== false;
+            }
+        } else {
+            if (function_exists('mb_stripos')) {
+                $isContains = mb_stripos($value, $params[0]) !== false;
+            } else {
+                $isContains = stripos($value, $params[0]) !== false;
+            }
+        }
+        return $isContains;
     }
 
     /**
