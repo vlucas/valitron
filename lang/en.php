@@ -7,14 +7,14 @@ return array(
     'accepted'      => "must be accepted",
     'numeric'       => "must be numeric",
     'integer'       => "must be an integer (0-9)",
-    'length'        => "must be at least %d long",
+    'length'        => "must be %d characters long",
     'min'           => "must be at least %s",
     'max'           => "must be no more than %s",
     'in'            => "contains invalid value",
     'notIn'         => "contains invalid value",
     'ip'            => "is not a valid IP address",
     'email'         => "is not a valid email address",
-    'url'           => "not a URL",
+    'url'           => "is not a valid URL",
     'urlActive'     => "must be an active domain",
     'alpha'         => "must contain only letters a-z",
     'alphaNum'      => "must contain only letters a-z and/or numbers 0-9",
@@ -28,7 +28,7 @@ return array(
     'boolean'       => "must be a boolean",
     'lengthBetween' => "must be between %d and %d characters",
     'creditCard'    => "must be a valid credit card number",
-    "lengthMin"     => "must contain greater than %d characters",
-    "lengthMax"     => "must contain less than %d characters",
-    "instanceOf"    => "must be an instance of '%s'"
+    'lengthMin'     => "must at least %d characters long",
+    'lengthMax'     => "must not exceed %d characters",
+    'instanceOf'    => "must be an instance of '%s'"
 );
