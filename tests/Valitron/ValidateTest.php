@@ -1088,24 +1088,45 @@ class ValidateTest extends BaseTestCase
 
     public function testOptionalProvidedValid()
     {
-        $v = new Validator(array('address' =>  'user@example.com'));   
-        $v->rule('optional', 'address')->rule('email', 'address');        
+        $v = new Validator(array('address' =>  'user@example.com'));
+        $v->rule('optional', 'address')->rule('email', 'address');
         $this->assertTrue($v->validate());
     }
 
     public function testOptionalProvidedInvalid()
     {
-        $v = new Validator(array('address' =>  'userexample.com'));   
-        $v->rule('optional', 'address')->rule('email', 'address');        
+        $v = new Validator(array('address' =>  'userexample.com'));
+        $v->rule('optional', 'address')->rule('email', 'address');
         $this->assertFalse($v->validate());
     }
 
     public function testOptionalNotProvided()
     {
-        $v = new Validator(array());   
-        $v->rule('optional', 'address')->rule('email', 'address');        
+        $v = new Validator(array());
+        $v->rule('optional', 'address')->rule('email', 'address');
         $this->assertTrue($v->validate());
-    }    
+    }
+
+    public function testIfNotSetIsSet()
+    {
+        $v = new Validator(array('name' => 'Daniel'));
+        $v->rule('ifNotSet', 'name', array('rule' => 'required', 'field' => 'lastname'));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testIfNotSetIsNotSetProvided()
+    {
+        $v = new Validator(array('lastname' => 'Doe'));
+        $v->rule('ifNotSet', 'name', array('rule' => 'required', 'field' => 'lastname'));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testIfNotSetIsNotSetNotProvided()
+    {
+        $v = new Validator(array('firstname' => 'Daniel'));
+        $v->rule('ifNotSet', 'name', array('rule' => 'required', 'field' => 'lastname'));
+        $this->assertFalse($v->validate());
+    }
 }
 
 function sampleFunctionCallback($field, $value, array $params) {

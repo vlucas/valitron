@@ -463,7 +463,7 @@ class Validator
         foreach ($this->validUrlPrefixes as $prefix) {
             if (strpos($value, $prefix) !== false) {
                 $host = parse_url(strtolower($value), PHP_URL_HOST);
-                
+
                 return checkdnsrr($host, 'A') || checkdnsrr($host, 'AAAA') || checkdnsrr($host, 'CNAME');
             }
         }
@@ -863,6 +863,37 @@ class Validator
     }
 
     /**
+     * Validate IfNotSet triggers a callback if the value is null.
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @return bool
+     */
+    protected function validateIfNotSet($field, $value, $param)
+    {
+        if ($value !== null) {
+            return true;
+        }
+        list($values, $multiple) = $this->getPart($this->_fields, explode('.', $param[0]['field']));
+        if (isset(static::$_rules[$param[0]['rule']])) {
+            $callback = static::$_rules[$param[0]['rule']];
+        } else {
+            $callback = array($this, 'validate' . ucfirst($param[0]['rule']));
+        }
+
+        $result = true;
+        $paramFunction = isset($param[0]['params']) ? $param[0]['params'] : array();
+        if (!$multiple) {
+            $values = array($values);
+        }
+        foreach ($values as $value) {
+            $result = $result && call_user_func($callback, $param[0]['field'], $value, $paramFunction, $this->_fields);
+        }
+
+        return $result;
+    }
+
+    /**
      * Run validations and return boolean result
      *
      * @return boolean
@@ -871,11 +902,13 @@ class Validator
     {
         foreach ($this->_validations as $v) {
             foreach ($v['fields'] as $field) {
-                 list($values, $multiple) = $this->getPart($this->_fields, explode('.', $field));
+                list($values, $multiple) = $this->getPart($this->_fields, explode('.', $field));
 
                 // Don't validate if the field is not required and the value is empty
                 if ($this->hasRule('optional', $field) && isset($values)) {
                     //Continue with execution below if statement
+                } elseif (($this->hasRule('ifNotSet', $field))) {
+
                 } elseif ($v['rule'] !== 'required' && !$this->hasRule('required', $field) && (! isset($values) || $values === '' || ($multiple && count($values) == 0))) {
                     continue;
                 }
@@ -944,6 +977,28 @@ class Validator
     }
 
     /**
+     * Method to check the rule ifNotSet parameters
+     *
+     * @param  array                     $params
+     * @throws \InvalidArgumentException
+     */
+    protected function checkIfNotSetIsValid(array $params)
+    {
+        if (!isset($params['rule'] ) || !isset($params['field'])) {
+            throw new \InvalidArgumentException('ifNotSet rule must have the fields "field" and "rule" set');
+        }
+        if (!isset(static::$_rules[$params['rule']])) {
+            $ruleMethod = 'validate' . ucfirst($params['rule']);
+            if (!method_exists($this, $ruleMethod)) {
+                throw new \InvalidArgumentException("Rule '" . $params['rule'] . "' has not been registered with " . __CLASS__ . "::addRule(). (ifNotSet parameters)");
+            }
+            if ($ruleMethod === 'validateIfNotSet') {
+                throw new \InvalidArgumentException('ifNotSet rule doesn\'t support higher depth');
+            }
+        }
+    }
+
+    /**
      * Convenience method to add a single validation rule
      *
      * @param  string                    $rule
@@ -953,18 +1008,21 @@ class Validator
      */
     public function rule($rule, $fields)
     {
+        // Get any other arguments passed to function
+        $params = array_slice(func_get_args(), 2);
+
         if (!isset(static::$_rules[$rule])) {
             $ruleMethod = 'validate' . ucfirst($rule);
             if (!method_exists($this, $ruleMethod)) {
                 throw new \InvalidArgumentException("Rule '" . $rule . "' has not been registered with " . __CLASS__ . "::addRule().");
             }
+            if ($ruleMethod === 'validateIfNotSet') {
+                $this->checkIfNotSetIsValid($params[0]);
+            }
         }
 
         // Ensure rule has an accompanying message
         $message = isset(static::$_ruleMessages[$rule]) ? static::$_ruleMessages[$rule] : self::ERROR_DEFAULT;
-
-        // Get any other arguments passed to function
-        $params = array_slice(func_get_args(), 2);
 
         $this->_validations[] = array(
             'rule' => $rule,
