@@ -427,7 +427,7 @@ class Validator
             return false;
         }
 
-        $strict = false;
+        $strict = true;
         if (isset($params[1])) {
             $strict = (bool) $params[1];
         }

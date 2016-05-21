@@ -703,14 +703,14 @@ class ValidateTest extends BaseTestCase
     public function testContainsValid()
     {
         $v = new Validator(array('test_string' => 'this is a Test'));
-        $v->rule('contains', 'test_string', 'a test');
+        $v->rule('contains', 'test_string', 'Test');
         $this->assertTrue($v->validate());
     }
 
-    public function testContainsStrictValid()
+    public function testContainsNonStrictValid()
     {
         $v = new Validator(array('test_string' => 'this is a Test'));
-        $v->rule('contains', 'test_string', 'Test', true);
+        $v->rule('contains', 'test_string', 'test', false);
         $this->assertTrue($v->validate());
     }
 
@@ -724,7 +724,7 @@ class ValidateTest extends BaseTestCase
     public function testContainsStrictNotFound()
     {
         $v = new Validator(array('test_string' => 'this is a Test'));
-        $v->rule('contains', 'test_string', 'test', true);
+        $v->rule('contains', 'test_string', 'test');
         $this->assertFalse($v->validate());
     }
 
