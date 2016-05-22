@@ -44,7 +44,7 @@ class LangTest extends BaseTestCase
 
 	/**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage fail to load language file '/this/dir/does/not/exists/en.php'
+     * @expectedExceptionMessage Fail to load language file '/this/dir/does/not/exists/en.php'
      */
 	public function testLangException()
 	{
