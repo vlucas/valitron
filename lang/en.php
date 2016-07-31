@@ -28,7 +28,7 @@ return array(
     'boolean'       => "must be a boolean",
     'lengthBetween' => "must be between %d and %d characters",
     'creditCard'    => "must be a valid credit card number",
-    'lengthMin'     => "must at least %d characters long",
+    'lengthMin'     => "must be at least %d characters long",
     'lengthMax'     => "must not exceed %d characters",
     'instanceOf'    => "must be an instance of '%s'"
 );
