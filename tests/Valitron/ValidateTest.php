@@ -1155,7 +1155,20 @@ class ValidateTest extends BaseTestCase
         $v = new Validator(array());   
         $v->rule('optional', 'address')->rule('email', 'address');        
         $this->assertTrue($v->validate());
-    }    
+    }
+
+    public function testWithData()
+    {
+        $v = new Validator(array());
+        $v->rule('required', 'name');
+        //validation failed, so must have errors
+        $this->assertFalse($v->validate());
+        $this->assertNotEmpty($v->errors());
+        //create copy with different data
+        $v2 = $v->withData(array('name' => 'Chester Tester'));
+        $this->assertTrue($v2->validate());
+        $this->assertEmpty($v2->errors());
+    }
 }
 
 function sampleFunctionCallback($field, $value, array $params) {

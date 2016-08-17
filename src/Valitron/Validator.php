@@ -1085,4 +1085,19 @@ class Validator
             }
         }
     }
+
+    /**
+     * Replace data on cloned instance
+     *
+     * @param  array $data
+     * @param  array $fields
+     * @return Valitron
+     */
+    public function withData($data, $fields = array())
+    {
+        $clone = clone $this;
+        $clone->reset();
+        $clone->_fields = !empty($fields) ? array_intersect_key($data, array_flip($fields)) : $data;
+        return $clone;
+    }
 }
