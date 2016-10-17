@@ -10,7 +10,7 @@ namespace Valitron;
  * @author  Vance Lucas <vance@vancelucas.com>
  * @link    http://www.vancelucas.com/
  */
-class Validator
+class Validator implements ValidationSetInterface
 {
     /**
      * @var string
@@ -26,11 +26,6 @@ class Validator
      * @var array
      */
     protected $_errors = array();
-
-    /**
-     * @var array
-     */
-    protected $_validations = array();
 
     /**
      * @var array
@@ -78,15 +73,25 @@ class Validator
     protected $validUrlPrefixes = array('http://', 'https://', 'ftp://');
 
     /**
+     * @var string
+     */
+    protected $_lastInserted = 'rule';
+
+    /**
+     * @var ValidationSetInterface
+     */
+    protected $_validationSet;
+
+    /**
      * Setup validation
      *
-     * @param  array                     $data
-     * @param  array                     $fields
-     * @param  string                    $lang
-     * @param  string                    $langDir
-     * @throws \InvalidArgumentException
+     * @param  array  $data
+     * @param  array  $fields
+     * @param  string $lang
+     * @param  string $langDir
+     * @param  string $validationSetClass
      */
-    public function __construct($data, $fields = array(), $lang = null, $langDir = null)
+    public function __construct($data, $fields = array(), $lang = null, $langDir = null, $validationSetClass = 'Valitron\ValidationSet')
     {
         // Allows filtering of used input fields against optional second array of field names allowed
         // This is useful for limiting raw $_POST or $_GET data to only known fields
@@ -106,6 +111,12 @@ class Validator
         } else {
             throw new \InvalidArgumentException("Fail to load language file '" . $langFile . "'");
         }
+
+        // Create default validationSet
+        if (!is_subclass_of($validationSetClass, 'Valitron\ValidationSetInterface')) {
+            throw new \InvalidArgumentException("Validation set class passed to constructor must implement Valitron\\ValidationSetInterface.");
+        }
+        $this->_validationSet = new $validationSetClass($this);
     }
 
     /**
@@ -713,7 +724,7 @@ class Validator
                 $sum += $sub_total;
             }
             if ($sum > 0 && $sum % 10 == 0) {
-                    return true;
+                return true;
             }
 
             return false;
@@ -861,7 +872,7 @@ class Validator
      */
     public function message($msg)
     {
-        $this->_validations[count($this->_validations) - 1]['message'] = $msg;
+        $this->_validationSet->message($msg);
 
         return $this;
     }
@@ -873,8 +884,10 @@ class Validator
     {
         $this->_fields = array();
         $this->_errors = array();
-        $this->_validations = array();
         $this->_labels = array();
+
+        $validationSetClass = get_class($this->_validationSet);
+        $this->_validationSet = new $validationSetClass($this);
     }
 
     protected function getPart($data, $identifiers)
@@ -924,14 +937,27 @@ class Validator
      */
     public function validate()
     {
-        foreach ($this->_validations as $v) {
+        return $this->validateSet($this->_validationSet);
+    }
+
+    /**
+     * Validate a set of rules, recursing into deeper validations sets.
+     *
+     * @param ValidationSetInterface $validationSet
+     * @return bool
+     */
+    protected function validateSet(ValidationSetInterface $validationSet)
+    {
+        foreach ($validationSet->getValidations() as $v) {
+            $dependent = !empty($v['dependent']);
+
             foreach ($v['fields'] as $field) {
-                 list($values, $multiple) = $this->getPart($this->_fields, explode('.', $field));
+                list($values, $multiple) = $this->getPart($this->_fields, explode('.', $field));
 
                 // Don't validate if the field is not required and the value is empty
-                if ($this->hasRule('optional', $field) && isset($values)) {
+                if ($validationSet->hasRule('optional', $field) && isset($values)) {
                     //Continue with execution below if statement
-                } elseif ($v['rule'] !== 'required' && !$this->hasRule('required', $field) && (! isset($values) || $values === '' || ($multiple && count($values) == 0))) {
+                } elseif ($v['rule'] !== 'required' && !$validationSet->hasRule('required', $field) && (!isset($values) || $values === '' || ($multiple && count($values) == 0))) {
                     continue;
                 }
 
@@ -952,9 +978,18 @@ class Validator
                     $result = $result && call_user_func($callback, $field, $value, $v['params'], $this->_fields);
                 }
 
+                if (!empty($v['dependent'])) {
+                    $dependent = $dependent && $result;
+                    continue;
+                }
+
                 if (!$result) {
                     $this->error($field, $v['message'], $v['params']);
                 }
+            }
+
+            if ($dependent) {
+                $this->validateSet($v['dependent']);
             }
         }
 
@@ -966,7 +1001,7 @@ class Validator
      *
      * @return array
      */
-    protected function getRules()
+    public function getRules()
     {
         return array_merge($this->_instanceRules, static::$_rules);
     }
@@ -976,7 +1011,7 @@ class Validator
      *
      * @return array
      */
-    protected function getRuleMessages()
+    public function getRuleMessages()
     {
         return array_merge($this->_instanceRuleMessage, static::$_ruleMessages);
     }
@@ -988,18 +1023,9 @@ class Validator
      * @param  string  $field The name of the field
      * @return boolean
      */
-
-    protected function hasRule($name, $field)
+    public function hasRule($name, $field)
     {
-        foreach ($this->_validations as $validation) {
-            if ($validation['rule'] == $name) {
-                if (in_array($field, $validation['fields'])) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return $this->_validationSet->hasRule($name, $field);
     }
 
     protected static function assertRuleCallback($callback)
@@ -1048,6 +1074,15 @@ class Validator
         static::$_ruleMessages[$name] = $message;
     }
 
+    /**
+     * @param $rule
+     * @return boolean
+     */
+    public static function ruleExists($rule)
+    {
+        return isset(self::$_rules[$rule]);
+    }
+
     public function getUniqueRuleName($fields)
     {
         if (is_array($fields))
@@ -1083,43 +1118,29 @@ class Validator
     /**
      * Convenience method to add a single validation rule
      *
-     * @param  string|callback           $rule
-     * @param  array|string              $fields
+     * @param  string|callback $rule
+     * @param  array|string $fields
+	 * @param  mixed ... $arguments
      * @return $this
      * @throws \InvalidArgumentException
      */
     public function rule($rule, $fields)
     {
-        // Get any other arguments passed to function
-        $params = array_slice(func_get_args(), 2);
+        call_user_func_array(array($this->_validationSet, 'rule'), func_get_args());
 
-        if (is_callable($rule)
-            && !(is_string($rule) && $this->hasValidator($rule)))
-        {
-            $name = $this->getUniqueRuleName($fields);
-            $msg = isset($params[0]) ? $params[0] : null;
-            $this->addInstanceRule($name, $rule, $msg);
-            $rule = $name;
-        }
+        return $this;
+    }
 
-        $errors = $this->getRules();
-        if (!isset($errors[$rule])) {
-            $ruleMethod = 'validate' . ucfirst($rule);
-            if (!method_exists($this, $ruleMethod)) {
-                throw new \InvalidArgumentException("Rule '" . $rule . "' has not been registered with " . __CLASS__ . "::addRule().");
-            }
-        }
-
-        // Ensure rule has an accompanying message
-        $msgs = $this->getRuleMessages();
-        $message = isset($msgs[$rule]) ? $msgs[$rule] : self::ERROR_DEFAULT;
-
-        $this->_validations[] = array(
-            'rule' => $rule,
-            'fields' => (array) $fields,
-            'params' => (array) $params,
-            'message' => '{field} ' . $message
-        );
+	/**
+	 * Chain a rule to a previous rule. This rule won't be evaluated unless the parent rule passes.
+	 *
+	 * @param $rule
+	 * @param $_
+	 * @return Validator
+	 */
+    public function condition($rule, $_)
+    {
+		call_user_func_array(array($this->_validationSet, 'condition'), func_get_args());
 
         return $this;
     }
@@ -1131,8 +1152,7 @@ class Validator
      */
     public function label($value)
     {
-        $lastRules = $this->_validations[count($this->_validations) - 1]['fields'];
-        $this->labels(array($lastRules[0] => $value));
+        $this->_validationSet->label($value);
 
         return $this;
     }
@@ -1143,7 +1163,7 @@ class Validator
      */
     public function labels($labels = array())
     {
-        $this->_labels = array_merge($this->_labels, $labels);
+        $this->_validationSet->labels($labels);
 
         return $this;
     }
@@ -1156,6 +1176,9 @@ class Validator
      */
     protected function checkAndSetLabel($field, $msg, $params)
     {
+        // Collect all labels from child validation sets
+        $this->collectLabels($this->_validationSet);
+
         if (isset($this->_labels[$field])) {
             $msg = str_replace('{field}', $this->_labels[$field], $msg);
 
@@ -1176,22 +1199,30 @@ class Validator
     }
 
     /**
+     * @param ValidationSetInterface $validationSet
+     * @return $this
+     */
+    protected function collectLabels(ValidationSetInterface $validationSet)
+    {
+        foreach ($validationSet->getValidations() as $v) {
+            if (isset($v['dependent'])) {
+                $this->collectLabels($v['dependent']);
+            }
+        }
+
+        $this->_labels = array_merge($validationSet->getLabels(), $this->_labels);
+
+        return $this;
+    }
+
+    /**
      * Convenience method to add multiple validation rules with an array
      *
      * @param array $rules
      */
     public function rules($rules)
     {
-        foreach ($rules as $ruleType => $params) {
-            if (is_array($params)) {
-                foreach ($params as $innerParams) {
-                    array_unshift($innerParams, $ruleType);
-                    call_user_func_array(array($this, 'rule'), $innerParams);
-                }
-            } else {
-                $this->rule($ruleType, $params);
-            }
-        }
+        $this->_validationSet->rules($rules);
     }
 
     /**
@@ -1199,7 +1230,7 @@ class Validator
      *
      * @param  array $data
      * @param  array $fields
-     * @return Valitron
+     * @return Validator
      */
     public function withData($data, $fields = array())
     {
@@ -1207,5 +1238,21 @@ class Validator
         $clone->_fields = !empty($fields) ? array_intersect_key($data, array_flip($fields)) : $data;
         $clone->_errors = array();
         return $clone;
+    }
+
+    /**
+     * @return array
+     */
+    public function getValidations()
+    {
+        return $this->_validationSet->getValidations();
+    }
+
+    /**
+     * @return array
+     */
+    public function getLabels()
+    {
+        return $this->_validationSet->getLabels();
     }
 }

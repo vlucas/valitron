@@ -307,6 +307,29 @@ $v->validate();
 
 This introduces a new set of tags to your error language file which looks like `{field}`, if you are using a rule like `equals` you can access the second value in the language file by incrementing the field with a value like `{field1}`.
 
+## Conditional rules
+
+You can add a set of rules that depend on a condition. If the previous condition fails validation, it doesn't cause the validate() method to return false, but means the dependent set of rules won't be checked. For example:
+
+```php
+    $this->condition('min', 'age', 18, function($d) {
+            $d->rule('required', 'credit_card')
+              ->rule('creditCard, 'credit_card');
+        });       
+```
+
+The age of use doesn't have to be more than 18, but if it is, we require them to supply a credit card, and validate. You can add more dependent rules inside a dependent rule set:
+```php
+    $this->condition(function($c) {            
+              $c->condition('min', 'age', 18, function($c2) {
+                //... And so on
+              });
+        });       
+```
+
+You can even set labels and messages inside the dependent set!  
+
+
 ## Re-use of validation rules
 
 You can re-use your validation rules to quickly validate different data with the same rules by using the withData method:
