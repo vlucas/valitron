@@ -124,6 +124,10 @@ class ValidateTest extends BaseTestCase
         $v = new Validator(array('str' => 'happy'));
         $v->rule('length', 'str', 5);
         $this->assertTrue($v->validate());
+
+        $v = new Validator(array('str' => '高兴'));
+        $v->rule('length', 'str', 2);
+        $this->assertTrue($v->validate());
     }
 
     public function testLengthInvalid()
@@ -139,6 +143,9 @@ class ValidateTest extends BaseTestCase
         $v = new Validator(array('test' => new stdClass));
         $v->rule('length', 'test', 1);
         $this->assertFalse($v->validate());
+
+        $v = new Validator(array('test' => '悲伤'));
+        $v->rule('length', 'test', 6);
     }
 
     public function testLengthBetweenValid()

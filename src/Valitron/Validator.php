@@ -48,6 +48,11 @@ class Validator
     protected static $_langDir;
 
     /**
+     * @var string
+     */
+    protected static $_encode;
+
+    /**
      * @var array
      */
     protected static $_rules = array();
@@ -71,7 +76,7 @@ class Validator
      * @param  string                    $langDir
      * @throws \InvalidArgumentException
      */
-    public function __construct($data, $fields = array(), $lang = null, $langDir = null)
+    public function __construct($data, $fields = array(), $lang = null, $langDir = null, $encode = null)
     {
         // Allows filtering of used input fields against optional second array of field names allowed
         // This is useful for limiting raw $_POST or $_GET data to only known fields
@@ -82,6 +87,9 @@ class Validator
 
         // set langDir in the follow order: constructor param, static::$_langDir, default to package lang dir
         $langDir = $langDir ?: static::langDir();
+
+        // set encode in the follow order: constructor param, static::$_encode, default to UTF-8
+        static::$_encode = $encode ?: static::encode();
 
         // Load language file in directory
         $langFile = rtrim($langDir, '/') . '/' . $lang . '.php';
@@ -121,6 +129,15 @@ class Validator
         }
 
         return static::$_langDir ?: dirname(dirname(__DIR__)) . '/lang';
+    }
+
+    public static function encode($encode = null)
+    {
+        if ($encode !== null) {
+            static::$_encode = $encode;
+        }
+
+        return static::$_encode ?: 'UTF-8';
     }
 
     /**
@@ -303,7 +320,7 @@ class Validator
         if (!is_string($value)) {
             return false;
         } elseif (function_exists('mb_strlen')) {
-            return mb_strlen($value);
+            return mb_strlen($value, static::$_encode);
         }
 
         return strlen($value);
