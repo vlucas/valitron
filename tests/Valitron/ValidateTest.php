@@ -126,6 +126,7 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
 
         $v = new Validator(array('str' => '高兴'));
+
         $v->rule('length', 'str', 2);
         $this->assertTrue($v->validate());
     }
