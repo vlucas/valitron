@@ -38,6 +38,21 @@ class Validator
     protected $_labels = array();
 
     /**
+     * Contains all rules that are available to the current valitron instance.
+     *
+     * @var array
+     */
+    protected $_instanceRules = array();
+
+    /**
+     * Contains all rule messages that are available to the current valitron
+     * instance
+     *
+     * @var array
+     */
+    protected $_instanceRuleMessage = array();
+
+    /**
      * @var string
      */
     protected static $_lang;
@@ -503,7 +518,7 @@ class Validator
         foreach ($this->validUrlPrefixes as $prefix) {
             if (strpos($value, $prefix) !== false) {
                 $host = parse_url(strtolower($value), PHP_URL_HOST);
-                
+
                 return checkdnsrr($host, 'A') || checkdnsrr($host, 'AAAA') || checkdnsrr($host, 'CNAME');
             }
         }
@@ -921,8 +936,9 @@ class Validator
                 }
 
                 // Callback is user-specified or assumed method on class
-                if (isset(static::$_rules[$v['rule']])) {
-                    $callback = static::$_rules[$v['rule']];
+                $errors = $this->getRules();
+                if (isset($errors[$v['rule']])) {
+                    $callback = $errors[$v['rule']];
                 } else {
                     $callback = array($this, 'validate' . ucfirst($v['rule']));
                 }
@@ -946,12 +962,33 @@ class Validator
     }
 
     /**
+     * Returns all rule callbacks, the static and instance ones.
+     *
+     * @return array
+     */
+    protected function getRules()
+    {
+        return array_merge($this->_instanceRules, static::$_rules);
+    }
+
+    /**
+     * Returns all rule message, the static and instance ones.
+     *
+     * @return array
+     */
+    protected function getRuleMessages()
+    {
+        return array_merge($this->_instanceRuleMessage, static::$_ruleMessages);
+    }
+
+    /**
      * Determine whether a field is being validated by the given rule.
      *
      * @param  string  $name  The name of the rule
      * @param  string  $field The name of the field
      * @return boolean
      */
+
     protected function hasRule($name, $field)
     {
         foreach ($this->_validations as $validation) {
@@ -965,6 +1002,31 @@ class Validator
         return false;
     }
 
+    protected static function assertRuleCallback($callback)
+    {
+        if (!is_callable($callback)) {
+            throw new \InvalidArgumentException('Second argument must be a valid callback. Given argument was not callable.');
+        }
+    }
+
+
+    /**
+     * Adds a new validation rule callback that is tied to the current
+     * instance only.
+     *
+     * @param string                     $name
+     * @param mixed                         $callback
+     * @param string                     $message
+     * @throws \InvalidArgumentException
+     */
+    public function addInstanceRule($name, $callback, $message = self::ERROR_DEFAULT)
+    {
+        static::assertRuleCallback($callback);
+
+        $this->_instanceRules[$name] = $callback;
+        $this->_instanceRuleMessage[$name] = $message;
+    }
+
     /**
      * Register new validation rule callback
      *
@@ -975,9 +1037,7 @@ class Validator
      */
     public static function addRule($name, $callback, $message = self::ERROR_DEFAULT)
     {
-        if (!is_callable($callback)) {
-            throw new \InvalidArgumentException('Second argument must be a valid callback. Given argument was not callable.');
-        }
+        static::assertRuleCallback($callback);
 
         static::$_rules[$name] = $callback;
         static::$_ruleMessages[$name] = $message;
@@ -993,7 +1053,8 @@ class Validator
      */
     public function rule($rule, $fields)
     {
-        if (!isset(static::$_rules[$rule])) {
+        $errors = $this->getRules();
+        if (!isset($errors[$rule])) {
             $ruleMethod = 'validate' . ucfirst($rule);
             if (!method_exists($this, $ruleMethod)) {
                 throw new \InvalidArgumentException("Rule '" . $rule . "' has not been registered with " . __CLASS__ . "::addRule().");
@@ -1001,7 +1062,8 @@ class Validator
         }
 
         // Ensure rule has an accompanying message
-        $message = isset(static::$_ruleMessages[$rule]) ? static::$_ruleMessages[$rule] : self::ERROR_DEFAULT;
+        $msgs = $this->getRuleMessages();
+        $message = isset($msgs[$rule]) ? $msgs[$rule] : self::ERROR_DEFAULT;
 
         // Get any other arguments passed to function
         $params = array_slice(func_get_args(), 2);
