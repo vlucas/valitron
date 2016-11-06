@@ -1,6 +1,11 @@
 <?php
 use Valitron\Validator;
 
+function callbackTestFunction($item, $value)
+{
+	return $value === "bar";
+}
+
 class ValidateAddInstanceRuleTest extends BaseTestCase
 {
     protected function assertValid($v)
@@ -86,6 +91,20 @@ class ValidateAddInstanceRuleTest extends BaseTestCase
         $this->assertCount(1, $errors["foo"]);
         $this->assertEquals("Foo test error message", $errors["foo"][0]);
     }
+
+	public function testAddRuleWithNamedCallbackOk()
+	{
+		$v = new Validator(array("bar" => "foo"));
+		$v->rule("callbackTestFunction", "bar");
+		$this->assertFalse($v->validate());
+	}
+
+	public function testAddRuleWithNamedCallbackErr()
+	{
+		$v = new Validator(array("foo" => "bar"));
+		$v->rule("callbackTestFunction", "foo");
+		$this->assertTrue($v->validate());
+	}
 
     public function testUniqueRuleName()
     {

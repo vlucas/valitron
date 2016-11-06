@@ -1067,6 +1067,20 @@ class Validator
     }
 
     /**
+     * Returns true if either a valdiator with the given name has been
+     * registered or there is a default validator by that name.
+     *
+     * @param string    $name
+     * @return bool
+     */
+    public function hasValidator($name)
+    {
+        $rules = $this->getRules();
+        return method_exists($this, "validate" . ucfirst($name))
+            || isset($rules[$name]);
+    }
+
+    /**
      * Convenience method to add a single validation rule
      *
      * @param  string|callback           $rule
@@ -1079,12 +1093,8 @@ class Validator
         // Get any other arguments passed to function
         $params = array_slice(func_get_args(), 2);
 
-        // Note: we cannot use is_callable here since max, int, and many
-        // other string can also be callables but aren't really rule callbacks.
-        //
-        // If a closure is used, we can be sure that the user actually
-        // wants $rule to be a custom rule check.
-        if (is_object($rule) && ($rule instanceof \Closure))
+        if (is_callable($rule)
+            && !(is_string($rule) && $this->hasValidator($rule)))
         {
             $name = $this->getUniqueRuleName($fields);
             $msg = isset($params[0]) ? $params[0] : null;
