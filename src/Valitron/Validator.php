@@ -1037,10 +1037,10 @@ class Validator
      */
     public static function addRule($name, $callback, $message = null)
     {
-		if ($message === null)
-		{
-			$message = static::ERROR_DEFAULT;
-		}
+        if ($message === null)
+        {
+            $message = static::ERROR_DEFAULT;
+        }
 
         static::assertRuleCallback($callback);
 
@@ -1048,23 +1048,23 @@ class Validator
         static::$_ruleMessages[$name] = $message;
     }
 
-	public function getUniqueRuleName($fields)
-	{
-		if (is_array($fields))
-		{
-			$fields = implode("_", $fields);
-		}
+    public function getUniqueRuleName($fields)
+    {
+        if (is_array($fields))
+        {
+            $fields = implode("_", $fields);
+        }
 
-		$orgName = "{$fields}_rule";
-		$name = $orgName;
-    $rules = $this->getRules();
-		while (isset($rules[$name]))
-		{
-			$name = $orgName . "_" . rand(0, 10000);
-		}
+        $orgName = "{$fields}_rule";
+        $name = $orgName;
+        $rules = $this->getRules();
+        while (isset($rules[$name]))
+        {
+            $name = $orgName . "_" . rand(0, 10000);
+        }
 
-		return $name;
-	}
+        return $name;
+    }
 
     /**
      * Convenience method to add a single validation rule
@@ -1079,19 +1079,19 @@ class Validator
         // Get any other arguments passed to function
         $params = array_slice(func_get_args(), 2);
 
-		// Note: we cannot use is_callable here since max, int, and many
-		// other string can also be callables but aren't really rule callbacks.
-		//
-		// If a closure is used, we can be sure that the user actually
-		// wants $rule to be a custom rule check.
-		if (is_object($rule) && ($rule instanceof \Closure))
-		{
-			$name = $this->getUniqueRuleName($fields);
-			$msg = isset($params[0]) ? $params[0] : null;
-			$this->addInstanceRule($name, $rule, $msg);
-			$rule = $name;
-		}
-			
+        // Note: we cannot use is_callable here since max, int, and many
+        // other string can also be callables but aren't really rule callbacks.
+        //
+        // If a closure is used, we can be sure that the user actually
+        // wants $rule to be a custom rule check.
+        if (is_object($rule) && ($rule instanceof \Closure))
+        {
+            $name = $this->getUniqueRuleName($fields);
+            $msg = isset($params[0]) ? $params[0] : null;
+            $this->addInstanceRule($name, $rule, $msg);
+            $rule = $name;
+        }
+
         $errors = $this->getRules();
         if (!isset($errors[$rule])) {
             $ruleMethod = 'validate' . ucfirst($rule);
