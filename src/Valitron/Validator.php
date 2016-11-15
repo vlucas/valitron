@@ -1139,7 +1139,7 @@ class Validator
 
     /**
      * @param  array  $labels
-     * @return string
+     * @return $this
      */
     public function labels($labels = array())
     {
