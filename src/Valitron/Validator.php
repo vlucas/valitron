@@ -1204,8 +1204,8 @@ class Validator
     public function withData($data, $fields = array())
     {
         $clone = clone $this;
-        $clone->reset();
         $clone->_fields = !empty($fields) ? array_intersect_key($data, array_flip($fields)) : $data;
+        $clone->_errors = array();
         return $clone;
     }
 }
