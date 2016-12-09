@@ -307,6 +307,19 @@ $v->validate();
 
 This introduces a new set of tags to your error language file which looks like `{field}`, if you are using a rule like `equals` you can access the second value in the language file by incrementing the field with a value like `{field1}`.
 
+## Re-use of validation rules
+
+You can re-use your validation rules to quickly validate different data with the same rules by using the withData method:
+
+```php
+$v = new Valitron\Validator(array());
+$v->rule('required', 'name')->message('{field} is required');
+$v->validate(); //false
+
+$v2 = $v->withData(array('name'=>'example'));
+$v2->validate(); //true
+```
+
 ## Running Tests
 
 The test suite depends on the Composer autoloader to load and run the
