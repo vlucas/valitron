@@ -189,6 +189,29 @@ Valitron\Validator::addRule('alwaysFail', function($field, $value, array $params
 }, 'Everything you do is wrong. You fail.');
 ```
 
+You can also use one-off rules that are only valid for the specified
+fields. 
+
+```php
+$v = new Valitron\Validator(array("foo" => "bar"));
+$v->rule(function($field, $value, $params, $fields) {
+    return true;
+}, "foo")->message("{field} failed...");
+```
+
+This is useful because such rules can have access to variables
+defined in the scope where the `Validator` lives. The Closure's
+signature is identical to `Validator::addRule` callback's
+signature. 
+
+If you wish to add your own rules that are not static (i.e.,
+your rule is not static and available to call `Validator` 
+instances), you need to use `Validator::addInstanceRule`. 
+This rule will take the same parameters as 
+`Validator::addRule` but it has to be called on a `Validator`
+instance.
+
+
 ## Alternate syntax for adding rules
 
 As the number of rules grows, you may prefer the alternate syntax
@@ -284,6 +307,19 @@ $v->validate();
 ```
 
 This introduces a new set of tags to your error language file which looks like `{field}`, if you are using a rule like `equals` you can access the second value in the language file by incrementing the field with a value like `{field1}`.
+
+## Re-use of validation rules
+
+You can re-use your validation rules to quickly validate different data with the same rules by using the withData method:
+
+```php
+$v = new Valitron\Validator(array());
+$v->rule('required', 'name')->message('{field} is required');
+$v->validate(); //false
+
+$v2 = $v->withData(array('name'=>'example'));
+$v2->validate(); //true
+```
 
 ## Running Tests
 

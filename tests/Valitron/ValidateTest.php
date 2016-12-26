@@ -994,7 +994,7 @@ class ValidateTest extends BaseTestCase
     public function testCreditCardValid()
     {
         $visa         = array(4539511619543489, 4532949059629052, 4024007171194938, 4929646403373269, 4539135861690622);
-        $mastercard   = array(5162057048081965, 5382687859049349, 5484388880142230, 5464941521226434, 5473481232685965);
+        $mastercard   = array(5162057048081965, 5382687859049349, 5484388880142230, 5464941521226434, 5473481232685965, 2223000048400011, 2223520043560014);
         $amex         = array(371442067262027, 340743030537918, 345509167493596, 343665795576848, 346087552944316);
         $dinersclub   = array(30363194756249, 30160097740704, 38186521192206, 38977384214552, 38563220301454);
         $discover     = array(6011712400392605, 6011536340491809, 6011785775263015, 6011984124619056, 6011320958064251);
@@ -1155,7 +1155,26 @@ class ValidateTest extends BaseTestCase
         $v = new Validator(array());   
         $v->rule('optional', 'address')->rule('email', 'address');        
         $this->assertTrue($v->validate());
-    }    
+    }
+
+    public function testWithData()
+    {
+        $v = new Validator(array());
+        $v->rule('required', 'name');
+        //validation failed, so must have errors
+        $this->assertFalse($v->validate());
+        $this->assertNotEmpty($v->errors());
+
+        //create copy with valid data
+        $v2 = $v->withData(array('name' => 'Chester Tester'));
+        $this->assertTrue($v2->validate());
+        $this->assertEmpty($v2->errors());
+
+        //create copy with invalid data
+        $v3 = $v->withData(array('firstname' => 'Chester'));
+        $this->assertFalse($v3->validate());
+        $this->assertNotEmpty($v3->errors());
+    }
 }
 
 function sampleFunctionCallback($field, $value, array $params) {

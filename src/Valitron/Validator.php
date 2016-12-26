@@ -989,6 +989,7 @@ class Validator
      * @param  string  $field The name of the field
      * @return boolean
      */
+
     protected function hasRule($name, $field)
     {
         foreach ($this->_validations as $validation) {
