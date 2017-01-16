@@ -1199,7 +1199,7 @@ class Validator
      *
      * @param  array $data
      * @param  array $fields
-     * @return Valitron
+     * @return \Valitron\Validator
      */
     public function withData($data, $fields = array())
     {
