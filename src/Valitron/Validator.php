@@ -653,7 +653,7 @@ class Validator
      */
     protected function validateBoolean($field, $value)
     {
-        return (is_bool($value)) ? true : false;
+        return is_bool($value);
     }
 
     /**
