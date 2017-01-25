@@ -109,6 +109,7 @@ V::lang('ar');
  * `accepted` - Checkbox or Radio must be accepted (yes, on, 1, true)
  * `numeric` - Must be numeric
  * `integer` - Must be integer number
+ * `boolean` - Must be boolean
  * `array` - Must be array
  * `length` - String must be certain length
  * `lengthBetween` - String must be between given lengths
