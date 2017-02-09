@@ -274,6 +274,31 @@ $v->rule('min', 'bar', 0);
 $v->validate();
 ```
 
+You can also add rules on a per-field basis:
+```php
+$rules = [
+    'required',
+    ['lengthMin', 4]
+];   
+
+$v = new Valitron\Validator(array('foo' => 'bar'));
+$v->mapFieldRules('foo', $rules);
+$v->validate();
+```
+
+Or for multiple fields at once:
+
+```php
+$rules = [
+    'foo' => ['required', 'integer'],
+    'bar'=>['email', ['lengthMin', 4]]
+];
+
+$v = new Valitron\Validator(array('foo' => 'bar', 'bar' => 'mail@example.com));
+$v->mapFieldsRules($rules);
+$v->validate();
+```
+
 ## Adding field label to messages
 
 You can do this in two different ways, you can add a individual label to a rule or an array of all labels for the rules.
@@ -307,6 +332,7 @@ $v->validate();
 ```
 
 This introduces a new set of tags to your error language file which looks like `{field}`, if you are using a rule like `equals` you can access the second value in the language file by incrementing the field with a value like `{field1}`.
+
 
 ## Re-use of validation rules
 
