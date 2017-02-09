@@ -33,6 +33,10 @@ class Validator
     protected $_validations = array();
 
     /**
+     * @var string
+     */
+    protected $_encoding;
+    /**
      * @var array
      */
     protected $_labels = array();
@@ -63,6 +67,11 @@ class Validator
     protected static $_langDir;
 
     /**
+     * @var string
+     */
+    protected static $_defaultEncoding = 'UTF-8';
+
+    /**
      * @var array
      */
     protected static $_rules = array();
@@ -86,7 +95,7 @@ class Validator
      * @param  string                    $langDir
      * @throws \InvalidArgumentException
      */
-    public function __construct($data, $fields = array(), $lang = null, $langDir = null)
+    public function __construct($data, $fields = array(), $lang = null, $langDir = null, $encoding = null)
     {
         // Allows filtering of used input fields against optional second array of field names allowed
         // This is useful for limiting raw $_POST or $_GET data to only known fields
@@ -97,6 +106,9 @@ class Validator
 
         // set langDir in the follow order: constructor param, static::$_langDir, default to package lang dir
         $langDir = $langDir ?: static::langDir();
+
+
+        $this->setEncoding($encoding);
 
         // Load language file in directory
         $langFile = rtrim($langDir, '/') . '/' . $lang . '.php';
@@ -137,6 +149,43 @@ class Validator
 
         return static::$_langDir ?: dirname(dirname(__DIR__)) . '/lang';
     }
+
+    /**
+     * Set the default encoding for all Valitron objects
+     *
+     * @param string $encoding
+     */
+    public static function setDefaultEncoding($encoding = 'UTF-8'){
+        static::$_defaultEncoding = $encoding;
+    }
+
+    /**
+     * Get the default encoding
+     *
+     * @return string
+     */
+    public static function getDefaultEncoding(){
+        return static::$_defaultEncoding;
+    }
+
+    /**
+     * Set the encoding. Setting the encoding to null means that the default encoding will be used
+     *
+     * @param string|null $encoding
+     */
+    public function setEncoding($encoding = null){
+        $this->_encoding= $encoding;
+    }
+
+    /**
+     * Get the encoding. If the current encoding is null the default encoding will be used
+     *
+     * @return string
+     */
+    public function getEncoding(){
+        return is_null($this->_encoding)?static::getDefaultEncoding():$this->_encoding;
+    }
+
 
     /**
      * Required field validator
@@ -318,7 +367,7 @@ class Validator
         if (!is_string($value)) {
             return false;
         } elseif (function_exists('mb_strlen')) {
-            return mb_strlen($value);
+            return mb_strlen($value, $this->getEncoding());
         }
 
         return strlen($value);
