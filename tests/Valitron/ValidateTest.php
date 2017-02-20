@@ -110,11 +110,31 @@ class ValidateTest extends BaseTestCase
         $v = new Validator(array('num' => '41243'));
         $v->rule('integer', 'num');
         $this->assertTrue($v->validate());
+
+        $v = new Validator(array('num' => '-41243'));
+        $v->rule('integer', 'num');
+        $this->assertTrue($v->validate());
     }
 
     public function testIntegerInvalid()
     {
         $v = new Validator(array('num' => '42.341569'));
+        $v->rule('integer', 'num');
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('num' => ' 41243'));
+        $v->rule('integer', 'num');
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('num' => '+1231'));
+        $v->rule('integer', 'num');
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('num' => '--1231'));
+        $v->rule('integer', 'num');
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('num' => '0x3a'));
         $v->rule('integer', 'num');
         $this->assertFalse($v->validate());
     }

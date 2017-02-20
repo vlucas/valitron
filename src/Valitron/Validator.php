@@ -237,7 +237,7 @@ class Validator
      */
     protected function validateInteger($field, $value)
     {
-        return filter_var($value, \FILTER_VALIDATE_INT) !== false;
+        return preg_match('/^-?([0-9])+$/i', $value);
     }
 
     /**
