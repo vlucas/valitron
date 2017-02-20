@@ -141,7 +141,7 @@ class ValidateTest extends BaseTestCase
 
     public function testIntegerWithMaxValidation()
     {
-        $v = new Validator(array('num' => '4212341569'));
+        $v = new Validator(array('num' => ' 4212341569'));
         $v->rule('integer', 'num');
         $v->rule('max', 'num', 1000);
         $this->assertFalse($v->validate());
