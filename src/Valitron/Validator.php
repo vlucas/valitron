@@ -233,10 +233,16 @@ class Validator
      *
      * @param  string $field
      * @param  mixed  $value
+     * @param  array  $params
      * @return bool
      */
-    protected function validateInteger($field, $value)
+    protected function validateInteger($field, $value, $params)
     {
+        if (isset($params[0]) && (bool) $params[0]){
+            //strict mode
+            return preg_match('/^-?([0-9])+$/i', $value);
+        }
+
         return filter_var($value, \FILTER_VALIDATE_INT) !== false;
     }
 
