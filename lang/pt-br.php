@@ -24,5 +24,11 @@ return array(
     'dateFormat'    => "deve ser uma data no formato '%s'",
     'dateBefore'    => "deve ser uma data anterior a '%s'",
     'dateAfter'     => "deve ser uma data posterior a '%s'",
-    'contains'      => "deve conter %s"
+    'contains'      => "deve conter %s",
+    'boolean'       => "deve ser um booleano",
+    'lengthBetween' => "deve estar entre %d e %d caracteres",
+    'creditCard'    => "deve ser um numero de cartão de credito válido",
+    'lengthMin'     => "deve ter ao menos %d caracteres",
+    'lengthMax'     => "não deve exceder %d caracteres",
+    'instanceOf'    => "deve ser uma instância de '%s'"
 );
