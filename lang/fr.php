@@ -26,7 +26,7 @@ return array(
     'dateAfter'     => "doit être une date après '%s'",
     'contains'      => "doit contenir %s",
     'boolean'       => "doit être un booléen",
-    'lengthBetween' => "doit être entre %d and %d caractères",
+    'lengthBetween' => "doit être entre %d et %d caractères",
     'creditCard'    => "doit être un numéro de carte de crédit valide",
     'lengthMin'     => "doit avoir au moins %d caractères",
     'lengthMax'     => "ne doit pas dépasser %d caractères",
