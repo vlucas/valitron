@@ -27,5 +27,8 @@ return array(
     'contains'      => "deve contenere %s",
     'boolean'       => "deve essere un booleano",
     'lengthBetween' => "deve essere compreso tra %d e %d caratteri",
-    'creditCard'    => "deve essere un numero di carta di credito valido"
+    'creditCard'    => "deve essere un numero di carta di credito valido",
+    'lengthMin'     => "deve essere lungo almeno %d caratteri",
+    'lengthMax'     => "non deve superare %d caratteri",
+    'instanceOf'    => "deve essere un'istanza di '%s'",
 );
