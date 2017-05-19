@@ -1,6 +1,8 @@
 <?php
 namespace Valitron;
 
+class MustCallValidateFirstException extends \Exception {}
+
 /**
  * Validation Class
  *
@@ -26,6 +28,11 @@ class Validator
      * @var array
      */
     protected $_errors = array();
+
+    /**
+     * @var array
+     */
+    protected $_cleaned_data = array();
 
     /**
      * @var array
@@ -659,7 +666,7 @@ class Validator
      */
     protected function validateBoolean($field, $value)
     {
-        return is_bool($value);
+        return (is_bool($value)) ? true : false;
     }
 
     /**
@@ -860,6 +867,29 @@ class Validator
     }
 
     /**
+     * Add an success validated field to _cleaned_data array
+     *
+     * @param string $field
+     */
+    public function success($field)
+    {
+        $this->_cleaned_data[$field] = trim($this->_fields[$field]);
+    }
+
+    /**
+     * Add an success validated field to _cleaned_data array
+     *
+     * @param string $field
+     */
+    public function cleaned_data()
+    {
+        if (!$this->_cleaned_data) {
+            throw new MustCallValidateFirstException('You must clall validate() before calling cleaned_data()');
+        }
+        return (object)$this->_cleaned_data;
+    }
+
+    /**
      * Specify validation message to use for error for the last validation rule
      *
      * @param  string $msg
@@ -960,6 +990,8 @@ class Validator
 
                 if (!$result) {
                     $this->error($field, $v['message'], $v['params']);
+                } else {
+                    $this->success($field);
                 }
             }
         }
@@ -1090,7 +1122,7 @@ class Validator
      * Convenience method to add a single validation rule
      *
      * @param  string|callback           $rule
-     * @param  array|string              $fields
+     * @param  array                     $fields
      * @return $this
      * @throws \InvalidArgumentException
      */
@@ -1205,7 +1237,7 @@ class Validator
      *
      * @param  array $data
      * @param  array $fields
-     * @return \Valitron\Validator
+     * @return Valitron
      */
     public function withData($data, $fields = array())
     {
