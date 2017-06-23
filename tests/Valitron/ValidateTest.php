@@ -34,6 +34,13 @@ class ValidateTest extends BaseTestCase
         $v->rule('required', array('name', 'email'));
         $this->assertFalse($v->validate());
     }
+   
+    public function testRequiredSubfieldsArrayStringValue()
+    {
+        $v = new Validator(array('name' => 'bob'));
+        $v->rule('required', array('name.*.red'));
+        $this->assertFalse($v->validate());
+    }
 
     public function testRequiredValid()
     {
