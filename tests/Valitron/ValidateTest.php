@@ -616,6 +616,13 @@ class ValidateTest extends BaseTestCase
         $v->rule('slug', 'test');
         $this->assertFalse($v->validate());
     }
+    
+    public function testNoErrorFailOnArray()
+    {
+        $v = new Validator(array('test' => array()));
+        $v->rule('slug', 'test');
+        $this->assertFalse($v->validate());
+    }
 
     public function testRegexValid()
     {
