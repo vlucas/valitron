@@ -565,6 +565,9 @@ class Validator
      */
     protected function validateSlug($field, $value)
     {
+        if(is_array($value)) {
+            return false;
+        }
         return preg_match('/^([-a-z0-9_-])+$/i', $value);
     }
 
