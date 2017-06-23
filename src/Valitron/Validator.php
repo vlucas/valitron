@@ -892,7 +892,7 @@ class Validator
         
         // Catches the case where the data isn't an array or object
         if (is_scalar($data)) {
-            return array($data, false);
+            return array(NULL, false);
         }
 
         $identifier = array_shift($identifiers);
