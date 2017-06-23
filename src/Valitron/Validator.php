@@ -889,6 +889,11 @@ class Validator
         if (is_array($identifiers) && count($identifiers) === 0) {
             return array($data, false);
         }
+        
+        // Catches the case where the data isn't an array or object
+        if (is_scalar($data)) {
+            return array($data, false);
+        }
 
         $identifier = array_shift($identifiers);
 
