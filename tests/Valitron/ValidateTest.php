@@ -619,7 +619,7 @@ class ValidateTest extends BaseTestCase
     
     public function testNoErrorFailOnArray()
     {
-        $v = new Validator(array('test' => []));
+        $v = new Validator(array('test' => array()));
         $v->rule('slug', 'test');
         $this->assertFalse($v->validate());
     }
