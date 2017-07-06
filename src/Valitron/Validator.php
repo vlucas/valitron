@@ -945,7 +945,11 @@ class Validator
                 // Don't validate if the field is not required and the value is empty
                 if ($this->hasRule('optional', $field) && isset($values)) {
                     //Continue with execution below if statement
-                } elseif ($v['rule'] !== 'required' && !$this->hasRule('required', $field) && (! isset($values) || $values === '' || ($multiple && count($values) == 0))) {
+                } elseif (
+                    $v['rule'] !== 'required' && !$this->hasRule('required', $field) &&
+                    $v['rule'] !== 'accepted' &&
+                    (! isset($values) || $values === '' || ($multiple && count($values) == 0))
+                ) {
                     continue;
                 }
 

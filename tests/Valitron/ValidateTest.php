@@ -98,6 +98,12 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testAcceptedNotSet(){
+        $v = new Validator();
+        $v->rule('accepted', 'agree');
+        $this->assertFalse($v->validate());
+    }
+
     public function testNumericValid()
     {
         $v = new Validator(array('num' => '42.341569'));
