@@ -892,6 +892,17 @@ class ValidateTest extends BaseTestCase
         $this->assertEquals($v1->errors(), $v2->errors());
     }
 
+    public function testMalformedBulkRules(){
+     $v = new Validator();
+     $v->rules(
+         array(
+            'required'=>array('foo', 'bar')
+         )
+     );
+
+     $this->assertFalse($v->validate());
+    }
+
     public function testCustomLabelInMessage()
     {
         $v = new Valitron\Validator(array());
