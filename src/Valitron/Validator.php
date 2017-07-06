@@ -1199,6 +1199,9 @@ class Validator
         foreach ($rules as $ruleType => $params) {
             if (is_array($params)) {
                 foreach ($params as $innerParams) {
+                    if (! is_array($innerParams)){
+                        $innerParams = (array) $innerParams;
+                    }
                     array_unshift($innerParams, $ruleType);
                     call_user_func_array(array($this, 'rule'), $innerParams);
                 }
