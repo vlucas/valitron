@@ -16,7 +16,7 @@ class ErrorMessagesTest extends BaseTestCase
         $v = new Validator(array('num' => 5));
         $v->rule('min', 'num', 6);
         $v->validate();
-        $this->assertSame(array("Num must be greater than 6"), $v->errors('num'));
+        $this->assertSame(array("Num must be at least 6"), $v->errors('num'));
     }
 
     public function testCustomErrorMessage()
