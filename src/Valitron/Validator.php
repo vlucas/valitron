@@ -1132,11 +1132,21 @@ class Validator
         $msgs = $this->getRuleMessages();
         $message = isset($msgs[$rule]) ? $msgs[$rule] : self::ERROR_DEFAULT;
 
+        // Ensure message contains field label
+        if (function_exists('mb_strpos')) {
+            $notContains = mb_strpos($message, '{field}') === false;
+        } else {
+            $notContains = strpos($message, '{field}') === false;
+        }
+        if ($notContains) {
+            $message = '{field} ' . $message;
+        }
+
         $this->_validations[] = array(
             'rule' => $rule,
             'fields' => (array) $fields,
             'params' => (array) $params,
-            'message' => '{field} ' . $message
+            'message' => $message
         );
 
         return $this;
