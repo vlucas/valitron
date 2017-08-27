@@ -57,5 +57,20 @@ class ErrorMessagesTest extends BaseTestCase
         $errors = $v->errors();
         $this->assertEquals($messages, $errors);
     }
+
+    public function testMessageWithFieldSet()
+    {
+        $v = new Validator(array('name'=>''), array(), 'en', __DIR__ . '/../lang');
+        $v->rule('required', 'name');
+        $v->validate();
+        $this->assertEquals( $v->errors('name'), array('A value is required for Name'));
+    }
+
+    public function testMessageWithFieldAndLabelSet(){
+        $v = new Validator(array('name'=>''), array(), 'en', __DIR__ . '/../lang');
+        $v->rule('required', 'name')->label('my name');
+        $v->validate();
+        $this->assertEquals( $v->errors('name'), array('A value is required for my name'));
+    }
 }
 
