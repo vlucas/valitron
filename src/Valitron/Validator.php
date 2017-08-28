@@ -143,10 +143,16 @@ class Validator
      *
      * @param  string $field
      * @param  mixed  $value
+     * @param  array  $params
      * @return bool
      */
-    protected function validateRequired($field, $value)
+    protected function validateRequired($field, $value, array $params= array(), array $fields = array())
     {
+        if (isset($params[0]) && (bool) $params[0]){
+            $find = $this->getPart($this->_fields, explode('.', $field), true);
+            return $find[1];
+        }
+
         if (is_null($value)) {
             return false;
         } elseif (is_string($value) && trim($value) === '') {
@@ -886,48 +892,49 @@ class Validator
         $this->_labels = array();
     }
 
-    protected function getPart($data, $identifiers)
+    protected function getPart($data, $identifiers, $allow_empty = false)
     {
         // Catches the case where the field is an array of discrete values
         if (is_array($identifiers) && count($identifiers) === 0) {
             return array($data, false);
         }
-        
         // Catches the case where the data isn't an array or object
         if (is_scalar($data)) {
             return array(NULL, false);
         }
-
         $identifier = array_shift($identifiers);
-
         // Glob match
         if ($identifier === '*') {
             $values = array();
             foreach ($data as $row) {
-                list($value, $multiple) = $this->getPart($row, $identifiers);
+                list($value, $multiple) = $this->getPart($row, $identifiers, $allow_empty);
                 if ($multiple) {
                     $values = array_merge($values, $value);
                 } else {
                     $values[] = $value;
                 }
             }
-
             return array($values, true);
         }
-
         // Dead end, abort
         elseif ($identifier === NULL || ! isset($data[$identifier])) {
+            if ($allow_empty){
+                //when empty values are allowed, we only care if the key exists
+                return array(null, array_key_exists($identifier, $data));
+            }
             return array(null, false);
         }
-
         // Match array element
         elseif (count($identifiers) === 0) {
+            if ($allow_empty){
+                //when empty values are allowed, we only care if the key exists
+                return array(null, array_key_exists($identifier, $data));
+            }
             return array($data[$identifier], false);
         }
-
         // We need to go deeper
         else {
-            return $this->getPart($data[$identifier], $identifiers);
+            return $this->getPart($data[$identifier], $identifiers, $allow_empty);
         }
     }
 
