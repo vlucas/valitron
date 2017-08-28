@@ -6,7 +6,7 @@ return array(
     'different'     => "phải khác '%s'",
     'accepted'      => "được chấp nhận",
     'numeric'       => "phải là số",
-    'integer'       => "phải là số nguyên (0-9)",
+    'integer'       => "phải là số nguyên",
     'length'        => "phải dài hơn %d",
     'min'           => "ít nhất %s",
     'max'           => "tối đa %s",

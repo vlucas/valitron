@@ -6,7 +6,7 @@ return array(
     'different'     => "harus berbeda dengan '%s'",
     'accepted'      => "harus diterima (accepted)",
     'numeric'       => "harus berupa nomor/angka",
-    'integer'       => "harus berupa nilai integer (0-9)",
+    'integer'       => "harus berupa nilai integer",
     'length'        => "harus lebih panjang dari %d",
     'min'           => "harus lebih besar dari %s",
     'max'           => "harus kurang dari %s",

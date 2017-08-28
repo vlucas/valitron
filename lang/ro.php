@@ -6,7 +6,7 @@ return array(
     'different'     => "trebuie sa fie diferit de '%s'",
     'accepted'      => "trebuie sa fie acceptat",
     'numeric'       => "trebuie sa fie numeric",
-    'integer'       => "trebuie sa fie intreg (0-9)",
+    'integer'       => "trebuie sa fie intreg",
     'length'        => "trebuie sa fie mai lung decat %d",
     'min'           => "trebuie sa fie cel putin %s",
     'max'           => "nu trebuie sa fie mai mult de %s",
