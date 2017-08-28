@@ -103,7 +103,7 @@ V::lang('ar');
 
 ## Built-in Validation Rules
 
- * `required` - Required field
+ * `required` - Field is required
  * `equals` - Field must match another field (email/password confirmation)
  * `different` - Field must be different than another field
  * `accepted` - Checkbox or Radio must be accepted (yes, on, 1, true)
@@ -142,6 +142,16 @@ extension for greater accuracy and reliability. The extension is not required
 for Valitron to work, but Valitron will use it if available, and it is highly
 recommended.
 
+## Required fields
+the `required` rule checks if a field exists in the data array, and is not null or an empty string.
+```php
+$v->rule('required', 'field_name');
+```
+
+Using an extra parameter, you can make this rule more flexible, and only check if the field exists in the data array.
+```php
+$v->rule('required', 'field_name', true);
+```
 ## Credit Card Validation usage
 
 Credit card validation currently allows you to validate a Visa `visa`,
