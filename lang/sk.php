@@ -6,7 +6,7 @@ return array(
     'different'     => "musí byť rôzny od '%s'",
     'accepted'      => "musí byť akceptovaný",
     'numeric'       => "musí byť číslo",
-    'integer'       => "musí byť celé číslo (0-9)",
+    'integer'       => "musí byť celé číslo",
     'length'        => "musí byť dlhý aspoň %d",
     'min'           => "musí byť dlhý minimálne %s",
     'max'           => "musí byť maximálne %s",

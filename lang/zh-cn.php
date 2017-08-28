@@ -6,7 +6,7 @@ return array(
     'different'     => "必须和 '%s' 不一致",
     'accepted'      => "必须接受",
     'numeric'       => "只能是数字",
-    'integer'       => "只能是整数(0-9)",
+    'integer'       => "只能是整数",
     'length'        => "长度必须大于 %d",
     'min'           => "必须大于 %s",
     'max'           => "必须小于 %s",

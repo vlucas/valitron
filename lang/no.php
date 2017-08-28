@@ -6,7 +6,7 @@ return array(
     'different'     => "må være annerledes enn '%s'",
     'accepted'      => "må aksepteres",
     'numeric'       => "må være numerisk",
-    'integer'       => "må være et heltall (0-9)",
+    'integer'       => "må være et heltall",
     'length'        => "må være %d tegn",
     'min'           => "må være minst %s",
     'max'           => "må ikke være mer enn %s",

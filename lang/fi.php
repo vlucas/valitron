@@ -6,7 +6,7 @@ return array(
     'different'     => "on sama kuin '%s'",
     'accepted'      => "ei ole hyväksytty",
     'numeric'       => "ei ole numeerinen",
-    'integer'       => "ei ole kokonaisluku (0-9)",
+    'integer'       => "ei ole kokonaisluku",
     'length'        => "on lyhyempi kuin %d",
     'min'           => "ei ole vähintään %s",
     'max'           => "ei ole enintään %s",

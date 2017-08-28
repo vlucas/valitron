@@ -6,7 +6,7 @@ return array(
     'different'     => "bundan değişik olmalı '%s'",
     'accepted'      => "kabul edilebilir olmalı",
     'numeric'       => "numerik olmalı",
-    'integer'       => "sayı olmalı (0-9)",
+    'integer'       => "sayı olmalı",
     'length'        => "en az %d adet uzunluğunda olmalı",
     'min'           => "en az böyle olmalı %s",
     'max'           => "bundan daha fazla olmalı %s",

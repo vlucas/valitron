@@ -6,7 +6,7 @@ return array(
     'different'     => "moet verschillend zijn van '%s'",
     'accepted'      => "moet aanvaard worden",
     'numeric'       => "moet numeriek zijn",
-    'integer'       => "moet een cijfer zijn (0-9)",
+    'integer'       => "moet een cijfer zijn",
     'length'        => "moet minstens %d karakters lang zijn",
     'min'           => "moet minstens %s zijn",
     'max'           => "mag niet meer zijn dan %s",
