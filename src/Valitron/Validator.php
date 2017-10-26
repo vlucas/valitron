@@ -944,7 +944,7 @@ class Validator
             return array($values, true);
         }
         // Dead end, abort
-        elseif ($identifier === NULL || ! isset($data[$identifier])) {
+        elseif ($identifier === null || ! isset($data[$identifier])) {
             if ($allow_empty){
                 //when empty values are allowed, we only care if the key exists
                 return array(null, array_key_exists($identifier, $data));
@@ -1067,7 +1067,7 @@ class Validator
      * instance only.
      *
      * @param string                     $name
-     * @param mixed                      $callback
+     * @param callable                         $callback
      * @param string                     $message
      * @throws \InvalidArgumentException
      */
@@ -1083,14 +1083,13 @@ class Validator
      * Register new validation rule callback
      *
      * @param  string                    $name
-     * @param  mixed                     $callback
+     * @param  callable                  $callback
      * @param  string                    $message
      * @throws \InvalidArgumentException
      */
     public static function addRule($name, $callback, $message = null)
     {
-        if ($message === null)
-        {
+        if ($message === null) {
             $message = static::ERROR_DEFAULT;
         }
 
@@ -1159,7 +1158,7 @@ class Validator
             $ruleMethod = 'validate' . ucfirst($rule);
             if (!method_exists($this, $ruleMethod)) {
                 throw new \InvalidArgumentException(
-                    "Rule '" . $rule . "' has not been registered with " . __CLASS__ . "::addRule()."
+                    "Rule '" . $rule . "' has not been registered with " . get_called_class() . "::addRule()."
                 );
             }
         }
