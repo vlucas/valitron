@@ -146,7 +146,7 @@ class Validator
      * @param  array  $params
      * @return bool
      */
-    protected function validateRequired($field, $value, array $params= array(), array $fields = array())
+    protected function validateRequired($field, $value, $params= array())
     {
         if (isset($params[0]) && (bool) $params[0]){
             $find = $this->getPart($this->_fields, explode('.', $field), true);
