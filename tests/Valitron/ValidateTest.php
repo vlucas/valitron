@@ -34,7 +34,7 @@ class ValidateTest extends BaseTestCase
         $v->rule('required', array('name', 'email'));
         $this->assertFalse($v->validate());
     }
-   
+
     public function testRequiredSubfieldsArrayStringValue()
     {
         $v = new Validator(array('name' => 'bob'));
@@ -629,7 +629,7 @@ class ValidateTest extends BaseTestCase
         $v->rule('slug', 'test');
         $this->assertFalse($v->validate());
     }
-    
+
     public function testNoErrorFailOnArray()
     {
         $v = new Validator(array('test' => array()));
@@ -1203,22 +1203,22 @@ class ValidateTest extends BaseTestCase
 
     public function testOptionalProvidedValid()
     {
-        $v = new Validator(array('address' =>  'user@example.com'));   
-        $v->rule('optional', 'address')->rule('email', 'address');        
+        $v = new Validator(array('address' =>  'user@example.com'));
+        $v->rule('optional', 'address')->rule('email', 'address');
         $this->assertTrue($v->validate());
     }
 
     public function testOptionalProvidedInvalid()
     {
-        $v = new Validator(array('address' =>  'userexample.com'));   
-        $v->rule('optional', 'address')->rule('email', 'address');        
+        $v = new Validator(array('address' =>  'userexample.com'));
+        $v->rule('optional', 'address')->rule('email', 'address');
         $this->assertFalse($v->validate());
     }
 
     public function testOptionalNotProvided()
     {
-        $v = new Validator(array());   
-        $v->rule('optional', 'address')->rule('email', 'address');        
+        $v = new Validator(array());
+        $v->rule('optional', 'address')->rule('email', 'address');
         $this->assertTrue($v->validate());
     }
 
@@ -1268,8 +1268,8 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v1->validate());
 
         $v2= new Validator($data);
-        $v2->rule('required', array('empty_text', 'null_value', 'in_array.empty_text'));
-        $this->assertFalse($v2->validate());
+        $v2->rule('required', array('empty_text', 'null_value', 'in_array.empty_text'), true);
+        $this->assertTrue($v2->validate());
     }
 }
 
