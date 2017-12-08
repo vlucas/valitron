@@ -1092,7 +1092,7 @@ class Validator
     }
 
     /**
-     * Returns true if either a valdiator with the given name has been
+     * Returns true if either a validator with the given name has been
      * registered or there is a default validator by that name.
      *
      * @param string    $name
@@ -1160,6 +1160,8 @@ class Validator
     }
 
     /**
+     * Add label to rule
+     *
      * @param  string $value
      * @internal param array $labels
      * @return $this
@@ -1173,6 +1175,8 @@ class Validator
     }
 
     /**
+     * Add labels to rules
+     *
      * @param  array  $labels
      * @return $this
      */
