@@ -497,7 +497,12 @@ class Validator
      */
     protected function validateEmail($field, $value)
     {
-        return filter_var($value, \FILTER_VALIDATE_EMAIL) !== false;
+        if (filter_var($value, \FILTER_VALIDATE_EMAIL) !== false) {
+	        $domain = idn_to_ascii(ltrim(stristr($value, '@'), '@'), 0, INTL_IDNA_VARIANT_UTS46) . '.';
+	        if (checkdnsrr($domain, 'ANY')) {return true;}
+        }
+
+        return false;
     }
 
     /**
