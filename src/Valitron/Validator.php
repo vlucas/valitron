@@ -84,7 +84,7 @@ class Validator
      * @param  array                     $fields
      * @param  string                    $lang
      * @param  string                    $langDir
-     * @throws emInvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function __construct($data = array(), $fields = array(), $lang = null, $langDir = null)
     {
