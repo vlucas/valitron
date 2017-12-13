@@ -84,7 +84,7 @@ class Validator
      * @param  array                     $fields
      * @param  string                    $lang
      * @param  string                    $langDir
-     * @throws \InvalidArgumentException
+     * @throws emInvalidArgumentException
      */
     public function __construct($data = array(), $fields = array(), $lang = null, $langDir = null)
     {
@@ -495,14 +495,18 @@ class Validator
      * @param  mixed  $value
      * @return bool
      */
-    protected function validateEmail($field, $value)
+    protected function validateEmail($field, $value, $checkDomain = false)
     {
+        $emailIsValid = false;
         if (filter_var($value, \FILTER_VALIDATE_EMAIL) !== false) {
-	        $domain = idn_to_ascii(ltrim(stristr($value, '@'), '@'), 0, INTL_IDNA_VARIANT_UTS46) . '.';
-	        if (checkdnsrr($domain, 'ANY')) {return true;}
+            $emailIsValid = true;
+            if ($checkDomain) {
+                $domain = idn_to_ascii(ltrim(stristr($value, '@'), '@'), 0, INTL_IDNA_VARIANT_UTS46) . '.';
+                if (!checkdnsrr($domain, 'ANY')) {$emailIsValid = false;}
+            }
         }
 
-        return false;
+        return $emailIsValid;
     }
 
     /**
