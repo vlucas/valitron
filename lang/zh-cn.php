@@ -24,5 +24,10 @@ return array(
     'dateFormat'    => "日期的格式应该为 '%s'",
     'dateBefore'    => "日期必须在 '%s' 之前",
     'dateAfter'     => "日期必须在 '%s' 之后",
-    'contains'  => "必须包含 %s"
+    'contains'      => "必须包含 %s",
+    'boolean'       => "必须是真或假",
+    'lengthBetween' => "长度只能介于 %d 和 %d 之间",
+    'creditCard'    => "信用卡号码不正确",
+    'lengthMin'     => "长度必须大于 %d",
+    'lengthMax'     => "长度必须小于 %d"
 );
