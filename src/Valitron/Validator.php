@@ -495,18 +495,26 @@ class Validator
      * @param  mixed  $value
      * @return bool
      */
-    protected function validateEmail($field, $value, $checkDomain = false)
+    protected function validateEmail($field, $value)
     {
-        $emailIsValid = false;
-        if (filter_var($value, \FILTER_VALIDATE_EMAIL) !== false) {
-            $emailIsValid = true;
-            if ($checkDomain) {
-                $domain = idn_to_ascii(ltrim(stristr($value, '@'), '@'), 0, INTL_IDNA_VARIANT_UTS46) . '.';
-                if (!checkdnsrr($domain, 'ANY')) {$emailIsValid = false;}
-            }
+        return filter_var($value, \FILTER_VALIDATE_EMAIL) !== false;
+    }
+
+    /**
+     * Validate that a field is a valid e-mail address and the domain name is active
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @return bool
+     */
+    protected function validateEmailDNS($field, $value)
+    {
+        if ($this->validateEmail($field, $value)) {
+            $domain = ltrim(stristr($value, '@'), '@') . '.';
+            return checkdnsrr($domain, 'ANY');
         }
 
-        return $emailIsValid;
+        return false;
     }
 
     /**
