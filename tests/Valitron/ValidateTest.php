@@ -560,6 +560,18 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testEmailDnsValid(){
+        $v = new Validator(array('name' => 'Chester Tester', 'email' => 'chester@tester.com'));
+        $v->rule('emailDNS', 'email');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testEmailDnsInvalid(){
+        $v = new Validator(array('name' => 'Chester Tester', 'email' => 'chester@tester.zyx'));
+        $v->rule('emailDNS', 'email');
+        $this->assertFalse($v->validate());
+    }
+
     public function testUrlValid()
     {
         $v = new Validator(array('website' => 'http://google.com'));
