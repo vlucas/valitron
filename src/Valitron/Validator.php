@@ -173,9 +173,9 @@ class Validator
      */
     protected function validateEquals($field, $value, array $params)
     {
-        $field2 = $params[0];
-
-        return isset($this->_fields[$field2]) && $value == $this->_fields[$field2];
+        // extract the second field value, this accounts for nested array values
+        list($field2Value, $multiple) = $this->getPart($this->_fields, explode('.', $params[0]));
+        return isset($field2Value) && $value == $field2Value;
     }
 
     /**
@@ -189,9 +189,9 @@ class Validator
      */
     protected function validateDifferent($field, $value, array $params)
     {
-        $field2 = $params[0];
-
-        return isset($this->_fields[$field2]) && $value != $this->_fields[$field2];
+        // extract the second field value, this accounts for nested array values
+        list($field2Value, $multiple) = $this->getPart($this->_fields, explode('.', $params[0]));
+        return isset($field2Value) && $value != $field2Value;
     }
 
     /**
