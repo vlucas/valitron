@@ -501,6 +501,26 @@ class Validator
     }
 
     /**
+     * Validate that a field is a valid e-mail address and the domain name is active
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @return bool
+     */
+    protected function validateEmailDNS($field, $value)
+    {
+        if ($this->validateEmail($field, $value)) {
+            $domain = ltrim(stristr($value, '@'), '@') . '.';
+            if (function_exists('idn_to_ascii') && defined('INTL_IDNA_VARIANT_UTS46')) {
+                $domain = idn_to_ascii($domain, 0, INTL_IDNA_VARIANT_UTS46);
+            }
+            return checkdnsrr($domain, 'ANY');
+        }
+
+        return false;
+    }
+
+    /**
      * Validate that a field is a valid URL by syntax
      *
      * @param  string $field

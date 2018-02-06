@@ -121,6 +121,7 @@ V::lang('ar');
  * `notIn` - Negation of `in` rule (not in array of values)
  * `ip` - Valid IP address
  * `email` - Valid email address
+ * `emailDNS` - Valid email address with active DNS record
  * `url` - Valid URL
  * `urlActive` - Valid URL with active DNS record
  * `alpha` - Alphabetic characters only
