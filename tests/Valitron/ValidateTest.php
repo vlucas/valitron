@@ -1405,6 +1405,13 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testNestedDifferentBothUnset()
+    {
+        $v = new Validator(array('foo' => 'bar'));
+        $v->rule('different', 'foo.bar', 'foo.baz');
+        $this->assertTrue($v->validate());
+    }
+
     public function testNestedDifferentBothUnsetRequired()
     {
         $v = new Validator(array('foo' => 'bar'));
