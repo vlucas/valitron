@@ -1021,9 +1021,8 @@ class Validator
      * Should the validation stop a rule is failed
      * @param bool $stop
      */
-    public function stopOnFirstFail($stop) {
-    	if(!is_bool($stop)) throw new \InvalidArgumentException('Parameter of type boolean expected');
-    	$this->stop_on_first_fail = $stop;
+    public function stopOnFirstFail($stop = true) {
+    	$this->stop_on_first_fail = (bool) $stop;
     }
 
     /**
