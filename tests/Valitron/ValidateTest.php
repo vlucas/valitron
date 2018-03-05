@@ -34,7 +34,7 @@ class ValidateTest extends BaseTestCase
         $v->rule('required', array('name', 'email'));
         $this->assertFalse($v->validate());
     }
-   
+
     public function testRequiredSubfieldsArrayStringValue()
     {
         $v = new Validator(array('name' => 'bob'));
@@ -70,6 +70,36 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testEqualsBothNull()
+    {
+        $v = new Validator(array('foo' => null, 'bar' => null));
+        $v->rule('equals', 'foo', 'bar');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testEqualsBothNullRequired()
+    {
+        $v = new Validator(array('foo' => null, 'bar' => null));
+        $v->rule('required', array('foo', 'bar'));
+        $v->rule('equals', 'foo', 'bar');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testEqualsBothUnset()
+    {
+        $v = new Validator(array('foo' => 1));
+        $v->rule('equals', 'bar', 'baz');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testEqualsBothUnsetRequired()
+    {
+        $v = new Validator(array('foo' => 1));
+        $v->rule('required', array('bar', 'baz'));
+        $v->rule('equals', 'bar', 'baz');
+        $this->assertFalse($v->validate());
+    }
+
     public function testDifferentValid()
     {
         $v = new Validator(array('foo' => 'bar', 'bar' => 'baz'));
@@ -81,6 +111,36 @@ class ValidateTest extends BaseTestCase
     {
         $v = new Validator(array('foo' => 'baz', 'bar' => 'baz'));
         $v->rule('different', 'foo', 'bar');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testDifferentBothNull()
+    {
+        $v = new Validator(array('foo' => null, 'bar' => null));
+        $v->rule('equals', 'foo', 'bar');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testDifferentBothNullRequired()
+    {
+        $v = new Validator(array('foo' => null, 'bar' => null));
+        $v->rule('required', array('foo', 'bar'));
+        $v->rule('equals', 'foo', 'bar');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testDifferentBothUnset()
+    {
+        $v = new Validator(array('foo' => 1));
+        $v->rule('equals', 'bar', 'baz');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testDifferentBothUnsetRequired()
+    {
+        $v = new Validator(array('foo' => 1));
+        $v->rule('required', array('bar', 'baz'));
+        $v->rule('equals', 'bar', 'baz');
         $this->assertFalse($v->validate());
     }
 
@@ -560,6 +620,18 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testEmailDnsValid(){
+        $v = new Validator(array('name' => 'Chester Tester', 'email' => 'chester@tester.com'));
+        $v->rule('emailDNS', 'email');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testEmailDnsInvalid(){
+        $v = new Validator(array('name' => 'Chester Tester', 'email' => 'chester@tester.zyx'));
+        $v->rule('emailDNS', 'email');
+        $this->assertFalse($v->validate());
+    }
+
     public function testUrlValid()
     {
         $v = new Validator(array('website' => 'http://google.com'));
@@ -629,7 +701,7 @@ class ValidateTest extends BaseTestCase
         $v->rule('slug', 'test');
         $this->assertFalse($v->validate());
     }
-    
+
     public function testNoErrorFailOnArray()
     {
         $v = new Validator(array('test' => array()));
@@ -1287,22 +1359,22 @@ class ValidateTest extends BaseTestCase
 
     public function testOptionalProvidedValid()
     {
-        $v = new Validator(array('address' =>  'user@example.com'));   
-        $v->rule('optional', 'address')->rule('email', 'address');        
+        $v = new Validator(array('address' =>  'user@example.com'));
+        $v->rule('optional', 'address')->rule('email', 'address');
         $this->assertTrue($v->validate());
     }
 
     public function testOptionalProvidedInvalid()
     {
-        $v = new Validator(array('address' =>  'userexample.com'));   
-        $v->rule('optional', 'address')->rule('email', 'address');        
+        $v = new Validator(array('address' =>  'userexample.com'));
+        $v->rule('optional', 'address')->rule('email', 'address');
         $this->assertFalse($v->validate());
     }
 
     public function testOptionalNotProvided()
     {
-        $v = new Validator(array());   
-        $v->rule('optional', 'address')->rule('email', 'address');        
+        $v = new Validator(array());
+        $v->rule('optional', 'address')->rule('email', 'address');
         $this->assertTrue($v->validate());
     }
 
@@ -1353,9 +1425,98 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v1->validate());
 
         $v2 = new Validator($data);
-        $v2->rule('required', array('empty_text', 'null_value', 'in_array.empty_text'));
-        $this->assertFalse($v2->validate());
+        $v2->rule('required', array('empty_text', 'null_value', 'in_array.empty_text'), true);
+        $this->assertTrue($v2->validate());
     }
+
+    public function testNestedEqualsValid()
+    {
+        $v = new Validator(array('foo' => array('one' => 'bar', 'two' => 'bar')));
+        $v->rule('equals', 'foo.one', 'foo.two');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testNestedEqualsInvalid()
+    {
+        $v = new Validator(array('foo' => array('one' => 'bar', 'two' => 'baz')));
+        $v->rule('equals', 'foo.one', 'foo.two');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testNestedEqualsBothNull()
+    {
+        $v = new Validator(array('foo' => array('bar' => null, 'baz' => null)));
+        $v->rule('equals', 'foo.bar', 'foo.baz');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testNestedEqualsBothNullRequired()
+    {
+        $v = new Validator(array('foo' => array('bar' => null, 'baz' => null)));
+        $v->rule('required', array('foo.bar', 'foo.baz'));
+        $v->rule('equals', 'foo.bar', 'foo.baz');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testNestedEqualsBothUnset()
+    {
+        $v = new Validator(array('foo' => 'bar'));
+        $v->rule('equals', 'foo.one', 'foo.two');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testNestedEqualsBothUnsetRequired()
+    {
+        $v = new Validator(array('foo' => 'bar'));
+        $v->rule('required', array('foo.one', 'foo.two'));
+        $v->rule('equals', 'foo.one', 'foo.two');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testNestedDifferentValid()
+    {
+        $v = new Validator(array('foo' => array('one' => 'bar', 'two' => 'baz')));
+        $v->rule('different', 'foo.one', 'foo.two');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testNestedDifferentInvalid()
+    {
+        $v = new Validator(array('foo' => array('one' => 'baz', 'two' => 'baz')));
+        $v->rule('different', 'foo.one', 'foo.two');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testNestedDifferentBothNull()
+    {
+        $v = new Validator(array('foo' => array('bar' => null, 'baz' => null)));
+        $v->rule('different', 'foo.bar', 'foo.baz');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testNestedDifferentBothNullRequired()
+    {
+        $v = new Validator(array('foo' => array('bar' => null, 'baz' => null)));
+        $v->rule('required', array('foo.bar', 'foo.baz'));
+        $v->rule('different', 'foo.bar', 'foo.baz');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testNestedDifferentBothUnset()
+    {
+        $v = new Validator(array('foo' => 'bar'));
+        $v->rule('different', 'foo.bar', 'foo.baz');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testNestedDifferentBothUnsetRequired()
+    {
+        $v = new Validator(array('foo' => 'bar'));
+        $v->rule('required', array('foo.bar', 'foo.baz'));
+        $v->rule('different', 'foo.bar', 'foo.baz');
+        $this->assertFalse($v->validate());
+    }
+
 }
 
 function sampleFunctionCallback($field, $value, array $params)

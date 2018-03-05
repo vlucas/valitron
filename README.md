@@ -86,6 +86,19 @@ if($v->validate()) {
 }
 ```
 
+Or use dot syntax to validate all members of a numeric array:
+
+```php
+$v = new Valitron\Validator(array('values' => array(50, 90)));
+$v->rule('max', 'values.*', 100);
+if($v->validate()) {
+    echo "Yay! We're all good!";
+} else {
+    // Errors
+    print_r($v->errors());
+}
+```
+
 Setting language and language dir globally:
 
 ```php
@@ -121,6 +134,7 @@ V::lang('ar');
  * `notIn` - Negation of `in` rule (not in array of values)
  * `ip` - Valid IP address
  * `email` - Valid email address
+ * `emailDNS` - Valid email address with active DNS record
  * `url` - Valid URL
  * `urlActive` - Valid URL with active DNS record
  * `alpha` - Alphabetic characters only
