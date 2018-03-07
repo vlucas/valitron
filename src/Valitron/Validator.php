@@ -223,6 +223,64 @@ class Validator
     }
 
     /**
+     *
+     * Validate that a array have least an index
+     *
+     * @param string $field
+     * @param mixed $value
+     * @param array $params
+     * @return bool
+     */
+    protected function validateArrayLength($field, $value, $params = array(0)){
+        return (count($value)>0);
+    }
+
+    /**
+     *
+     * Validate number of indexes of an array (min)
+     *
+     * @param string $field
+     * @param mixed $value
+     * @param array $params
+     * @return bool
+     */
+    protected function validateArrayLengthMin($field, $value, $params = array(0)){
+        return (count($value)>=$params[0]);
+    }
+
+    /**
+     *
+     * Validate number of indexes of an array (max)
+     *
+     * @param string $field
+     * @param mixed $value
+     * @param array $params
+     * @return bool
+     */
+    protected function validateArrayLengthMax($field, $value, $params = array(0)){
+        return (count($value)<=$params[0]);
+    }
+
+    /**
+     *
+     * Validate number of indexes of an array (between)
+     *
+     * @param string $field
+     * @param mixed $value
+     * @param array $params
+     * @return bool
+     */
+    protected function validateArrayLengthBetween($field, $value, $params = array(0)){
+        $length = count($value);
+        // Length between
+        if (isset($params[1])) {
+            return $length >= $params[0] && $length <= $params[1];
+        }
+        // Length same
+        return ($length !== false) && $length == $params[0];
+    }
+
+    /**
      * Validate that a field is numeric
      *
      * @param  string $field

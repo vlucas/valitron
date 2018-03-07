@@ -30,5 +30,9 @@ return array(
     'creditCard'    => "must be a valid credit card number",
     'lengthMin'     => "must be at least %d characters long",
     'lengthMax'     => "must not exceed %d characters",
-    'instanceOf'    => "must be an instance of '%s'"
+    'instanceOf'    => "must be an instance of '%s'",
+    'arrayLength'   => "must have at least an index",
+    'arrayLengthMin'   => "must have at least %s indexes",
+    'arrayLengthMax'   => "must have no more than %s indexes",
+    'arrayLengthBetween'   => "must be between %d and %d indexes",
 );
