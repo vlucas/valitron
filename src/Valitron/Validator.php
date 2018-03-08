@@ -78,6 +78,11 @@ class Validator
     protected $validUrlPrefixes = array('http://', 'https://', 'ftp://');
 
     /**
+     * @var bool
+     */
+    protected $stop_on_first_fail = false;
+
+    /**
      * Setup validation
      *
      * @param  array                     $data
@@ -965,6 +970,7 @@ class Validator
      */
     public function validate()
     {
+    	$set_to_break = false;
         foreach ($this->_validations as $v) {
             foreach ($v['fields'] as $field) {
                  list($values, $multiple) = $this->getPart($this->_fields, explode('.', $field));
@@ -999,11 +1005,24 @@ class Validator
 
                 if (!$result) {
                     $this->error($field, $v['message'], $v['params']);
+                    if($this->stop_on_first_fail) {
+                    	$set_to_break = true;
+                    	break;
+                    }
                 }
             }
+            if($set_to_break) break;
         }
 
         return count($this->errors()) === 0;
+    }
+
+    /**
+     * Should the validation stop a rule is failed
+     * @param bool $stop
+     */
+    public function stopOnFirstFail($stop = true) {
+    	$this->stop_on_first_fail = (bool) $stop;
     }
 
     /**
