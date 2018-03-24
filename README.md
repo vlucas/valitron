@@ -200,7 +200,7 @@ The arrayLength rules are simply a wrapper around the countableLength rules. The
 
 *arrayLength*
 
-```
+```php
 $data = array('testArray' => array(1, 2));
 $validator = new Validator($data);
 $validator->rule('arrayLength', 'testArray', 2);
@@ -209,7 +209,7 @@ $validator->validate(); // true
 
 *arrayLengthMin*
 
-```
+```php
 $data = array('testArray' => array(1, 2, 3, 4));
 $validator = new Validator($data);
 $validator->rule('arrayLengthMin', 'testArray', 2);
@@ -218,7 +218,7 @@ $validator->validate(); // true
 
 *arrayLengthMax*
 
-```
+```php
 $data = array('testArray' => array(1, 2, 3, 4));
 $validator = new Validator($data);
 $validator->rule('arrayLengthMax', 'testArray', 4);
@@ -229,7 +229,7 @@ $validator->validate(); // true
 
 *NOTE: The between option takes an array of min and max values*
 
-```
+```php
 $data = array('testArray' => array(1, 2, 3, 4));
 $validator = new Validator($data);
 $validator->rule('arrayLengthBetween', 'testArray', array(1, 5));
@@ -240,7 +240,7 @@ $validator->validate(); // true
 
 *NOTE: supply true as the last parameter in order to trigger recursive counting*
 
-```
+```php
 $data = array(
     'testArray' => array(
         'arrayOne' => array(1, 2),
@@ -261,7 +261,7 @@ Note that you count use the array tests above with the countable rules as the co
 For the samples below we'll utilize a sample class that implements the Countable interface. Normally you'd have something more complex, but for the sake of this example this should hopefully get the point across.
 
 CountMe Class:
-```
+```php
 /**
  * This class is countable and implements the Countable interface
  */
@@ -288,7 +288,7 @@ class CountMe implements \Countable {
 
 *countableLength*
 
-```
+```php
 $countable = new CountMe(2);
 $validator = new Validator(array('testObject' => $countable));
 $validator->rule('countableLength', 'testObject', 2);
@@ -297,7 +297,7 @@ $validator->validate(); // true
 
 *countableLengthMin*
 
-```
+```php
 $countable = new CountMe(2);
 $validator = new Validator(array('testObject' => $countable));
 $validator->rule('countableLengthMin', 'testObject', 1);
@@ -306,7 +306,7 @@ $validator->validate(); // true
 
 *countableLengthMax*
 
-```
+```php
 $countable = new CountMe(2);
 $validator = new Validator(array('testObject' => $countable));
 $validator->rule('countableLengthMax', 'testObject', 2);
@@ -317,7 +317,7 @@ $validator->validate(); // true
 
 *NOTE: The between option takes an array of min and max values*
 
-```
+```php
 $countable = new CountMe(2);
 $validator = new Validator(array('testObject' => $countable));
 $validator->rule('countableLengthBetween', 'testObject', array(1, 5));
@@ -328,7 +328,7 @@ $validator->validate(); // true
 
 *NOTE: supply true as the last parameter in order to trigger recursive counting*
 
-```
+```php
 $countable = new CountMe(2);
 $validator = new Validator(array('testObject' => $countable));
 $validator->rule('countableLength', 'testObject', 2, true);
