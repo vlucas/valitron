@@ -1222,6 +1222,726 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
+    /**
+     * Tests that the arrayLength test returns false when an array is not provided
+     * @return void
+     */
+    public function testArrayLengthInvalidType() {
+        $validator = new Validator(array('testArray' => 'this is a string, not an array'));
+        $validator->rule('arrayLength', 'testArray', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is a given length
+     * @return void
+     */
+    public function testArrayLengthValid() {
+        $validator = new Validator(array('testArray' => array(1, 2)));
+        $validator->rule('arrayLength', 'testArray', 2);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is NOT a given length
+     * @return void
+     */
+    public function testArrayLengthInvalid() {
+        $validator = new Validator(array('testArray' => array(1)));
+        $validator->rule('arrayLength', 'testArray', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is a given length recursively
+     * @return void
+     */
+    public function testArrayLengthValidRecursive() {
+        $data = array(
+            'testArray' => array(
+                'arrayOne' => array(1, 2),
+                'arrayTwo' => array(3, 4),
+            ),
+        );
+        $validator = new Validator($data);
+        $validator->rule('arrayLength', 'testArray', 6, true);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is NOT a given length recursively
+     * @return void
+     */
+    public function testArrayLengthInvalidRecursive() {
+        $data = array(
+            'testArray' => array(
+                'arrayOne' => array(1, 2),
+                'arrayTwo' => array(3, 4),
+            ),
+        );
+        $validator = new Validator($data);
+        $validator->rule('arrayLength', 'testArray', 2, true);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests that the arrayLengthMin test returns false when an array is not provided
+     * @return void
+     */
+    public function testArrayLengthMinInvalidType() {
+        $validator = new Validator(array('testArray' => 'this is a string, not an array'));
+        $validator->rule('arrayLengthMin', 'testArray', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is at least a given minimum length
+     * @return void
+     */
+    public function testArrayLengthMinValid() {
+        $validator = new Validator(array('testArray' => array(1, 2, 3, 4)));
+        $validator->rule('arrayLengthMin', 'testArray', 2);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is NOT at least a given minimum length
+     * @return void
+     */
+    public function testArrayLengthMinInvalid() {
+        $validator = new Validator(array('testArray' => array(1, 2)));
+        $validator->rule('arrayLengthMin', 'testArray', 3);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is at least a given minimum length recursively
+     * @return void
+     */
+    public function testArrayLengthMinValidRecursive() {
+        $data = array(
+            'testArray' => array(
+                'arrayOne' => array(1, 2),
+                'arrayTwo' => array(3, 4),
+            ),
+        );
+        $validator = new Validator($data);
+        $validator->rule('arrayLengthMin', 'testArray', 3, true);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is at least NOT a given minimum length recursively
+     * @return void
+     */
+    public function testArrayLengthMinInvalidRecursive() {
+        $data = array(
+            'testArray' => array(
+                'arrayOne' => array(1),
+            ),
+        );
+        $validator = new Validator($data);
+        $validator->rule('arrayLengthMin', 'testArray', 4, true);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests that the arrayLengthMax test returns false when an array is not provided
+     * @return void
+     */
+    public function testArrayLengthMaxInvalidType() {
+        $validator = new Validator(array('testArray' => 'this is a string, not an array'));
+        $validator->rule('arrayLengthMax', 'testArray', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is at most a given maximum length
+     * @return void
+     */
+    public function testArrayLengthMaxValid() {
+        $validator = new Validator(array('testArray' => array(1, 2, 3, 4)));
+        $validator->rule('arrayLengthMax', 'testArray', 5);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is NOT at most a given maximum length
+     * @return void
+     */
+    public function testArrayLengthMaxInvalid() {
+        $validator = new Validator(array('testArray' => array(1, 2, 3)));
+        $validator->rule('arrayLengthMax', 'testArray', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is at most a given maximum length recursively
+     * @return void
+     */
+    public function testArrayLengthMaxValidRecursive() {
+        $data = array(
+            'testArray' => array(
+                'arrayOne' => array(1, 2),
+                'arrayTwo' => array(3, 4),
+            ),
+        );
+        $validator = new Validator($data);
+        $validator->rule('arrayLengthMax', 'testArray', 6, true);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is NOT at most a given maximum length recursively
+     * @return void
+     */
+    public function testArrayLengthMaxInvalidRecursive() {
+        $data = array(
+            'testArray' => array(
+                'arrayOne' => array(1),
+            ),
+        );
+        $validator = new Validator($data);
+        $validator->rule('arrayLengthMax', 'testArray', 1, true);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests that the arrayLengthBetween test returns false when an array is not provided
+     * @return void
+     */
+    public function testArrayLengthBetweenInvalidType() {
+        $validator = new Validator(array('testArray' => 'this is a string, not an array'));
+        $validator->rule('arrayLengthBetween', 'testArray', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests that the arrayLengthBetween test returns false when an array of min and max is not provided
+     * @return void
+     */
+    public function testArrayLengthBetweenInvalidParam() {
+        $validator = new Validator(array('testArray' => array(1, 2)));
+        $validator->rule('arrayLengthBetween', 'testArray', 2, 3);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied array's length is between two values
+     * @return void
+     */
+    public function testArrayLengthBetweenValid() {
+        $validator = new Validator(array('testArray' => array(1, 2, 3, 4)));
+        $validator->rule('arrayLengthBetween', 'testArray', array(2, 4));
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied array's length is NOT between two values
+     * @return void
+     */
+    public function testArrayLengthBetweenInvalid() {
+        $validator = new Validator(array('testArray' => array(1, 2, 3)));
+        $validator->rule('arrayLengthBetween', 'testArray', array(4, 5));
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied array's length is between two values recursively
+     * @return void
+     */
+    public function testArrayLengthBetweenValidRecursive() {
+        $data = array(
+            'testArray' => array(
+                'arrayOne' => array(1, 2),
+                'arrayTwo' => array(3, 4),
+            ),
+        );
+        $validator = new Validator($data);
+        $validator->rule('arrayLengthBetween', 'testArray', array(3, 7), true);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied array's length is NOT between two values recursively
+     * @return void
+     */
+    public function testArrayLengthBetweenInvalidRecursive() {
+        $data = array(
+            'testArray' => array(
+                'arrayOne' => array(1),
+            ),
+        );
+        $validator = new Validator($data);
+        $validator->rule('arrayLengthBetween', 'testArray', array(4, 5), true);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests that the countableLength test returns false when a non-array or non-countable object is provider
+     * @return void
+     */
+    public function testCountableLengthInvalidTypeArray() {
+        $validator = new Validator(array('testArray' => 'this is a string, not an array'));
+        $validator->rule('countableLength', 'testArray', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests that the countableLength test returns false when an object that is not countable is provided
+     * @return void
+     */
+    public function testCountableLengthInvalidTypeObject() {
+        $tester = new StdClass();
+        $validator = new Validator(array('testObject' => $tester));
+        $validator->rule('countableLength', 'testObject', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is a given length
+     * @return void
+     */
+    public function testCountableLengthArrayValid() {
+        $validator = new Validator(array('testArray' => array(1, 2)));
+        $validator->rule('countableLength', 'testArray', 2);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied countable object is a given length
+     * @return void
+     */
+    public function testCountableLengthObjectValid() {
+        $length = 2;
+        $countable = new CountMe($length);
+        $validator = new Validator(array('testObject' => $countable));
+        $validator->rule('countableLength', 'testObject', $length);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is NOT a given length
+     * @return void
+     */
+    public function testCountableLengthArrayInvalid() {
+        $validator = new Validator(array('testArray' => array(1)));
+        $validator->rule('countableLength', 'testArray', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied countable object is NOT a given length
+     * @return void
+     */
+    public function testCountableLengthObjectInvalid() {
+        $countable = new CountMe(2);
+        $validator = new Validator(array('testObject' => $countable));
+        $validator->rule('countableLength', 'testObject', 4);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is a given length recursively
+     * @return void
+     */
+    public function testCountableLengthValidRecursiveArray() {
+        $data = array(
+            'testArray' => array(
+                'arrayOne' => array(1, 2),
+                'arrayTwo' => array(3, 4),
+            ),
+        );
+        $validator = new Validator($data);
+        $validator->rule('countableLength', 'testArray', 6, true);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied object is a given length recursively
+     * @return void
+     */
+    public function testCountableLengthValidRecursiveObject() {
+        $length = 4;
+        $countable = new CountMe($length);
+        $validator = new Validator(array('testObject' => $countable));
+        $validator->rule('countableLength', 'testObject', $length, true);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is NOT a given length recursively
+     * @return void
+     */
+    public function testCountableLengthInvalidRecursiveArray() {
+        $data = array(
+            'testArray' => array(
+                'arrayOne' => array(1, 2),
+                'arrayTwo' => array(3, 4),
+            ),
+        );
+        $validator = new Validator($data);
+        $validator->rule('countableLength', 'testArray', 2, true);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied object is NOT a given length recursively
+     * @return void
+     */
+    public function testCountableLengthInvalidRecursiveObject() {
+        $data = array(
+            'testObject' => new CountMe(4),
+        );
+        $validator = new Validator($data);
+        $validator->rule('countableLength', 'testObject', 2, true);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests that the countableLengthMin test returns false when neither an array not countable object is provided
+     * @return void
+     */
+    public function testCountableLengthMinInvalidType() {
+        $validator = new Validator(array('testArray' => 'this is a string, not an array'));
+        $validator->rule('countableLengthMin', 'testArray', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests that the countableLengthMin test returns false when an object that is not countable is provided
+     * @return void
+     */
+    public function testCountableLengthMinInvalidTypeObject() {
+        $tester = new StdClass();
+        $validator = new Validator(array('testObject' => $tester));
+        $validator->rule('countableLengthMin', 'testObject', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is at least a given minimum length
+     * @return void
+     */
+    public function testCountableLengthMinValidArray() {
+        $validator = new Validator(array('testArray' => array(1, 2, 3, 4)));
+        $validator->rule('countableLengthMin', 'testArray', 2);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied object is at least a given minimum length
+     * @return void
+     */
+    public function testCountableLengthMinValidObject() {
+        $validator = new Validator(array('testObject' => new CountMe(3)));
+        $validator->rule('countableLengthMin', 'testObject', 2);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is NOT at least a given minimum length
+     * @return void
+     */
+    public function testCountableLengthMinInvalidArray() {
+        $validator = new Validator(array('testArray' => array(1, 2)));
+        $validator->rule('countableLengthMin', 'testArray', 3);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied object is NOT at least a given minimum length
+     * @return void
+     */
+    public function testCountableLengthMinInvalidObject() {
+        $validator = new Validator(array('testObject' => new CountMe(3)));
+        $validator->rule('countableLengthMin', 'testObject', 4);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is at least a given minimum length recursively
+     * @return void
+     */
+    public function testCountableLengthMinValidRecursiveArray() {
+        $data = array(
+            'testArray' => array(
+                'arrayOne' => array(1, 2),
+                'arrayTwo' => array(3, 4),
+            ),
+        );
+        $validator = new Validator($data);
+        $validator->rule('countableLengthMin', 'testArray', 3, true);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied object is at least a given minimum length recursively
+     * @return void
+     */
+    public function testCountableLengthMinValidRecursiveObject() {
+        $validator = new Validator(array('testObject' => new CountMe(3)));
+        $validator->rule('countableLengthMin', 'testObject', 3, true);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is at least NOT a given minimum length recursively
+     * @return void
+     */
+    public function testCountableLengthMinInvalidRecursiveArray() {
+        $data = array(
+            'testArray' => array(
+                'arrayOne' => array(1),
+            ),
+        );
+        $validator = new Validator($data);
+        $validator->rule('countableLengthMin', 'testArray', 4, true);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied object is at least NOT a given minimum length recursively
+     * @return void
+     */
+    public function testCountableLengthMinInvalidRecursiveObject() {
+        $validator = new Validator(array('testObject' => new CountMe(3)));
+        $validator->rule('countableLengthMin', 'testObject', 4, true);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests that the countableLengthMax test returns false when neither an array nor countable object is provided
+     * @return void
+     */
+    public function testCountableLengthMaxInvalidType() {
+        $validator = new Validator(array('testArray' => 'this is a string, not an array'));
+        $validator->rule('countableLengthMax', 'testArray', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests that the countableLengthMax test returns false when neither an array nor countable object is provided
+     * @return void
+     */
+    public function testCountableLengthMaxInvalidTypeObject() {
+        $validator = new Validator(array('testObject' => new StdClass()));
+        $validator->rule('countableLengthMax', 'testObject', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is at most a given maximum length
+     * @return void
+     */
+    public function testCountableLengthMaxValidArray() {
+        $validator = new Validator(array('testArray' => array(1, 2, 3, 4)));
+        $validator->rule('countableLengthMax', 'testArray', 5);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied object is at most a given maximum length
+     * @return void
+     */
+    public function testCountableLengthMaxValidObject() {
+        $validator = new Validator(array('testObject' => new CountMe(4)));
+        $validator->rule('countableLengthMax', 'testObject', 5);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is NOT at most a given maximum length
+     * @return void
+     */
+    public function testCountableLengthMaxInvalidArray() {
+        $validator = new Validator(array('testArray' => array(1, 2, 3)));
+        $validator->rule('countableLengthMax', 'testArray', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied object is NOT at most a given maximum length
+     * @return void
+     */
+    public function testCountableLengthMaxInvalidObject() {
+        $validator = new Validator(array('testObject' => new CountMe(4)));
+        $validator->rule('countableLengthMax', 'testObject', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is at most a given maximum length recursively
+     * @return void
+     */
+    public function testCountableLengthMaxValidRecursiveArray() {
+        $data = array(
+            'testArray' => array(
+                'arrayOne' => array(1, 2),
+                'arrayTwo' => array(3, 4),
+            ),
+        );
+        $validator = new Validator($data);
+        $validator->rule('countableLengthMax', 'testArray', 6, true);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied object is at most a given maximum length recursively
+     * @return void
+     */
+    public function testCountableLengthMaxValidRecursiveObject() {
+        $validator = new Validator(array('testObject' => new CountMe(4)));
+        $validator->rule('countableLengthMax', 'testArray', 4, true);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied array is NOT at most a given maximum length recursively
+     * @return void
+     */
+    public function testCountableLengthMaxInvalidRecursiveArray() {
+        $data = array(
+            'testArray' => array(
+                'arrayOne' => array(1),
+            ),
+        );
+        $validator = new Validator($data);
+        $validator->rule('countableLengthMax', 'testArray', 1, true);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied object is NOT at most a given maximum length recursively
+     * @return void
+     */
+    public function testCountableLengthMaxInvalidRecursiveObject() {
+        $validator = new Validator(array('testObject' => new CountMe(4)));
+        $validator->rule('countableLengthMax', 'testObject', 1, true);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests that the countableLengthBetween test returns false when neither an array nor a countable object is provided
+     * @return void
+     */
+    public function testObjectLengthBetweenInvalidType() {
+        $validator = new Validator(array('testArray' => 'this is a string, not an array'));
+        $validator->rule('countableLengthBetween', 'testArray', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests that the countableLengthBetween test returns false when a non-countable object is provided
+     * @return void
+     */
+    public function testObjectLengthBetweenInvalidTypeObject() {
+        $validator = new Validator(array('testObject' => new StdClass()));
+        $validator->rule('countableLengthBetween', 'testObject', 2);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests that the countableLengthBetween test returns false when an array of min and max is not provided
+     * @return void
+     */
+    public function testCountableLengthBetweenInvalidParam() {
+        $validator = new Validator(array('testArray' => array(1, 2)));
+        $validator->rule('countableLengthBetween', 'testArray', 2, 3);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied array's length is between two values
+     * @return void
+     */
+    public function testCountableLengthBetweenValidArray() {
+        $validator = new Validator(array('testArray' => array(1, 2, 3, 4)));
+        $validator->rule('countableLengthBetween', 'testArray', array(2, 4));
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied object's length is between two values
+     * @return void
+     */
+    public function testCountableLengthBetweenValidObject() {
+        $validator = new Validator(array('testObject' => new CountMe(3)));
+        $validator->rule('countableLengthBetween', 'testObject', array(2, 4));
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied array's length is NOT between two values
+     * @return void
+     */
+    public function testCountableLengthBetweenInvalidArray() {
+        $validator = new Validator(array('testArray' => array(1, 2, 3)));
+        $validator->rule('countableLengthBetween', 'testArray', array(4, 5));
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied object's length is NOT between two values
+     * @return void
+     */
+    public function testCountableLengthBetweenInvalidObject() {
+        $validator = new Validator(array('testObject' => new CountMe(2)));
+        $validator->rule('countableLengthBetween', 'testObject', array(4, 5));
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied array's length is between two values recursively
+     * @return void
+     */
+    public function testCountableLengthBetweenValidRecursiveArray() {
+        $data = array(
+            'testArray' => array(
+                'arrayOne' => array(1, 2),
+                'arrayTwo' => array(3, 4),
+            ),
+        );
+        $validator = new Validator($data);
+        $validator->rule('countableLengthBetween', 'testArray', array(3, 7), true);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied object's length is between two values recursively
+     * @return void
+     */
+    public function testCountableLengthBetweenValidRecursiveObject() {
+        $validator = new Validator(array('testObject' => new CountMe(4)));
+        $validator->rule('countableLengthBetween', 'testObject', array(3, 7), true);
+        $this->assertTrue($validator->validate());
+    }
+
+    /**
+     * Tests supplied array's length is NOT between two values recursively
+     * @return void
+     */
+    public function testCountableLengthBetweenInvalidRecursiveArray() {
+        $data = array(
+            'testArray' => array(
+                'arrayOne' => array(1),
+            ),
+        );
+        $validator = new Validator($data);
+        $validator->rule('countableLengthBetween', 'testArray', array(4, 5), true);
+        $this->assertFalse($validator->validate());
+    }
+
+    /**
+     * Tests supplied object's length is NOT between two values recursively
+     * @return void
+     */
+    public function testCountableLengthBetweenInvalidRecursiveObject() {
+        $validator = new Validator(array('testObject' => new CountMe(2)));
+        $validator->rule('countableLengthBetween', 'testObject', array(4, 5), true);
+        $this->assertFalse($validator->validate());
+    }
+
     public function testWithData()
     {
         $v = new Validator(array());
@@ -1275,4 +1995,27 @@ class ValidateTest extends BaseTestCase
 
 function sampleFunctionCallback($field, $value, array $params) {
   return true;
+}
+
+/**
+ * This is a helper class to test countable objects
+ */
+class CountMe implements \Countable {
+
+    /**
+     * Instantiate a new instance
+     * @param int $count
+     */
+    public function __construct($count) {
+        $this->count = $count;
+    }
+
+    /**
+     * Implement countable interface
+     * @return int
+     */
+    public function count() {
+        return $this->count;
+    }
+
 }

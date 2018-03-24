@@ -30,5 +30,13 @@ return array(
     'creditCard'    => "must be a valid credit card number",
     'lengthMin'     => "must be at least %d characters long",
     'lengthMax'     => "must not exceed %d characters",
-    'instanceOf'    => "must be an instance of '%s'"
+    'instanceOf'    => "must be an instance of '%s'",
+    'arrayLength'   => "must contain %d items",
+    'arrayLengthMin'=> "must contain at least %s items",
+    'arrayLengthMax'=> "must contain at most %s items",
+    'arrayLengthBetween' => "does not contain the correct range of items",
+    'countableLength' => "must contain %d items",
+    'countableLengthMin' => "must contain at least %s items",
+    'countableLengthMax' => "must contain at most %s items",
+    'countableLengthBetween' => "does not contain the correct range of items",
 );

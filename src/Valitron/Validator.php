@@ -808,6 +808,140 @@ class Validator
     }
 
     /**
+     * Helper to return the length of an array or countable object
+     * @param array|object $value
+     * @param bool $recursive whether or not to recursive count
+     * @return int
+     */
+    protected function countableLength($value, $recursive) {
+        if ($recursive) {
+            return count($value, COUNT_RECURSIVE);
+        } else {
+            return count($value);
+        }
+    }
+
+    /**
+     * Validates an array is exactly a given length
+     * @param string $field name of the field to be validated
+     * @param mixed $value value to be validated
+     * @param array $params additional parameters
+     * @return bool
+     */
+    protected function validateArrayLength($field, $value, $params) {
+        return $this->validateCountableLength($field, $value, $params);
+    }
+
+    /**
+     * Validates an array is at least a given length
+     * @param string $field name of the field to be validated
+     * @param mixed $value value to be validated
+     * @param array $params additional parameters
+     * @return bool
+     */
+    protected function validateArrayLengthMin($field, $value, $params) {
+        return $this->validateCountableLengthMin($field, $value, $params);
+    }
+
+    /**
+     * Validates an array is at most a given length
+     * @param string $field name of the field to be validated
+     * @param mixed $value value to be validated
+     * @param array $params additional parameters
+     * @return bool
+     */
+    protected function validateArrayLengthMax($field, $value, $params) {
+        return $this->validateCountableLengthMax($field, $value, $params);
+    }
+
+    /**
+     * Validates an array's length is between two values
+     * @param string $field name of the field to be validated
+     * @param mixed $value value to be validated
+     * @param array $params additional parameters
+     * @return bool
+     */
+    protected function validateArrayLengthBetween($field, $value, $params) {
+        return $this->validateCountableLengthBetween($field, $value, $params);
+    }
+
+    /**
+     * Validates a countable object or array is exactly a given length
+     * @param string $field name of the field to be validated
+     * @param mixed $value value to be validated
+     * @param array $params additional parameters
+     * @return bool
+     */
+    protected function validateCountableLength($field, $value, $params) {
+        // make sure we are working with an array or countable object
+        if (!is_array($value) && (!$value instanceof \Countable)) {
+            return false;
+        }
+        // check for optional recursive param
+        $recursive = isset($params[1]) && $params[1] == true;
+        $count = $this->countableLength($value, $recursive);
+        return $count == $params[0];
+    }
+
+    /**
+     * Validates a countable object or array is at least a given length
+     * @param string $field name of the field to be validated
+     * @param mixed $value value to be validated
+     * @param array $params additional parameters
+     * @return bool
+     */
+    protected function validateCountableLengthMin($field, $value, $params) {
+        // make sure we are working with an array or countable object
+        if (!is_array($value) && (!$value instanceof \Countable)) {
+            return false;
+        }
+        $recursive = isset($params[1]) && $params[1] == true;
+        $count = $this->countableLength($value, $recursive);
+        return $count >= $params[0];
+    }
+
+    /**
+     * Validates a countable object or array is at most a given length
+     * @param string $field name of the field to be validated
+     * @param mixed $value value to be validated
+     * @param array $params additional parameters
+     * @return bool
+     */
+    protected function validateCountableLengthMax($field, $value, $params) {
+        // make sure we are working with an array or countable object
+        if (!is_array($value) && (!$value instanceof \Countable)) {
+            return false;
+        }
+        // check for optional recursive param
+        $recursive = isset($params[1]) && $params[1] == true;
+        $count = $this->countableLength($value, $recursive);
+        return $count <= $params[0];
+    }
+
+    /**
+     * Validates a countable object or array's length is between two values
+     * @param string $field name of the field to be validated
+     * @param mixed $value value to be validated
+     * @param array $params additional parameters
+     * @return bool
+     */
+    protected function validateCountableLengthBetween($field, $value, $params) {
+        // make sure we are working with an array or countable object
+        if (!is_array($value) && (!$value instanceof \Countable)) {
+            return false;
+        }
+        // make sure we have both min and max values
+        if (!isset($params[0]) || !is_array($params[0]) || count($params[0]) !== 2) {
+            return false;
+        }
+        // check for optional recursive param
+        $recursive = isset($params[1]) && $params[1] == true;
+        $count = $this->countableLength($value, $recursive);
+        list($min, $max) = $params[0];
+        return ($count >= $min && $count <= $max);
+    }
+
+    /**
      *  Get array of fields and data
      *
      * @return array
