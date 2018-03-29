@@ -251,7 +251,7 @@ class Validator
     {
         if (isset($params[0]) && (bool) $params[0]){
             //strict mode
-            return preg_match('/^-?([0-9])+$/i', $value);
+            return preg_match('/^([0-9]|-[1-9]|-?[1-9][0-9]*)$/i', $value);
         }
 
         return filter_var($value, \FILTER_VALIDATE_INT) !== false;
