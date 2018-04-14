@@ -15,11 +15,11 @@ class ValidateTest extends BaseTestCase
         $this->assertEquals($v->data(), array('foo' => 'bar'));
     }
 
-    public function testAccurateErrorCount()
+    public function testAccurateErrorShouldReturnFalse()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
         $v->rule('required', 'name');
-        $this->assertSame(1, count($v->errors('name')));
+        $this->assertFalse($v->errors('name'));
     }
     public function testArrayOfFieldsToValidate()
     {
