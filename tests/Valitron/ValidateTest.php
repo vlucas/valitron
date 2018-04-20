@@ -884,6 +884,11 @@ class ValidateTest extends BaseTestCase
         $v = new Validator(array('test_field' => array(81, false, 'orange')));
         $v->rule('arrayContains', 'test_field', array(45, 'green', true, 'orange', null, 81, false));
         $this->assertTrue($v->validate());
+
+        // string value and validation target cast to array
+        $v = new Validator(array('test_field' => 'blue'));
+        $v->rule('arrayContains', 'test_field', 'blue');
+        $this->assertTrue($v->validate());
     }
 
     public function testArrayContainsInvalid()
@@ -913,35 +918,35 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
-    public function testUniqueValid()
+    public function testContainsUniqueValid()
     {
         // numeric values
         $v = new Validator(array('test_field' => array(81, 3, 15)));
-        $v->rule('unique', 'test_field');
+        $v->rule('containsUnique', 'test_field');
         $this->assertTrue($v->validate());
 
         // string values
         $v = new Validator(array('test_field' => array('white', 'green', 'blue')));
-        $v->rule('unique', 'test_field');
+        $v->rule('containsUnique', 'test_field');
         $this->assertTrue($v->validate());
 
         // mixed values
         $v = new Validator(array('test_field' => array(81, false, 'orange')));
-        $v->rule('unique', 'test_field');
+        $v->rule('containsUnique', 'test_field');
         $this->assertTrue($v->validate());
     }
 
-    public function testUniqueInvalid()
+    public function testContainsUniqueInvalid()
     {
         $v = new Validator(array('test_field' => array(81, false, 'orange', false)));
-        $v->rule('unique', 'test_field');
+        $v->rule('containsUnique', 'test_field');
         $this->assertFalse($v->validate());
     }
 
-    public function testUniqueInvalidValue()
+    public function testContainsUniqueInvalidValue()
     {
         $v = new Validator(array('test_field' => 'lorem ipsum'));
-        $v->rule('unique', 'test_field');
+        $v->rule('containsUnique', 'test_field');
         $this->assertFalse($v->validate());
     }
 

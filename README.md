@@ -146,8 +146,8 @@ V::lang('ar');
  * `dateBefore` - Field is a valid date and is before the given date
  * `dateAfter` - Field is a valid date and is after the given date
  * `contains` - Field is a string and contains the given string
- * `arrayContains` - Field is an array and contains the given array
- * `unique` - Field is an array and contains unique values
+ * `arrayContains` - Field is an array or a scalar value and contains the given array
+ * `containsUnique` - Field is an array and contains unique values
  * `creditCard` - Field is a valid credit card number
  * `instanceOf` - Field contains an instance of the given class
  * `optional` - Value does not need to be included in data array. If it is however, it must pass validation.

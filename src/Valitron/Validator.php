@@ -481,8 +481,11 @@ class Validator
         if (!isset($params[0])) {
             return false;
         }
-        if (!is_array($value) || !is_array($params[0])) {
-            return false;
+        if (!is_array($params[0])) {
+            $params[0] = array($params[0]);
+        }
+        if (is_scalar($value)) {
+            return $this->validateIn($field, $value, $params);
         }
 
         $intersect = array_intersect($value, $params[0]);
@@ -496,7 +499,7 @@ class Validator
      * @param  array  $value
      * @return bool
      */
-    protected function validateUnique($field, $value)
+    protected function validateContainsUnique($field, $value)
     {
         if (!is_array($value)) {
             return false;
