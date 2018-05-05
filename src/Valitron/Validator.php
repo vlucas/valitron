@@ -1313,10 +1313,19 @@ class Validator
                 $message = $rule['message'];
                 unset($rule['message']);
             }
+            //find a custom label, if any
+            $label = null;
+            if (isset($rule['label'])){
+                $label = $rule['label'];
+                unset($rule['label']);
+            }
             //Add the field and additional parameters to the rule
             $added = call_user_func_array(array($me, 'rule'), array_merge(array($rule_name, $field_name), $rule));
             if (! empty($message)){
                 $added->message($message);
+            }
+            if (! empty($label)){
+                $added->label($label);
             }
         }, (array) $rules);
     }
