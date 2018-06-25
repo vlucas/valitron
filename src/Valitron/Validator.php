@@ -1147,7 +1147,7 @@ class Validator
     /**
      * Convenience method to add a single validation rule
      *
-     * @param  string|callback           $rule
+     * @param  string|callable           $rule
      * @param  array|string              $fields
      * @return $this
      * @throws \InvalidArgumentException
