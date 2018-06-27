@@ -1079,7 +1079,7 @@ class Validator
      * instance only.
      *
      * @param string                     $name
-     * @param mixed                         $callback
+     * @param callable                         $callback
      * @param string                     $message
      * @throws \InvalidArgumentException
      */
@@ -1095,7 +1095,7 @@ class Validator
      * Register new validation rule callback
      *
      * @param  string                    $name
-     * @param  mixed                     $callback
+     * @param  callable                     $callback
      * @param  string                    $message
      * @throws \InvalidArgumentException
      */
@@ -1147,7 +1147,7 @@ class Validator
     /**
      * Convenience method to add a single validation rule
      *
-     * @param  string|callback           $rule
+     * @param  string|callable           $rule
      * @param  array|string              $fields
      * @return $this
      * @throws \InvalidArgumentException
