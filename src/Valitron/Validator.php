@@ -1306,6 +1306,10 @@ class Validator
 
             //First element is the name of the rule
             $rule_name = array_shift($rule);
+            if ($rule_name == 'label' && ($label = array_shift($rule))) {
+                $this->labels(array($field_name => $label));
+                return;
+            }
 
             //find a custom message, if any
             $message = null;
