@@ -829,6 +829,9 @@ class Validator
      * @return bool
      */
     protected function validateArrayLength($field, $value, $params) {
+        if (!is_array($value)) {
+            return false;
+        }
         return $this->validateCountableLength($field, $value, $params);
     }
 
@@ -840,6 +843,9 @@ class Validator
      * @return bool
      */
     protected function validateArrayLengthMin($field, $value, $params) {
+        if (!is_array($value)) {
+            return false;
+        }
         return $this->validateCountableLengthMin($field, $value, $params);
     }
 
@@ -851,6 +857,9 @@ class Validator
      * @return bool
      */
     protected function validateArrayLengthMax($field, $value, $params) {
+        if (!is_array($value)) {
+            return false;
+        }
         return $this->validateCountableLengthMax($field, $value, $params);
     }
 
@@ -862,6 +871,9 @@ class Validator
      * @return bool
      */
     protected function validateArrayLengthBetween($field, $value, $params) {
+        if (!is_array($value)) {
+            return false;
+        }
         return $this->validateCountableLengthBetween($field, $value, $params);
     }
 
