@@ -105,4 +105,32 @@ class MapRulesTest extends BaseTestCase
         $errors2 = $v->errors('myField2');
         $this->assertEquals('My Custom Error 2', $errors2[0]);
     }
+
+    public function testCustoLabelMultipleFields()
+    {
+        $rules = array(
+            'myField1' => array(
+                array('label', 'My Custom Field 1'),
+                array('lengthMin', 14, 'message'=>'{field} Error 1')
+            ),
+            'myField2' => array(
+                array('label', 'My Custom Field 2'),
+                array('lengthMin', 14, 'message'=>'{field} Error 2')
+            )
+        );
+
+        $v = new Validator(array(
+            'myField1' => 'myVal',
+            'myField2' => 'myVal',
+        ));
+
+        $v->mapFieldsRules($rules);
+        $this->assertFalse($v->validate());
+
+        $errors1 = $v->errors('myField1');
+        $this->assertEquals('My Custom Field 1 Error 1', $errors1[0]);
+
+        $errors2 = $v->errors('myField2');
+        $this->assertEquals('My Custom Field 2 Error 2', $errors2[0]);
+    }
 }

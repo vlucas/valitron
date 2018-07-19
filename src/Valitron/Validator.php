@@ -1157,6 +1157,11 @@ class Validator
         // Get any other arguments passed to function
         $params = array_slice(func_get_args(), 2);
 
+        if ($rule == 'label') {
+            foreach ((array)$fields as $field) {
+                return $this->labels(array($field => array_shift($params)));
+            }
+        }
         if (is_callable($rule)
             && !(is_string($rule) && $this->hasValidator($rule)))
         {
