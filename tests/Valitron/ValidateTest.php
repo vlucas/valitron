@@ -1028,6 +1028,21 @@ class ValidateTest extends BaseTestCase
           'email' => array('Email address is required')
         ), $v->errors());
     }
+    
+    public function testCustomLabelUseLabelMethod()
+    {
+        $v = new Valitron\Validator(array());
+        $v->rule('required', array('name', 'email'))
+            ->message('{field} is required')
+            ->rule('label', 'name', 'Custom Name')
+            ->rule('label', array('email'),'Email address');
+        $v->validate();
+        $this->assertEquals(array(
+          'name' => array('Custom Name is required'),
+          'email' => array('Email address is required')
+        ), $v->errors());
+    }
+
 
     public function testCustomLabelArrayWithoutMessage()
     {

@@ -355,6 +355,19 @@ $v->labels(array(
 $v->validate();
 ```
 
+When you add rules for multiple fields at once, you can set field label like this:
+
+```php
+$rules = [
+    'foo' => ['required', 'integer', ['label', 'Username']],
+    'bar'=>['email', ['lengthMin', 4], ['label', 'Email address']]
+];
+
+$v = new Valitron\Validator(array('foo' => 'bar', 'bar' => 'mail@example.com));
+$v->mapFieldsRules($rules);
+$v->validate();
+```
+
 This introduces a new set of tags to your error language file which looks like `{field}`, if you are using a rule like `equals` you can access the second value in the language file by incrementing the field with a value like `{field1}`.
 
 
