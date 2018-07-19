@@ -1159,7 +1159,7 @@ class Validator
 
         if ($rule == 'label') {
             foreach ((array)$fields as $field) {
-                return $this->labels([$field => array_shift($params)]);
+                return $this->labels(array($field => array_shift($params)));
             }
         }
         if (is_callable($rule)
