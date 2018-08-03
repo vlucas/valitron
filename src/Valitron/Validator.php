@@ -506,6 +506,24 @@ class Validator
     }
 
     /**
+     * Validate that a field contains only ASCII characters
+     *
+     * @param $field
+     * @param $value
+     * @return bool|false|string
+     */
+    protected function validateAscii($field, $value)
+    {
+        // multibyte extension needed
+        if (function_exists('mb_detect_encoding')) {
+            return mb_detect_encoding($value, 'ASCII', true);
+        }
+
+        // fallback with regex
+        return 0 === preg_match('/[^\x00-\x7F]/', $value);
+    }
+
+    /**
      * Validate that a field is a valid e-mail address and the domain name is active
      *
      * @param  string $field

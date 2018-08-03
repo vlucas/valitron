@@ -617,6 +617,20 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testAsciiValid()
+    {
+        $v = new Validator(array('text' => '12345 abcde'));
+        $v->rule('ascii', 'text');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testAsciiInvalid()
+    {
+        $v = new Validator(array('text' => '12345 abcdé'));
+        $v->rule('ascii', 'text');
+        $this->assertFalse($v->validate());
+    }
+
     public function testIpValid()
     {
         $v = new Validator(array('ip' => '127.0.0.1'));
