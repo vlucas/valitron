@@ -645,6 +645,34 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testIpv4Valid()
+    {
+        $v = new Validator(array('ip' => '127.0.0.1'));
+        $v->rule('ipv4', 'ip');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testIpv4Invalid()
+    {
+        $v = new Validator(array('ip' => 'FE80::0202:B3FF:FE1E:8329'));
+        $v->rule('ipv4', 'ip');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testIpv6Valid()
+    {
+        $v = new Validator(array('ip' => 'FE80::0202:B3FF:FE1E:8329'));
+        $v->rule('ipv6', 'ip');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testIpv6Invalid()
+    {
+        $v = new Validator(array('ip' => '127.0.0.1'));
+        $v->rule('ipv6', 'ip');
+        $this->assertFalse($v->validate());
+    }
+
     public function testEmailValid()
     {
         $v = new Validator(array('name' => 'Chester Tester', 'email' => 'chester@tester.com'));
