@@ -133,12 +133,15 @@ V::lang('ar');
  * `in` - Performs in_array check on given array values
  * `notIn` - Negation of `in` rule (not in array of values)
  * `ip` - Valid IP address
+ * `ipv4` - Valid IP v4 address
+ * `ipv6` - Valid IP v6 address
  * `email` - Valid email address
  * `emailDNS` - Valid email address with active DNS record
  * `url` - Valid URL
  * `urlActive` - Valid URL with active DNS record
  * `alpha` - Alphabetic characters only
  * `alphaNum` - Alphabetic and numeric characters only
+ * `ascii` - ASCII characters only
  * `slug` - URL slug characters (a-z, 0-9, -, \_)
  * `regex` - Field matches given regex pattern
  * `date` - Field is a valid date

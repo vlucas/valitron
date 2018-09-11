@@ -494,6 +494,30 @@ class Validator
     }
 
     /**
+     * Validate that a field is a valid IP v4 address
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @return bool
+     */
+    protected function validateIpv4($field, $value)
+    {
+        return filter_var($value, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4) !== false;
+    }
+
+    /**
+     * Validate that a field is a valid IP v6 address
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @return bool
+     */
+    protected function validateIpv6($field, $value)
+    {
+        return filter_var($value, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV6) !== false;
+    }
+
+    /**
      * Validate that a field is a valid e-mail address
      *
      * @param  string $field
@@ -503,6 +527,24 @@ class Validator
     protected function validateEmail($field, $value)
     {
         return filter_var($value, \FILTER_VALIDATE_EMAIL) !== false;
+    }
+
+    /**
+     * Validate that a field contains only ASCII characters
+     *
+     * @param $field
+     * @param $value
+     * @return bool|false|string
+     */
+    protected function validateAscii($field, $value)
+    {
+        // multibyte extension needed
+        if (function_exists('mb_detect_encoding')) {
+            return mb_detect_encoding($value, 'ASCII', true);
+        }
+
+        // fallback with regex
+        return 0 === preg_match('/[^\x00-\x7F]/', $value);
     }
 
     /**

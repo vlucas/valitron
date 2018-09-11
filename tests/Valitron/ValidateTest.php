@@ -621,6 +621,20 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testAsciiValid()
+    {
+        $v = new Validator(array('text' => '12345 abcde'));
+        $v->rule('ascii', 'text');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testAsciiInvalid()
+    {
+        $v = new Validator(array('text' => '12345 abcdé'));
+        $v->rule('ascii', 'text');
+        $this->assertFalse($v->validate());
+    }
+
     public function testIpValid()
     {
         $v = new Validator(array('ip' => '127.0.0.1'));
@@ -632,6 +646,34 @@ class ValidateTest extends BaseTestCase
     {
         $v = new Validator(array('ip' => 'buy viagra now!'));
         $v->rule('ip', 'ip');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testIpv4Valid()
+    {
+        $v = new Validator(array('ip' => '127.0.0.1'));
+        $v->rule('ipv4', 'ip');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testIpv4Invalid()
+    {
+        $v = new Validator(array('ip' => 'FE80::0202:B3FF:FE1E:8329'));
+        $v->rule('ipv4', 'ip');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testIpv6Valid()
+    {
+        $v = new Validator(array('ip' => 'FE80::0202:B3FF:FE1E:8329'));
+        $v->rule('ipv6', 'ip');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testIpv6Invalid()
+    {
+        $v = new Validator(array('ip' => '127.0.0.1'));
+        $v->rule('ipv6', 'ip');
         $this->assertFalse($v->validate());
     }
 
