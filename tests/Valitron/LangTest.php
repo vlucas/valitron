@@ -9,7 +9,7 @@ class LangTest extends BaseTestCase
 	}
 
 	/**
-	 * Lang defined statically should not be overrided by constructor default
+	 * Lang defined statically should not be override by constructor default
 	 */
     public function testLangDefinedStatically()
     {
@@ -20,7 +20,7 @@ class LangTest extends BaseTestCase
 	}
 
 	/**
-	 * LangDir defined statically should not be overrided by constructor default
+	 * LangDir defined statically should not be override by constructor default
 	 */
     public function testLangDirDefinedStatically()
     {

@@ -1302,7 +1302,7 @@ class ValidateTest extends BaseTestCase
 
     public function testFalseStillTriggersValidation()
     {
-        $v = new Validator(array('test' => FALSE));
+        $v = new Validator(array('test' => false));
         $v->rule('min', 'test', 5);
         $this->assertFalse($v->validate());
     }

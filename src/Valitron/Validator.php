@@ -897,7 +897,14 @@ class Validator
         return $isInstanceOf;
     }
 
-    //Validate optional field
+    /**
+     * Validate optional field
+     *
+     * @param $field
+     * @param $value
+     * @param $params
+     * @return bool
+     */
     protected function validateOptional($field, $value, $params)
     {
         //Always return true
@@ -905,7 +912,7 @@ class Validator
     }
 
     /**
-     *  Get array of fields and data
+     * Get array of fields and data
      *
      * @return array
      */
@@ -997,7 +1004,7 @@ class Validator
         }
         // Catches the case where the data isn't an array or object
         if (is_scalar($data)) {
-            return array(NULL, false);
+            return array(null, false);
         }
         $identifier = array_shift($identifiers);
         // Glob match
@@ -1012,8 +1019,7 @@ class Validator
                 }
             }
             return array($values, true);
-        }
-        // Dead end, abort
+        } // Dead end, abort
         elseif ($identifier === null || ! isset($data[$identifier])) {
             if ($allow_empty){
                 //when empty values are allowed, we only care if the key exists
@@ -1083,7 +1089,9 @@ class Validator
                     }
                 }
             }
-            if ($set_to_break) break;
+            if ($set_to_break) {
+                break;
+            }
         }
 
         return count($this->errors()) === 0;
@@ -1151,9 +1159,9 @@ class Validator
      * Adds a new validation rule callback that is tied to the current
      * instance only.
      *
-     * @param string                     $name
-     * @param callable                         $callback
-     * @param string                     $message
+     * @param string $name
+     * @param callable $callback
+     * @param string $message
      * @throws \InvalidArgumentException
      */
     public function addInstanceRule($name, $callback, $message = null)
@@ -1167,9 +1175,9 @@ class Validator
     /**
      * Register new validation rule callback
      *
-     * @param  string                    $name
-     * @param  callable                  $callback
-     * @param  string                    $message
+     * @param string $name
+     * @param callable $callback
+     * @param string $message
      * @throws \InvalidArgumentException
      */
     public static function addRule($name, $callback, $message = null)
@@ -1221,8 +1229,8 @@ class Validator
     /**
      * Convenience method to add a single validation rule
      *
-     * @param  string|callback           $rule
-     * @param  array|string              $fields
+     * @param string|callback $rule
+     * @param array|string $fields
      * @return Validator
      * @throws \InvalidArgumentException
      */

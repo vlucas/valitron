@@ -4,8 +4,8 @@
     "description": "Simple, elegant, stand-alone validation library with NO dependencies",
     "keywords": ["validation", "validator", "valid"],
     "homepage": "http://github.com/vlucas/valitron",
-    "license" : "BSD-3-Clause",
-    "authors" : [
+    "license": "BSD-3-Clause",
+    "authors": [
         {
             "name": "Vance Lucas",
             "email": "vance@vancelucas.com",
