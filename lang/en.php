@@ -13,6 +13,8 @@ return array(
     'in'             => "contains invalid value",
     'notIn'          => "contains invalid value",
     'ip'             => "is not a valid IP address",
+    'ipv4'           => "is not a valid IPv4 address",
+    'ipv6'           => "is not a valid IPv6 address",
     'email'          => "is not a valid email address",
     'url'            => "is not a valid URL",
     'urlActive'      => "must be an active domain",
@@ -32,5 +34,5 @@ return array(
     'lengthMax'      => "must not exceed %d characters",
     'instanceOf'     => "must be an instance of '%s'",
     'containsUnique' => "must contain unique elements only",
-    'arrayContains'  => "contains invalid value",
+    'subset'         => "contains an item that is not in the list",
 );

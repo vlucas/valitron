@@ -941,53 +941,53 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
-    public function testArrayContainsValid()
+    public function testSubsetValid()
     {
         // numeric values
         $v = new Validator(array('test_field' => array(81, 3, 15)));
-        $v->rule('arrayContains', 'test_field', array(45, 15, 3, 7, 28, 81));
+        $v->rule('subset', 'test_field', array(45, 15, 3, 7, 28, 81));
         $this->assertTrue($v->validate());
 
         // string values
         $v = new Validator(array('test_field' => array('white', 'green', 'blue')));
-        $v->rule('arrayContains', 'test_field', array('green', 'orange', 'blue', 'yellow', 'white', 'brown'));
+        $v->rule('subset', 'test_field', array('green', 'orange', 'blue', 'yellow', 'white', 'brown'));
         $this->assertTrue($v->validate());
 
         // mixed values
         $v = new Validator(array('test_field' => array(81, false, 'orange')));
-        $v->rule('arrayContains', 'test_field', array(45, 'green', true, 'orange', null, 81, false));
+        $v->rule('subset', 'test_field', array(45, 'green', true, 'orange', null, 81, false));
         $this->assertTrue($v->validate());
 
         // string value and validation target cast to array
         $v = new Validator(array('test_field' => 'blue'));
-        $v->rule('arrayContains', 'test_field', 'blue');
+        $v->rule('subset', 'test_field', 'blue');
         $this->assertTrue($v->validate());
     }
 
-    public function testArrayContainsInvalid()
+    public function testSubsetInvalid()
     {
         $v = new Validator(array('test_field' => array(81, false, 'orange')));
-        $v->rule('arrayContains', 'test_field', array(45, 'green', true, 'orange', null, false, 7));
+        $v->rule('subset', 'test_field', array(45, 'green', true, 'orange', null, false, 7));
         $this->assertFalse($v->validate());
     }
 
-    public function testArrayContainsInvalidValue()
+    public function testSubsetInvalidValue()
     {
         $v = new Validator(array('test_field' => 'black 45'));
-        $v->rule('arrayContains', 'test_field', array('black', 45));
+        $v->rule('subset', 'test_field', array('black', 45));
         $this->assertFalse($v->validate());
     }
 
-    public function testArrayContainsInvalidRule()
+    public function testSubsetInvalidRule()
     {
         // rule value has invalid type
         $v = new Validator(array('test_field' => array('black', 45)));
-        $v->rule('arrayContains', 'test_field', 'black 45');
+        $v->rule('subset', 'test_field', 'black 45');
         $this->assertFalse($v->validate());
 
         // rule value not specified
         $v = new Validator(array('test_field' => array('black', 45)));
-        $v->rule('arrayContains', 'test_field');
+        $v->rule('subset', 'test_field');
         $this->assertFalse($v->validate());
     }
 

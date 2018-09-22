@@ -481,7 +481,7 @@ class Validator
      * @param  array  $params
      * @return bool
      */
-    protected function validateArrayContains($field, $value, $params)
+    protected function validateSubset($field, $value, $params)
     {
         if (!isset($params[0])) {
             return false;
