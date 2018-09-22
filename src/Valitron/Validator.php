@@ -1,4 +1,5 @@
 <?php
+
 namespace Valitron;
 
 /**
@@ -78,12 +79,17 @@ class Validator
     protected $validUrlPrefixes = array('http://', 'https://', 'ftp://');
 
     /**
+     * @var bool
+     */
+    protected $stop_on_first_fail = false;
+
+    /**
      * Setup validation
      *
-     * @param  array                     $data
-     * @param  array                     $fields
-     * @param  string                    $lang
-     * @param  string                    $langDir
+     * @param  array $data
+     * @param  array $fields
+     * @param  string $lang
+     * @param  string $langDir
      * @throws \InvalidArgumentException
      */
     public function __construct($data = array(), $fields = array(), $lang = null, $langDir = null)
@@ -142,8 +148,8 @@ class Validator
      * Required field validator
      *
      * @param  string $field
-     * @param  mixed  $value
-     * @param  array  $params
+     * @param  mixed $value
+     * @param  array $params
      * @return bool
      */
     protected function validateRequired($field, $value, $params = array())
@@ -198,7 +204,7 @@ class Validator
      * This validation rule implies the field is "required"
      *
      * @param  string $field
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return bool
      */
     protected function validateAccepted($field, $value)
@@ -212,7 +218,7 @@ class Validator
      * Validate that a field is an array
      *
      * @param  string $field
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return bool
      */
     protected function validateArray($field, $value)
@@ -224,7 +230,7 @@ class Validator
      * Validate that a field is numeric
      *
      * @param  string $field
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return bool
      */
     protected function validateNumeric($field, $value)
@@ -236,15 +242,15 @@ class Validator
      * Validate that a field is an integer
      *
      * @param  string $field
-     * @param  mixed  $value
-     * @param  array  $params
+     * @param  mixed $value
+     * @param  array $params
      * @return bool
      */
     protected function validateInteger($field, $value, $params)
     {
         if (isset($params[0]) && (bool)$params[0]) {
             //strict mode
-            return preg_match('/^-?([0-9])+$/i', $value);
+            return preg_match('/^([0-9]|-[1-9]|-?[1-9][0-9]*)$/i', $value);
         }
 
         return filter_var($value, \FILTER_VALIDATE_INT) !== false;
@@ -288,8 +294,8 @@ class Validator
      * Validate the length of a string (min)
      *
      * @param string $field
-     * @param mixed  $value
-     * @param array  $params
+     * @param mixed $value
+     * @param array $params
      *
      * @return bool
      */
@@ -304,8 +310,8 @@ class Validator
      * Validate the length of a string (max)
      *
      * @param string $field
-     * @param mixed  $value
-     * @param array  $params
+     * @param mixed $value
+     * @param array $params
      *
      * @return bool
      */
@@ -375,9 +381,8 @@ class Validator
      * Validate the size of a field is between min and max values
      *
      * @param  string $field
-     * @param  mixed  $value
-     * @param  array  $params
-
+     * @param  mixed $value
+     * @param  array $params
      * @return bool
      */
     protected function validateBetween($field, $value, $params)
@@ -512,7 +517,7 @@ class Validator
      * Validate that a field is a valid IP address
      *
      * @param  string $field
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return bool
      */
     protected function validateIp($field, $value)
@@ -521,10 +526,34 @@ class Validator
     }
 
     /**
-     * Validate that a field is a valid e-mail address
+     * Validate that a field is a valid IP v4 address
      *
      * @param  string $field
      * @param  mixed  $value
+     * @return bool
+     */
+    protected function validateIpv4($field, $value)
+    {
+        return filter_var($value, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4) !== false;
+    }
+
+    /**
+     * Validate that a field is a valid IP v6 address
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @return bool
+     */
+    protected function validateIpv6($field, $value)
+    {
+        return filter_var($value, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV6) !== false;
+    }
+
+    /**
+     * Validate that a field is a valid e-mail address
+     *
+     * @param  string $field
+     * @param  mixed $value
      * @return bool
      */
     protected function validateEmail($field, $value)
@@ -533,10 +562,28 @@ class Validator
     }
 
     /**
+     * Validate that a field contains only ASCII characters
+     *
+     * @param $field
+     * @param $value
+     * @return bool|false|string
+     */
+    protected function validateAscii($field, $value)
+    {
+        // multibyte extension needed
+        if (function_exists('mb_detect_encoding')) {
+            return mb_detect_encoding($value, 'ASCII', true);
+        }
+
+        // fallback with regex
+        return 0 === preg_match('/[^\x00-\x7F]/', $value);
+    }
+
+    /**
      * Validate that a field is a valid e-mail address and the domain name is active
      *
      * @param  string $field
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return bool
      */
     protected function validateEmailDNS($field, $value)
@@ -556,7 +603,7 @@ class Validator
      * Validate that a field is a valid URL by syntax
      *
      * @param  string $field
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return bool
      */
     protected function validateUrl($field, $value)
@@ -574,7 +621,7 @@ class Validator
      * Validate that a field is an active URL by verifying DNS record
      *
      * @param  string $field
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return bool
      */
     protected function validateUrlActive($field, $value)
@@ -594,7 +641,7 @@ class Validator
      * Validate that a field contains only alphabetic characters
      *
      * @param  string $field
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return bool
      */
     protected function validateAlpha($field, $value)
@@ -606,7 +653,7 @@ class Validator
      * Validate that a field contains only alpha-numeric characters
      *
      * @param  string $field
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return bool
      */
     protected function validateAlphaNum($field, $value)
@@ -618,7 +665,7 @@ class Validator
      * Validate that a field contains only alpha-numeric characters, dashes, and underscores
      *
      * @param  string $field
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return bool
      */
     protected function validateSlug($field, $value)
@@ -633,8 +680,8 @@ class Validator
      * Validate that a field passes a regular expression check
      *
      * @param  string $field
-     * @param  mixed  $value
-     * @param  array  $params
+     * @param  mixed $value
+     * @param  array $params
      * @return bool
      */
     protected function validateRegex($field, $value, $params)
@@ -646,7 +693,7 @@ class Validator
      * Validate that a field is a valid date
      *
      * @param  string $field
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return bool
      */
     protected function validateDate($field, $value)
@@ -712,7 +759,7 @@ class Validator
      * Validate that a field contains a boolean.
      *
      * @param  string $field
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return bool
      */
     protected function validateBoolean($field, $value)
@@ -725,8 +772,8 @@ class Validator
      * optionally filtered by an array
      *
      * @param  string $field
-     * @param  mixed  $value
-     * @param  array  $params
+     * @param  mixed $value
+     * @param  array $params
      * @return bool
      */
     protected function validateCreditCard($field, $value, $params)
@@ -742,7 +789,7 @@ class Validator
             if (is_array($params[0])) {
                 $cards = $params[0];
             } elseif (is_string($params[0])) {
-                $cardType  = $params[0];
+                $cardType = $params[0];
                 if (isset($params[1]) && is_array($params[1])) {
                     $cards = $params[1];
                     if (!in_array($cardType, $cards)) {
@@ -765,7 +812,7 @@ class Validator
                 return false;
             }
             for ($i = 0; $i < $strlen; $i++) {
-                $digit = (int) substr($number, $strlen - $i - 1, 1);
+                $digit = (int)substr($number, $strlen - $i - 1, 1);
                 if ($i % 2 == 1) {
                     $sub_total = $digit * 2;
                     if ($sub_total > 9) {
@@ -777,7 +824,7 @@ class Validator
                 $sum += $sub_total;
             }
             if ($sum > 0 && $sum % 10 == 0) {
-                    return true;
+                return true;
             }
 
             return false;
@@ -788,11 +835,11 @@ class Validator
                 return true;
             } else {
                 $cardRegex = array(
-                    'visa'          => '#^4[0-9]{12}(?:[0-9]{3})?$#',
-                    'mastercard'    => '#^(5[1-5]|2[2-7])[0-9]{14}$#',
-                    'amex'          => '#^3[47][0-9]{13}$#',
-                    'dinersclub'    => '#^3(?:0[0-5]|[68][0-9])[0-9]{11}$#',
-                    'discover'      => '#^6(?:011|5[0-9]{2})[0-9]{12}$#',
+                    'visa' => '#^4[0-9]{12}(?:[0-9]{3})?$#',
+                    'mastercard' => '#^(5[1-5]|2[2-7])[0-9]{14}$#',
+                    'amex' => '#^3[47][0-9]{13}$#',
+                    'dinersclub' => '#^3(?:0[0-5]|[68][0-9])[0-9]{11}$#',
+                    'discover' => '#^6(?:011|5[0-9]{2})[0-9]{12}$#',
                 );
 
                 if (isset($cardType)) {
@@ -973,16 +1020,14 @@ class Validator
                 return array(null, array_key_exists($identifier, $data));
             }
             return array(null, false);
-        }
-        // Match array element
+        } // Match array element
         elseif (count($identifiers) === 0) {
-            if ($allow_empty){
+            if ($allow_empty) {
                 //when empty values are allowed, we only care if the key exists
                 return array(null, array_key_exists($identifier, $data));
             }
-            return array($data[$identifier], false);
-        }
-        // We need to go deeper
+            return array($data[$identifier], $allow_empty);
+        } // We need to go deeper
         else {
             return $this->getPart($data[$identifier], $identifiers, $allow_empty);
         }
@@ -995,9 +1040,10 @@ class Validator
      */
     public function validate()
     {
+        $set_to_break = false;
         foreach ($this->_validations as $v) {
             foreach ($v['fields'] as $field) {
-                 list($values, $multiple) = $this->getPart($this->_fields, explode('.', $field));
+                list($values, $multiple) = $this->getPart($this->_fields, explode('.', $field), false);
 
                 // Don't validate if the field is not required and the value is empty
                 if ($this->hasRule('optional', $field) && isset($values)) {
@@ -1005,7 +1051,7 @@ class Validator
                 } elseif (
                     $v['rule'] !== 'required' && !$this->hasRule('required', $field) &&
                     $v['rule'] !== 'accepted' &&
-                    (! isset($values) || $values === '' || ($multiple && count($values) == 0))
+                    (!isset($values) || $values === '' || ($multiple && count($values) == 0))
                 ) {
                     continue;
                 }
@@ -1020,6 +1066,8 @@ class Validator
 
                 if (!$multiple) {
                     $values = array($values);
+                } else if (! $this->hasRule('required', $field)){
+                    $values = array_filter($values);
                 }
 
                 $result = true;
@@ -1029,11 +1077,25 @@ class Validator
 
                 if (!$result) {
                     $this->error($field, $v['message'], $v['params']);
+                    if ($this->stop_on_first_fail) {
+                        $set_to_break = true;
+                        break;
+                    }
                 }
             }
+            if ($set_to_break) break;
         }
 
         return count($this->errors()) === 0;
+    }
+
+    /**
+     * Should the validation stop a rule is failed
+     * @param bool $stop
+     */
+    public function stopOnFirstFail($stop = true)
+    {
+        $this->stop_on_first_fail = (bool)$stop;
     }
 
     /**
@@ -1169,7 +1231,8 @@ class Validator
         // Get any other arguments passed to function
         $params = array_slice(func_get_args(), 2);
 
-        if (is_callable($rule) && !(is_string($rule) && $this->hasValidator($rule))) {
+        if (is_callable($rule)
+            && !(is_string($rule) && $this->hasValidator($rule))) {
             $name = $this->getUniqueRuleName($fields);
             $message = isset($params[0]) ? $params[0] : null;
             $this->addInstanceRule($name, $rule, $message);
@@ -1330,7 +1393,7 @@ class Validator
             if (!empty($message)) {
                 $added->message($message);
             }
-        }, (array) $rules);
+        }, (array)$rules);
     }
 
     /**

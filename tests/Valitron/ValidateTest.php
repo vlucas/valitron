@@ -1,4 +1,5 @@
 <?php
+
 use Valitron\Validator;
 
 class ValidateTest extends BaseTestCase
@@ -15,12 +16,13 @@ class ValidateTest extends BaseTestCase
         $this->assertEquals($v->data(), array('foo' => 'bar'));
     }
 
-    public function testAccurateErrorCount()
+    public function testAccurateErrorShouldReturnFalse()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
         $v->rule('required', 'name');
-        $this->assertSame(1, count($v->errors('name')));
+        $this->assertFalse($v->errors('name'));
     }
+
     public function testArrayOfFieldsToValidate()
     {
         $v = new Validator(array('name' => 'Chester Tester', 'email' => 'chester@tester.com'));
@@ -158,7 +160,8 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
-    public function testAcceptedNotSet(){
+    public function testAcceptedNotSet()
+    {
         $v = new Validator();
         $v->rule('accepted', 'agree');
         $this->assertFalse($v->validate());
@@ -189,25 +192,52 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
-    public function testIntegerStrict(){
+    public function testIntegerStrict()
+    {
 
         $v = new Validator(array('num' => ' 41243'));
         $v->rule('integer', 'num');
         $this->assertTrue($v->validate());
 
         $v = new Validator(array('num' => ' 41243'));
-        $v->rule('integer', 'num',  true);
+        $v->rule('integer', 'num', true);
         $this->assertFalse($v->validate());
 
         $v = new Validator(array('num' => '+41243'));
         $v->rule('integer', 'num');
         $this->assertTrue($v->validate());
-
 
         $v = new Validator(array('num' => '+41243'));
         $v->rule('integer', 'num', true);
         $this->assertFalse($v->validate());
 
+        $v = new Validator(array('num' => '-1'));
+        $v->rule('integer', 'num', true);
+        $this->assertTrue($v->validate());
+
+        $v = new Validator(array('num' => '-0'));
+        $v->rule('integer', 'num', true);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('num' => '0'));
+        $v->rule('integer', 'num', true);
+        $this->assertTrue($v->validate());
+
+        $v = new Validator(array('num' => '+0'));
+        $v->rule('integer', 'num', true);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('num' => '+1'));
+        $v->rule('integer', 'num', true);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('num' => '0123'));
+        $v->rule('integer', 'num', true);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('num' => '-0123'));
+        $v->rule('integer', 'num', true);
+        $this->assertFalse($v->validate());
     }
 
     public function testIntegerInvalid()
@@ -215,7 +245,6 @@ class ValidateTest extends BaseTestCase
         $v = new Validator(array('num' => '42.341569'));
         $v->rule('integer', 'num');
         $this->assertFalse($v->validate());
-
 
         $v = new Validator(array('num' => '--1231'));
         $v->rule('integer', 'num');
@@ -592,6 +621,20 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testAsciiValid()
+    {
+        $v = new Validator(array('text' => '12345 abcde'));
+        $v->rule('ascii', 'text');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testAsciiInvalid()
+    {
+        $v = new Validator(array('text' => '12345 abcdé'));
+        $v->rule('ascii', 'text');
+        $this->assertFalse($v->validate());
+    }
+
     public function testIpValid()
     {
         $v = new Validator(array('ip' => '127.0.0.1'));
@@ -603,6 +646,34 @@ class ValidateTest extends BaseTestCase
     {
         $v = new Validator(array('ip' => 'buy viagra now!'));
         $v->rule('ip', 'ip');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testIpv4Valid()
+    {
+        $v = new Validator(array('ip' => '127.0.0.1'));
+        $v->rule('ipv4', 'ip');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testIpv4Invalid()
+    {
+        $v = new Validator(array('ip' => 'FE80::0202:B3FF:FE1E:8329'));
+        $v->rule('ipv4', 'ip');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testIpv6Valid()
+    {
+        $v = new Validator(array('ip' => 'FE80::0202:B3FF:FE1E:8329'));
+        $v->rule('ipv6', 'ip');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testIpv6Invalid()
+    {
+        $v = new Validator(array('ip' => '127.0.0.1'));
+        $v->rule('ipv6', 'ip');
         $this->assertFalse($v->validate());
     }
 
@@ -620,13 +691,15 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
-    public function testEmailDnsValid(){
+    public function testEmailDnsValid()
+    {
         $v = new Validator(array('name' => 'Chester Tester', 'email' => 'chester@tester.com'));
         $v->rule('emailDNS', 'email');
         $this->assertTrue($v->validate());
     }
 
-    public function testEmailDnsInvalid(){
+    public function testEmailDnsInvalid()
+    {
         $v = new Validator(array('name' => 'Chester Tester', 'email' => 'chester@tester.zyx'));
         $v->rule('emailDNS', 'email');
         $this->assertFalse($v->validate());
@@ -793,7 +866,7 @@ class ValidateTest extends BaseTestCase
         $v->rule(
             'dateBefore',
             'endDate',
-             new DateTime('2013-04-08')
+            new DateTime('2013-04-08')
         )->label('End date')->message('{field} must be before the end of the fiscal year, %s.');
 
         $v->rule(
@@ -955,7 +1028,7 @@ class ValidateTest extends BaseTestCase
         $rules = array(
             'required' => 'nonexistent_field',
             'accepted' => 'foo',
-            'integer' =>  'foo'
+            'integer' => 'foo'
         );
 
         $v1 = new Validator(array('foo' => 'bar', 'bar' => 'baz'));
@@ -1001,7 +1074,7 @@ class ValidateTest extends BaseTestCase
     public function testAcceptBulkRulesWithNestedRules()
     {
         $rules = array(
-            'length'   => array(
+            'length' => array(
                 array('foo', 5),
                 array('bar', 5)
             )
@@ -1022,7 +1095,7 @@ class ValidateTest extends BaseTestCase
     public function testAcceptBulkRulesWithNestedRulesAndMultipleFields()
     {
         $rules = array(
-            'length'   => array(
+            'length' => array(
                 array(array('foo', 'bar'), 5),
                 array('baz', 5)
             )
@@ -1043,7 +1116,7 @@ class ValidateTest extends BaseTestCase
     public function testAcceptBulkRulesWithMultipleArrayParams()
     {
         $rules = array(
-            'in'   => array(
+            'in' => array(
                 array(array('foo', 'bar'), array('x', 'y'))
             )
         );
@@ -1059,15 +1132,16 @@ class ValidateTest extends BaseTestCase
         $this->assertEquals($v1->errors(), $v2->errors());
     }
 
-    public function testMalformedBulkRules(){
-     $v = new Validator();
-     $v->rules(
-         array(
-            'required'=>array('foo', 'bar')
-         )
-     );
+    public function testMalformedBulkRules()
+    {
+        $v = new Validator();
+        $v->rules(
+            array(
+                'required' => array('foo', 'bar')
+            )
+        );
 
-     $this->assertFalse($v->validate());
+        $this->assertFalse($v->validate());
     }
 
     public function testCustomLabelInMessage()
@@ -1083,30 +1157,30 @@ class ValidateTest extends BaseTestCase
         $v = new Valitron\Validator(array());
         $v->rule('required', array('name', 'email'))->message('{field} is required');
         $v->labels(array(
-          'name' => 'Name',
-          'email' => 'Email address'
+            'name' => 'Name',
+            'email' => 'Email address'
         ));
         $v->validate();
         $this->assertEquals(array(
-          'name' => array('Name is required'),
-          'email' => array('Email address is required')
+            'name' => array('Name is required'),
+            'email' => array('Email address is required')
         ), $v->errors());
     }
 
     public function testCustomLabelArrayWithoutMessage()
     {
         $v = new Valitron\Validator(array(
-          'password' => 'foo',
-          'passwordConfirm' => 'bar'
+            'password' => 'foo',
+            'passwordConfirm' => 'bar'
         ));
         $v->rule('equals', 'password', 'passwordConfirm');
         $v->labels(array(
-          'password' => 'Password',
-          'passwordConfirm' => 'Password Confirm'
+            'password' => 'Password',
+            'passwordConfirm' => 'Password Confirm'
         ));
         $v->validate();
         $this->assertEquals(array(
-          'password' => array("Password must be the same as 'Password Confirm'"),
+            'password' => array("Password must be the same as 'Password Confirm'"),
         ), $v->errors());
     }
 
@@ -1117,7 +1191,9 @@ class ValidateTest extends BaseTestCase
     public function testAddRuleClosure()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
-        $v->addRule('testRule', function() { return true; });
+        $v->addRule('testRule', function () {
+            return true;
+        });
         $v->rule('testRule', 'name');
         $this->assertTrue($v->validate());
     }
@@ -1125,7 +1201,9 @@ class ValidateTest extends BaseTestCase
     public function testAddRuleClosureReturnsFalse()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
-        $v->addRule('testRule', function() { return false; });
+        $v->addRule('testRule', function () {
+            return false;
+        });
         $v->rule('testRule', 'name');
         $this->assertFalse($v->validate());
     }
@@ -1133,7 +1211,9 @@ class ValidateTest extends BaseTestCase
     public function testAddRuleClosureWithFieldArray()
     {
         $v = new Validator(array('name' => 'Chester Tester', 'email' => 'foo@example.com'));
-        $v->addRule('testRule', function() { return true; });
+        $v->addRule('testRule', function () {
+            return true;
+        });
         $v->rule('testRule', array('name', 'email'));
         $this->assertTrue($v->validate());
     }
@@ -1141,7 +1221,9 @@ class ValidateTest extends BaseTestCase
     public function testAddRuleClosureWithArrayAsExtraParameter()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
-        $v->addRule('testRule', function() { return true; });
+        $v->addRule('testRule', function () {
+            return true;
+        });
         $v->rule('testRule', 'name', array('foo', 'bar'));
         $this->assertTrue($v->validate());
     }
@@ -1154,8 +1236,16 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
-    public function sampleObjectCallback() { return true; }
-    public function sampleObjectCallbackFalse() { return false; }
+    public function sampleObjectCallback()
+    {
+        return true;
+    }
+
+    public function sampleObjectCallbackFalse()
+    {
+        return false;
+    }
+
     public function testAddRuleCallbackArray()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
@@ -1219,14 +1309,14 @@ class ValidateTest extends BaseTestCase
 
     public function testCreditCardValid()
     {
-        $visa         = array(4539511619543489, 4532949059629052, 4024007171194938, 4929646403373269, 4539135861690622);
-        $mastercard   = array(5162057048081965, 5382687859049349, 5484388880142230, 5464941521226434, 5473481232685965, 2223000048400011, 2223520043560014);
-        $amex         = array(371442067262027, 340743030537918, 345509167493596, 343665795576848, 346087552944316);
-        $dinersclub   = array(30363194756249, 30160097740704, 38186521192206, 38977384214552, 38563220301454);
-        $discover     = array(6011712400392605, 6011536340491809, 6011785775263015, 6011984124619056, 6011320958064251);
+        $visa = array(4539511619543489, 4532949059629052, 4024007171194938, 4929646403373269, 4539135861690622);
+        $mastercard = array(5162057048081965, 5382687859049349, 5484388880142230, 5464941521226434, 5473481232685965, 2223000048400011, 2223520043560014);
+        $amex = array(371442067262027, 340743030537918, 345509167493596, 343665795576848, 346087552944316);
+        $dinersclub = array(30363194756249, 30160097740704, 38186521192206, 38977384214552, 38563220301454);
+        $discover = array(6011712400392605, 6011536340491809, 6011785775263015, 6011984124619056, 6011320958064251);
 
         foreach (compact('visa', 'mastercard', 'amex', 'dinersclub', 'discover') as $type => $numbers) {
-            foreach($numbers as $number) {
+            foreach ($numbers as $number) {
                 $v = new Validator(array('test' => $number));
                 $v->rule('creditCard', 'test');
                 $this->assertTrue($v->validate());
@@ -1243,14 +1333,14 @@ class ValidateTest extends BaseTestCase
 
     public function testCreditCardInvalid()
     {
-        $visa         = array(3539511619543489, 3532949059629052, 3024007171194938, 3929646403373269, 3539135861690622);
-        $mastercard   = array(4162057048081965, 4382687859049349, 4484388880142230, 4464941521226434, 4473481232685965);
-        $amex         = array(271442067262027, 240743030537918, 245509167493596, 243665795576848, 246087552944316);
-        $dinersclub   = array(20363194756249, 20160097740704, 28186521192206, 28977384214552, 28563220301454);
-        $discover     = array(5011712400392605, 5011536340491809, 5011785775263015, 5011984124619056, 5011320958064251);
+        $visa = array(3539511619543489, 3532949059629052, 3024007171194938, 3929646403373269, 3539135861690622);
+        $mastercard = array(4162057048081965, 4382687859049349, 4484388880142230, 4464941521226434, 4473481232685965);
+        $amex = array(271442067262027, 240743030537918, 245509167493596, 243665795576848, 246087552944316);
+        $dinersclub = array(20363194756249, 20160097740704, 28186521192206, 28977384214552, 28563220301454);
+        $discover = array(5011712400392605, 5011536340491809, 5011785775263015, 5011984124619056, 5011320958064251);
 
         foreach (compact('visa', 'mastercard', 'amex', 'dinersclub', 'discover') as $type => $numbers) {
-            foreach($numbers as $number) {
+            foreach ($numbers as $number) {
                 $v = new Validator(array('test' => $number));
                 $v->rule('creditCard', 'test');
                 $this->assertFalse($v->validate());
@@ -1349,29 +1439,29 @@ class ValidateTest extends BaseTestCase
         return array(
             array(
                 'expected' => 'Test must be at least 140 long',
-                'input'    => 'tweeet',
-                'test'     => array(140),
-                'message'  => '{field} must be at least %d long',
+                'input' => 'tweeet',
+                'test' => array(140),
+                'message' => '{field} must be at least %d long',
             ),
             array(
                 'expected' => 'Test must be between 1 and 140 characters',
-                'input'    => array(1, 2, 3),
-                'test'     => array(1, 140),
-                'message'  => 'Test must be between %d and %d characters',
+                'input' => array(1, 2, 3),
+                'test' => array(1, 140),
+                'message' => 'Test must be between %d and %d characters',
             ),
         );
     }
 
     public function testOptionalProvidedValid()
     {
-        $v = new Validator(array('address' =>  'user@example.com'));
+        $v = new Validator(array('address' => 'user@example.com'));
         $v->rule('optional', 'address')->rule('email', 'address');
         $this->assertTrue($v->validate());
     }
 
     public function testOptionalProvidedInvalid()
     {
-        $v = new Validator(array('address' =>  'userexample.com'));
+        $v = new Validator(array('address' => 'userexample.com'));
         $v->rule('optional', 'address')->rule('email', 'address');
         $this->assertFalse($v->validate());
     }
@@ -1522,6 +1612,38 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    /**
+     * @see https://github.com/vlucas/valitron/issues/262
+     */
+    public function testOptionalArrayPartsAreIgnored()
+    {
+        $v = new Validator(array(
+                'data' => array(
+                    array('foo' => '2018-01-01'),
+                    array('bar' => 1)
+                )
+            )
+        );
+        $v->rule('date', 'data.*.foo');
+        $this->assertTrue($v->validate());
+    }
+
+    /**
+     * @see https://github.com/vlucas/valitron/issues/262
+     */
+    public function testRequiredArrayPartsAreNotIgnored()
+    {
+        $v = new Validator(array(
+                'data' => array(
+                    array('foo' => '2018-01-01'),
+                    array('bar' => 1)
+                )
+            )
+        );
+        $v->rule('required', 'data.*.foo');
+        $v->rule('date', 'data.*.foo');
+        $this->assertFalse($v->validate());
+    }
 }
 
 function sampleFunctionCallback($field, $value, array $params)
