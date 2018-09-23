@@ -913,14 +913,14 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
-    public function testContainsNotFound()
+    public function testContainsInvalid()
     {
         $v = new Validator(array('test_string' => 'this is a test'));
         $v->rule('contains', 'test_string', 'foobar');
         $this->assertFalse($v->validate());
     }
 
-    public function testContainsStrictNotFound()
+    public function testContainsStrictInvalid()
     {
         $v = new Validator(array('test_string' => 'this is a Test'));
         $v->rule('contains', 'test_string', 'test');
@@ -929,8 +929,97 @@ class ValidateTest extends BaseTestCase
 
     public function testContainsInvalidValue()
     {
+        $v = new Validator(array('test_string' => false));
+        $v->rule('contains', 'test_string', 'foobar');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testContainsInvalidRule()
+    {
         $v = new Validator(array('test_string' => 'this is a test'));
-        $v->rule('contains', 'test_string', array('test'));
+        $v->rule('contains', 'test_string', null);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testSubsetValid()
+    {
+        // numeric values
+        $v = new Validator(array('test_field' => array(81, 3, 15)));
+        $v->rule('subset', 'test_field', array(45, 15, 3, 7, 28, 81));
+        $this->assertTrue($v->validate());
+
+        // string values
+        $v = new Validator(array('test_field' => array('white', 'green', 'blue')));
+        $v->rule('subset', 'test_field', array('green', 'orange', 'blue', 'yellow', 'white', 'brown'));
+        $this->assertTrue($v->validate());
+
+        // mixed values
+        $v = new Validator(array('test_field' => array(81, false, 'orange')));
+        $v->rule('subset', 'test_field', array(45, 'green', true, 'orange', null, 81, false));
+        $this->assertTrue($v->validate());
+
+        // string value and validation target cast to array
+        $v = new Validator(array('test_field' => 'blue'));
+        $v->rule('subset', 'test_field', 'blue');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testSubsetInvalid()
+    {
+        $v = new Validator(array('test_field' => array(81, false, 'orange')));
+        $v->rule('subset', 'test_field', array(45, 'green', true, 'orange', null, false, 7));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testSubsetInvalidValue()
+    {
+        $v = new Validator(array('test_field' => 'black 45'));
+        $v->rule('subset', 'test_field', array('black', 45));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testSubsetInvalidRule()
+    {
+        // rule value has invalid type
+        $v = new Validator(array('test_field' => array('black', 45)));
+        $v->rule('subset', 'test_field', 'black 45');
+        $this->assertFalse($v->validate());
+
+        // rule value not specified
+        $v = new Validator(array('test_field' => array('black', 45)));
+        $v->rule('subset', 'test_field');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testContainsUniqueValid()
+    {
+        // numeric values
+        $v = new Validator(array('test_field' => array(81, 3, 15)));
+        $v->rule('containsUnique', 'test_field');
+        $this->assertTrue($v->validate());
+
+        // string values
+        $v = new Validator(array('test_field' => array('white', 'green', 'blue')));
+        $v->rule('containsUnique', 'test_field');
+        $this->assertTrue($v->validate());
+
+        // mixed values
+        $v = new Validator(array('test_field' => array(81, false, 'orange')));
+        $v->rule('containsUnique', 'test_field');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testContainsUniqueInvalid()
+    {
+        $v = new Validator(array('test_field' => array(81, false, 'orange', false)));
+        $v->rule('containsUnique', 'test_field');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testContainsUniqueInvalidValue()
+    {
+        $v = new Validator(array('test_field' => 'lorem ipsum'));
+        $v->rule('containsUnique', 'test_field');
         $this->assertFalse($v->validate());
     }
 
@@ -1213,7 +1302,7 @@ class ValidateTest extends BaseTestCase
 
     public function testFalseStillTriggersValidation()
     {
-        $v = new Validator(array('test' => FALSE));
+        $v = new Validator(array('test' => false));
         $v->rule('min', 'test', 5);
         $this->assertFalse($v->validate());
     }

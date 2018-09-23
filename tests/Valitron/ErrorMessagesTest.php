@@ -1,4 +1,5 @@
 <?php
+
 use Valitron\Validator;
 
 class ErrorMessagesTest extends BaseTestCase
@@ -60,17 +61,18 @@ class ErrorMessagesTest extends BaseTestCase
 
     public function testMessageWithFieldSet()
     {
-        $v = new Validator(array('name'=>''), array(), 'en', __DIR__ . '/../lang');
+        $v = new Validator(array('name' => ''), array(), 'en', __DIR__ . '/../lang');
         $v->rule('required', 'name');
         $v->validate();
-        $this->assertEquals( $v->errors('name'), array('A value is required for Name'));
+        $this->assertEquals($v->errors('name'), array('A value is required for Name'));
     }
 
-    public function testMessageWithFieldAndLabelSet(){
-        $v = new Validator(array('name'=>''), array(), 'en', __DIR__ . '/../lang');
+    public function testMessageWithFieldAndLabelSet()
+    {
+        $v = new Validator(array('name' => ''), array(), 'en', __DIR__ . '/../lang');
         $v->rule('required', 'name')->label('my name');
         $v->validate();
-        $this->assertEquals( $v->errors('name'), array('A value is required for my name'));
+        $this->assertEquals($v->errors('name'), array('A value is required for my name'));
     }
 }
 

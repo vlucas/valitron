@@ -1,12 +1,11 @@
 <?php
-use Valitron\Validator;
 
+use Valitron\Validator;
 
 class MapRulesTest extends BaseTestCase
 {
     public function testMapSingleFieldRules()
     {
-
         $rules = array(
             'required',
             array('lengthMin', 4)
@@ -24,7 +23,6 @@ class MapRulesTest extends BaseTestCase
 
     public function testSingleFieldDot()
     {
-
         $v = new Valitron\Validator(array(
             'settings' => array(
                 array('threshold' => 50),
@@ -36,7 +34,6 @@ class MapRulesTest extends BaseTestCase
         ));
 
         $this->assertFalse($v->validate());
-
     }
 
     public function testMapMultipleFieldsRules()
@@ -60,7 +57,6 @@ class MapRulesTest extends BaseTestCase
         $this->assertFalse($v->validate());
         $this->assertFalse($v->errors('myField1'));
         $this->assertEquals(2, sizeof($v->errors('myField2')));
-
     }
 
     public function testCustomMessageSingleField()
@@ -82,10 +78,10 @@ class MapRulesTest extends BaseTestCase
     {
         $rules = array(
             'myField1' => array(
-                array('lengthMin', 14, 'message'=>'My Custom Error 1')
+                array('lengthMin', 14, 'message' => 'My Custom Error 1')
             ),
             'myField2' => array(
-                array('lengthMin', 14, 'message'=>'My Custom Error 2')
+                array('lengthMin', 14, 'message' => 'My Custom Error 2')
             )
         );
 
@@ -99,8 +95,6 @@ class MapRulesTest extends BaseTestCase
 
         $errors1 = $v->errors('myField1');
         $this->assertEquals('My Custom Error 1', $errors1[0]);
-
-
 
         $errors2 = $v->errors('myField2');
         $this->assertEquals('My Custom Error 2', $errors2[0]);
