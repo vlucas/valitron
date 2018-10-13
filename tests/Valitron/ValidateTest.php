@@ -1,4 +1,5 @@
 <?php
+
 use Valitron\Validator;
 
 class ValidateTest extends BaseTestCase
@@ -15,12 +16,13 @@ class ValidateTest extends BaseTestCase
         $this->assertEquals($v->data(), array('foo' => 'bar'));
     }
 
-    public function testAccurateErrorCount()
+    public function testAccurateErrorShouldReturnFalse()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
         $v->rule('required', 'name');
-        $this->assertSame(1, count($v->errors('name')));
+        $this->assertFalse($v->errors('name'));
     }
+
     public function testArrayOfFieldsToValidate()
     {
         $v = new Validator(array('name' => 'Chester Tester', 'email' => 'chester@tester.com'));
@@ -70,6 +72,36 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testEqualsBothNull()
+    {
+        $v = new Validator(array('foo' => null, 'bar' => null));
+        $v->rule('equals', 'foo', 'bar');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testEqualsBothNullRequired()
+    {
+        $v = new Validator(array('foo' => null, 'bar' => null));
+        $v->rule('required', array('foo', 'bar'));
+        $v->rule('equals', 'foo', 'bar');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testEqualsBothUnset()
+    {
+        $v = new Validator(array('foo' => 1));
+        $v->rule('equals', 'bar', 'baz');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testEqualsBothUnsetRequired()
+    {
+        $v = new Validator(array('foo' => 1));
+        $v->rule('required', array('bar', 'baz'));
+        $v->rule('equals', 'bar', 'baz');
+        $this->assertFalse($v->validate());
+    }
+
     public function testDifferentValid()
     {
         $v = new Validator(array('foo' => 'bar', 'bar' => 'baz'));
@@ -81,6 +113,36 @@ class ValidateTest extends BaseTestCase
     {
         $v = new Validator(array('foo' => 'baz', 'bar' => 'baz'));
         $v->rule('different', 'foo', 'bar');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testDifferentBothNull()
+    {
+        $v = new Validator(array('foo' => null, 'bar' => null));
+        $v->rule('equals', 'foo', 'bar');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testDifferentBothNullRequired()
+    {
+        $v = new Validator(array('foo' => null, 'bar' => null));
+        $v->rule('required', array('foo', 'bar'));
+        $v->rule('equals', 'foo', 'bar');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testDifferentBothUnset()
+    {
+        $v = new Validator(array('foo' => 1));
+        $v->rule('equals', 'bar', 'baz');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testDifferentBothUnsetRequired()
+    {
+        $v = new Validator(array('foo' => 1));
+        $v->rule('required', array('bar', 'baz'));
+        $v->rule('equals', 'bar', 'baz');
         $this->assertFalse($v->validate());
     }
 
@@ -98,7 +160,8 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
-    public function testAcceptedNotSet(){
+    public function testAcceptedNotSet()
+    {
         $v = new Validator();
         $v->rule('accepted', 'agree');
         $this->assertFalse($v->validate());
@@ -129,25 +192,52 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
-    public function testIntegerStrict(){
+    public function testIntegerStrict()
+    {
 
         $v = new Validator(array('num' => ' 41243'));
         $v->rule('integer', 'num');
         $this->assertTrue($v->validate());
 
         $v = new Validator(array('num' => ' 41243'));
-        $v->rule('integer', 'num',  true);
+        $v->rule('integer', 'num', true);
         $this->assertFalse($v->validate());
 
         $v = new Validator(array('num' => '+41243'));
         $v->rule('integer', 'num');
         $this->assertTrue($v->validate());
-
 
         $v = new Validator(array('num' => '+41243'));
         $v->rule('integer', 'num', true);
         $this->assertFalse($v->validate());
 
+        $v = new Validator(array('num' => '-1'));
+        $v->rule('integer', 'num', true);
+        $this->assertTrue($v->validate());
+
+        $v = new Validator(array('num' => '-0'));
+        $v->rule('integer', 'num', true);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('num' => '0'));
+        $v->rule('integer', 'num', true);
+        $this->assertTrue($v->validate());
+
+        $v = new Validator(array('num' => '+0'));
+        $v->rule('integer', 'num', true);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('num' => '+1'));
+        $v->rule('integer', 'num', true);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('num' => '0123'));
+        $v->rule('integer', 'num', true);
+        $this->assertFalse($v->validate());
+
+        $v = new Validator(array('num' => '-0123'));
+        $v->rule('integer', 'num', true);
+        $this->assertFalse($v->validate());
     }
 
     public function testIntegerInvalid()
@@ -155,7 +245,6 @@ class ValidateTest extends BaseTestCase
         $v = new Validator(array('num' => '42.341569'));
         $v->rule('integer', 'num');
         $this->assertFalse($v->validate());
-
 
         $v = new Validator(array('num' => '--1231'));
         $v->rule('integer', 'num');
@@ -532,6 +621,20 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testAsciiValid()
+    {
+        $v = new Validator(array('text' => '12345 abcde'));
+        $v->rule('ascii', 'text');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testAsciiInvalid()
+    {
+        $v = new Validator(array('text' => '12345 abcdé'));
+        $v->rule('ascii', 'text');
+        $this->assertFalse($v->validate());
+    }
+
     public function testIpValid()
     {
         $v = new Validator(array('ip' => '127.0.0.1'));
@@ -546,6 +649,34 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testIpv4Valid()
+    {
+        $v = new Validator(array('ip' => '127.0.0.1'));
+        $v->rule('ipv4', 'ip');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testIpv4Invalid()
+    {
+        $v = new Validator(array('ip' => 'FE80::0202:B3FF:FE1E:8329'));
+        $v->rule('ipv4', 'ip');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testIpv6Valid()
+    {
+        $v = new Validator(array('ip' => 'FE80::0202:B3FF:FE1E:8329'));
+        $v->rule('ipv6', 'ip');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testIpv6Invalid()
+    {
+        $v = new Validator(array('ip' => '127.0.0.1'));
+        $v->rule('ipv6', 'ip');
+        $this->assertFalse($v->validate());
+    }
+
     public function testEmailValid()
     {
         $v = new Validator(array('name' => 'Chester Tester', 'email' => 'chester@tester.com'));
@@ -557,6 +688,20 @@ class ValidateTest extends BaseTestCase
     {
         $v = new Validator(array('name' => 'Chester Tester', 'email' => 'chestertesterman'));
         $v->rule('email', 'email');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testEmailDnsValid()
+    {
+        $v = new Validator(array('name' => 'Chester Tester', 'email' => 'chester@tester.com'));
+        $v->rule('emailDNS', 'email');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testEmailDnsInvalid()
+    {
+        $v = new Validator(array('name' => 'Chester Tester', 'email' => 'chester@tester.zyx'));
+        $v->rule('emailDNS', 'email');
         $this->assertFalse($v->validate());
     }
 
@@ -721,7 +866,7 @@ class ValidateTest extends BaseTestCase
         $v->rule(
             'dateBefore',
             'endDate',
-             new DateTime('2013-04-08')
+            new DateTime('2013-04-08')
         )->label('End date')->message('{field} must be before the end of the fiscal year, %s.');
 
         $v->rule(
@@ -768,14 +913,14 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
-    public function testContainsNotFound()
+    public function testContainsInvalid()
     {
         $v = new Validator(array('test_string' => 'this is a test'));
         $v->rule('contains', 'test_string', 'foobar');
         $this->assertFalse($v->validate());
     }
 
-    public function testContainsStrictNotFound()
+    public function testContainsStrictInvalid()
     {
         $v = new Validator(array('test_string' => 'this is a Test'));
         $v->rule('contains', 'test_string', 'test');
@@ -784,8 +929,97 @@ class ValidateTest extends BaseTestCase
 
     public function testContainsInvalidValue()
     {
+        $v = new Validator(array('test_string' => false));
+        $v->rule('contains', 'test_string', 'foobar');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testContainsInvalidRule()
+    {
         $v = new Validator(array('test_string' => 'this is a test'));
-        $v->rule('contains', 'test_string', array('test'));
+        $v->rule('contains', 'test_string', null);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testSubsetValid()
+    {
+        // numeric values
+        $v = new Validator(array('test_field' => array(81, 3, 15)));
+        $v->rule('subset', 'test_field', array(45, 15, 3, 7, 28, 81));
+        $this->assertTrue($v->validate());
+
+        // string values
+        $v = new Validator(array('test_field' => array('white', 'green', 'blue')));
+        $v->rule('subset', 'test_field', array('green', 'orange', 'blue', 'yellow', 'white', 'brown'));
+        $this->assertTrue($v->validate());
+
+        // mixed values
+        $v = new Validator(array('test_field' => array(81, false, 'orange')));
+        $v->rule('subset', 'test_field', array(45, 'green', true, 'orange', null, 81, false));
+        $this->assertTrue($v->validate());
+
+        // string value and validation target cast to array
+        $v = new Validator(array('test_field' => 'blue'));
+        $v->rule('subset', 'test_field', 'blue');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testSubsetInvalid()
+    {
+        $v = new Validator(array('test_field' => array(81, false, 'orange')));
+        $v->rule('subset', 'test_field', array(45, 'green', true, 'orange', null, false, 7));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testSubsetInvalidValue()
+    {
+        $v = new Validator(array('test_field' => 'black 45'));
+        $v->rule('subset', 'test_field', array('black', 45));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testSubsetInvalidRule()
+    {
+        // rule value has invalid type
+        $v = new Validator(array('test_field' => array('black', 45)));
+        $v->rule('subset', 'test_field', 'black 45');
+        $this->assertFalse($v->validate());
+
+        // rule value not specified
+        $v = new Validator(array('test_field' => array('black', 45)));
+        $v->rule('subset', 'test_field');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testContainsUniqueValid()
+    {
+        // numeric values
+        $v = new Validator(array('test_field' => array(81, 3, 15)));
+        $v->rule('containsUnique', 'test_field');
+        $this->assertTrue($v->validate());
+
+        // string values
+        $v = new Validator(array('test_field' => array('white', 'green', 'blue')));
+        $v->rule('containsUnique', 'test_field');
+        $this->assertTrue($v->validate());
+
+        // mixed values
+        $v = new Validator(array('test_field' => array(81, false, 'orange')));
+        $v->rule('containsUnique', 'test_field');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testContainsUniqueInvalid()
+    {
+        $v = new Validator(array('test_field' => array(81, false, 'orange', false)));
+        $v->rule('containsUnique', 'test_field');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testContainsUniqueInvalidValue()
+    {
+        $v = new Validator(array('test_field' => 'lorem ipsum'));
+        $v->rule('containsUnique', 'test_field');
         $this->assertFalse($v->validate());
     }
 
@@ -794,7 +1028,7 @@ class ValidateTest extends BaseTestCase
         $rules = array(
             'required' => 'nonexistent_field',
             'accepted' => 'foo',
-            'integer' =>  'foo'
+            'integer' => 'foo'
         );
 
         $v1 = new Validator(array('foo' => 'bar', 'bar' => 'baz'));
@@ -840,7 +1074,7 @@ class ValidateTest extends BaseTestCase
     public function testAcceptBulkRulesWithNestedRules()
     {
         $rules = array(
-            'length'   => array(
+            'length' => array(
                 array('foo', 5),
                 array('bar', 5)
             )
@@ -861,7 +1095,7 @@ class ValidateTest extends BaseTestCase
     public function testAcceptBulkRulesWithNestedRulesAndMultipleFields()
     {
         $rules = array(
-            'length'   => array(
+            'length' => array(
                 array(array('foo', 'bar'), 5),
                 array('baz', 5)
             )
@@ -882,7 +1116,7 @@ class ValidateTest extends BaseTestCase
     public function testAcceptBulkRulesWithMultipleArrayParams()
     {
         $rules = array(
-            'in'   => array(
+            'in' => array(
                 array(array('foo', 'bar'), array('x', 'y'))
             )
         );
@@ -898,15 +1132,16 @@ class ValidateTest extends BaseTestCase
         $this->assertEquals($v1->errors(), $v2->errors());
     }
 
-    public function testMalformedBulkRules(){
-     $v = new Validator();
-     $v->rules(
-         array(
-            'required'=>array('foo', 'bar')
-         )
-     );
+    public function testMalformedBulkRules()
+    {
+        $v = new Validator();
+        $v->rules(
+            array(
+                'required' => array('foo', 'bar')
+            )
+        );
 
-     $this->assertFalse($v->validate());
+        $this->assertFalse($v->validate());
     }
 
     public function testCustomLabelInMessage()
@@ -922,30 +1157,30 @@ class ValidateTest extends BaseTestCase
         $v = new Valitron\Validator(array());
         $v->rule('required', array('name', 'email'))->message('{field} is required');
         $v->labels(array(
-          'name' => 'Name',
-          'email' => 'Email address'
+            'name' => 'Name',
+            'email' => 'Email address'
         ));
         $v->validate();
         $this->assertEquals(array(
-          'name' => array('Name is required'),
-          'email' => array('Email address is required')
+            'name' => array('Name is required'),
+            'email' => array('Email address is required')
         ), $v->errors());
     }
 
     public function testCustomLabelArrayWithoutMessage()
     {
         $v = new Valitron\Validator(array(
-          'password' => 'foo',
-          'passwordConfirm' => 'bar'
+            'password' => 'foo',
+            'passwordConfirm' => 'bar'
         ));
         $v->rule('equals', 'password', 'passwordConfirm');
         $v->labels(array(
-          'password' => 'Password',
-          'passwordConfirm' => 'Password Confirm'
+            'password' => 'Password',
+            'passwordConfirm' => 'Password Confirm'
         ));
         $v->validate();
         $this->assertEquals(array(
-          'password' => array("Password must be the same as 'Password Confirm'"),
+            'password' => array("Password must be the same as 'Password Confirm'"),
         ), $v->errors());
     }
 
@@ -956,7 +1191,9 @@ class ValidateTest extends BaseTestCase
     public function testAddRuleClosure()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
-        $v->addRule('testRule', function() { return true; });
+        $v->addRule('testRule', function () {
+            return true;
+        });
         $v->rule('testRule', 'name');
         $this->assertTrue($v->validate());
     }
@@ -964,7 +1201,9 @@ class ValidateTest extends BaseTestCase
     public function testAddRuleClosureReturnsFalse()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
-        $v->addRule('testRule', function() { return false; });
+        $v->addRule('testRule', function () {
+            return false;
+        });
         $v->rule('testRule', 'name');
         $this->assertFalse($v->validate());
     }
@@ -972,7 +1211,9 @@ class ValidateTest extends BaseTestCase
     public function testAddRuleClosureWithFieldArray()
     {
         $v = new Validator(array('name' => 'Chester Tester', 'email' => 'foo@example.com'));
-        $v->addRule('testRule', function() { return true; });
+        $v->addRule('testRule', function () {
+            return true;
+        });
         $v->rule('testRule', array('name', 'email'));
         $this->assertTrue($v->validate());
     }
@@ -980,7 +1221,9 @@ class ValidateTest extends BaseTestCase
     public function testAddRuleClosureWithArrayAsExtraParameter()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
-        $v->addRule('testRule', function() { return true; });
+        $v->addRule('testRule', function () {
+            return true;
+        });
         $v->rule('testRule', 'name', array('foo', 'bar'));
         $this->assertTrue($v->validate());
     }
@@ -993,8 +1236,16 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
-    public function sampleObjectCallback() { return true; }
-    public function sampleObjectCallbackFalse() { return false; }
+    public function sampleObjectCallback()
+    {
+        return true;
+    }
+
+    public function sampleObjectCallbackFalse()
+    {
+        return false;
+    }
+
     public function testAddRuleCallbackArray()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
@@ -1051,21 +1302,21 @@ class ValidateTest extends BaseTestCase
 
     public function testFalseStillTriggersValidation()
     {
-        $v = new Validator(array('test' => FALSE));
+        $v = new Validator(array('test' => false));
         $v->rule('min', 'test', 5);
         $this->assertFalse($v->validate());
     }
 
     public function testCreditCardValid()
     {
-        $visa         = array(4539511619543489, 4532949059629052, 4024007171194938, 4929646403373269, 4539135861690622);
-        $mastercard   = array(5162057048081965, 5382687859049349, 5484388880142230, 5464941521226434, 5473481232685965, 2223000048400011, 2223520043560014);
-        $amex         = array(371442067262027, 340743030537918, 345509167493596, 343665795576848, 346087552944316);
-        $dinersclub   = array(30363194756249, 30160097740704, 38186521192206, 38977384214552, 38563220301454);
-        $discover     = array(6011712400392605, 6011536340491809, 6011785775263015, 6011984124619056, 6011320958064251);
+        $visa = array(4539511619543489, 4532949059629052, 4024007171194938, 4929646403373269, 4539135861690622);
+        $mastercard = array(5162057048081965, 5382687859049349, 5484388880142230, 5464941521226434, 5473481232685965, 2223000048400011, 2223520043560014);
+        $amex = array(371442067262027, 340743030537918, 345509167493596, 343665795576848, 346087552944316);
+        $dinersclub = array(30363194756249, 30160097740704, 38186521192206, 38977384214552, 38563220301454);
+        $discover = array(6011712400392605, 6011536340491809, 6011785775263015, 6011984124619056, 6011320958064251);
 
         foreach (compact('visa', 'mastercard', 'amex', 'dinersclub', 'discover') as $type => $numbers) {
-            foreach($numbers as $number) {
+            foreach ($numbers as $number) {
                 $v = new Validator(array('test' => $number));
                 $v->rule('creditCard', 'test');
                 $this->assertTrue($v->validate());
@@ -1082,14 +1333,14 @@ class ValidateTest extends BaseTestCase
 
     public function testCreditCardInvalid()
     {
-        $visa         = array(3539511619543489, 3532949059629052, 3024007171194938, 3929646403373269, 3539135861690622);
-        $mastercard   = array(4162057048081965, 4382687859049349, 4484388880142230, 4464941521226434, 4473481232685965);
-        $amex         = array(271442067262027, 240743030537918, 245509167493596, 243665795576848, 246087552944316);
-        $dinersclub   = array(20363194756249, 20160097740704, 28186521192206, 28977384214552, 28563220301454);
-        $discover     = array(5011712400392605, 5011536340491809, 5011785775263015, 5011984124619056, 5011320958064251);
+        $visa = array(3539511619543489, 3532949059629052, 3024007171194938, 3929646403373269, 3539135861690622);
+        $mastercard = array(4162057048081965, 4382687859049349, 4484388880142230, 4464941521226434, 4473481232685965);
+        $amex = array(271442067262027, 240743030537918, 245509167493596, 243665795576848, 246087552944316);
+        $dinersclub = array(20363194756249, 20160097740704, 28186521192206, 28977384214552, 28563220301454);
+        $discover = array(5011712400392605, 5011536340491809, 5011785775263015, 5011984124619056, 5011320958064251);
 
         foreach (compact('visa', 'mastercard', 'amex', 'dinersclub', 'discover') as $type => $numbers) {
-            foreach($numbers as $number) {
+            foreach ($numbers as $number) {
                 $v = new Validator(array('test' => $number));
                 $v->rule('creditCard', 'test');
                 $this->assertFalse($v->validate());
@@ -1110,66 +1361,66 @@ class ValidateTest extends BaseTestCase
 
     public function testInstanceOfValidWithString()
     {
-      $v = new Validator(array('attributeName' => new stdClass()));
-      $v->rule('instanceOf', 'attributeName', 'stdClass');
-      $this->assertTrue($v->validate());
+        $v = new Validator(array('attributeName' => new stdClass()));
+        $v->rule('instanceOf', 'attributeName', 'stdClass');
+        $this->assertTrue($v->validate());
     }
 
     public function testInstanceOfInvalidWithInstance()
     {
-      $v = new Validator(array('attributeName' => new stdClass()));
-      $v->rule('instanceOf', 'attributeName', new Validator(array()));
-      $this->assertFalse($v->validate());
+        $v = new Validator(array('attributeName' => new stdClass()));
+        $v->rule('instanceOf', 'attributeName', new Validator(array()));
+        $this->assertFalse($v->validate());
     }
 
     public function testInstanceOfValidWithInstance()
     {
-      $v = new Validator(array('attributeName' => new stdClass()));
-      $v->rule('instanceOf', 'attributeName', new stdClass());
-      $this->assertTrue($v->validate());
+        $v = new Validator(array('attributeName' => new stdClass()));
+        $v->rule('instanceOf', 'attributeName', new stdClass());
+        $this->assertTrue($v->validate());
     }
 
     public function testInstanceOfErrorMessageShowsInstanceName()
     {
-      $v = new Validator(array('attributeName' => new Validator(array())));
-      $v->rule('instanceOf', 'attributeName', new stdClass());
-      $v->validate();
-      $expected_error = array(
-        "attributeName" => array(
-          "AttributeName must be an instance of 'stdClass'"
-        )
-      );
-      $this->assertEquals($expected_error, $v->errors());
+        $v = new Validator(array('attributeName' => new Validator(array())));
+        $v->rule('instanceOf', 'attributeName', new stdClass());
+        $v->validate();
+        $expected_error = array(
+            "attributeName" => array(
+                "AttributeName must be an instance of 'stdClass'"
+            )
+        );
+        $this->assertEquals($expected_error, $v->errors());
     }
 
     public function testInstanceOfInvalidWithString()
     {
-      $v = new Validator(array('attributeName' => new stdClass()));
-      $v->rule('instanceOf', 'attributeName', 'SomeOtherClass');
-      $this->assertFalse($v->validate());
+        $v = new Validator(array('attributeName' => new stdClass()));
+        $v->rule('instanceOf', 'attributeName', 'SomeOtherClass');
+        $this->assertFalse($v->validate());
     }
 
     public function testInstanceOfWithAlternativeSyntaxValid()
     {
-      $v = new Validator(array('attributeName' => new stdClass()));
-      $v->rules(array(
-        'instanceOf' => array(
-            array('attributeName', 'stdClass')
-        )
-      ));
-      $this->assertTrue($v->validate());
+        $v = new Validator(array('attributeName' => new stdClass()));
+        $v->rules(array(
+            'instanceOf' => array(
+                array('attributeName', 'stdClass')
+            )
+        ));
+        $this->assertTrue($v->validate());
     }
 
     public function testInstanceOfWithAlternativeSyntaxInvalid()
     {
-      $v = new Validator(array('attributeName' => new stdClass()));
-      $v->rules(array(
-        'instanceOf' => array(
-          array('attributeName', 'SomeOtherClassInAlternativeSyntaxInvalid')
-        )
-      ));
-      $v->validate();
-      $this->assertFalse($v->validate());
+        $v = new Validator(array('attributeName' => new stdClass()));
+        $v->rules(array(
+            'instanceOf' => array(
+                array('attributeName', 'SomeOtherClassInAlternativeSyntaxInvalid')
+            )
+        ));
+        $v->validate();
+        $this->assertFalse($v->validate());
     }
 
     /**
@@ -1188,29 +1439,29 @@ class ValidateTest extends BaseTestCase
         return array(
             array(
                 'expected' => 'Test must be at least 140 long',
-                'input'    => 'tweeet',
-                'test'     => array(140),
-                'message'  => '{field} must be at least %d long',
+                'input' => 'tweeet',
+                'test' => array(140),
+                'message' => '{field} must be at least %d long',
             ),
             array(
                 'expected' => 'Test must be between 1 and 140 characters',
-                'input'    => array(1, 2, 3),
-                'test'     => array(1, 140),
-                'message'  => 'Test must be between %d and %d characters',
+                'input' => array(1, 2, 3),
+                'test' => array(1, 140),
+                'message' => 'Test must be between %d and %d characters',
             ),
         );
     }
 
     public function testOptionalProvidedValid()
     {
-        $v = new Validator(array('address' =>  'user@example.com'));
+        $v = new Validator(array('address' => 'user@example.com'));
         $v->rule('optional', 'address')->rule('email', 'address');
         $this->assertTrue($v->validate());
     }
 
     public function testOptionalProvidedInvalid()
     {
-        $v = new Validator(array('address' =>  'userexample.com'));
+        $v = new Validator(array('address' => 'userexample.com'));
         $v->rule('optional', 'address')->rule('email', 'address');
         $this->assertFalse($v->validate());
     }
@@ -1964,37 +2215,160 @@ class ValidateTest extends BaseTestCase
     public function testRequiredEdgeCases()
     {
         $v = new Validator(array(
-                               'zero'=>0,
-                               'zero_txt' => '0',
-                               'false'=>false,
-                               'empty_array'=>array()
-                           ));
+            'zero' => 0,
+            'zero_txt' => '0',
+            'false' => false,
+            'empty_array' => array()
+        ));
         $v->rule('required', array('zero', 'zero_txt', 'false', 'empty_array'));
 
         $this->assertTrue($v->validate());
     }
 
-    public function testRequiredAllowEmpty(){
-        $data=  array(
-            'empty_text'=>'',
+    public function testRequiredAllowEmpty()
+    {
+        $data = array(
+            'empty_text' => '',
             'null_value' => null,
-            'in_array'=>array(
-                'empty_text'=>''
+            'in_array' => array(
+                'empty_text' => ''
             )
         );
 
-        $v1= new Validator($data);
+        $v1 = new Validator($data);
         $v1->rule('required', array('empty_text', 'null_value', 'in_array.empty_text'));
         $this->assertFalse($v1->validate());
 
-        $v2= new Validator($data);
+        $v2 = new Validator($data);
         $v2->rule('required', array('empty_text', 'null_value', 'in_array.empty_text'), true);
         $this->assertTrue($v2->validate());
     }
+
+    public function testNestedEqualsValid()
+    {
+        $v = new Validator(array('foo' => array('one' => 'bar', 'two' => 'bar')));
+        $v->rule('equals', 'foo.one', 'foo.two');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testNestedEqualsInvalid()
+    {
+        $v = new Validator(array('foo' => array('one' => 'bar', 'two' => 'baz')));
+        $v->rule('equals', 'foo.one', 'foo.two');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testNestedEqualsBothNull()
+    {
+        $v = new Validator(array('foo' => array('bar' => null, 'baz' => null)));
+        $v->rule('equals', 'foo.bar', 'foo.baz');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testNestedEqualsBothNullRequired()
+    {
+        $v = new Validator(array('foo' => array('bar' => null, 'baz' => null)));
+        $v->rule('required', array('foo.bar', 'foo.baz'));
+        $v->rule('equals', 'foo.bar', 'foo.baz');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testNestedEqualsBothUnset()
+    {
+        $v = new Validator(array('foo' => 'bar'));
+        $v->rule('equals', 'foo.one', 'foo.two');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testNestedEqualsBothUnsetRequired()
+    {
+        $v = new Validator(array('foo' => 'bar'));
+        $v->rule('required', array('foo.one', 'foo.two'));
+        $v->rule('equals', 'foo.one', 'foo.two');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testNestedDifferentValid()
+    {
+        $v = new Validator(array('foo' => array('one' => 'bar', 'two' => 'baz')));
+        $v->rule('different', 'foo.one', 'foo.two');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testNestedDifferentInvalid()
+    {
+        $v = new Validator(array('foo' => array('one' => 'baz', 'two' => 'baz')));
+        $v->rule('different', 'foo.one', 'foo.two');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testNestedDifferentBothNull()
+    {
+        $v = new Validator(array('foo' => array('bar' => null, 'baz' => null)));
+        $v->rule('different', 'foo.bar', 'foo.baz');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testNestedDifferentBothNullRequired()
+    {
+        $v = new Validator(array('foo' => array('bar' => null, 'baz' => null)));
+        $v->rule('required', array('foo.bar', 'foo.baz'));
+        $v->rule('different', 'foo.bar', 'foo.baz');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testNestedDifferentBothUnset()
+    {
+        $v = new Validator(array('foo' => 'bar'));
+        $v->rule('different', 'foo.bar', 'foo.baz');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testNestedDifferentBothUnsetRequired()
+    {
+        $v = new Validator(array('foo' => 'bar'));
+        $v->rule('required', array('foo.bar', 'foo.baz'));
+        $v->rule('different', 'foo.bar', 'foo.baz');
+        $this->assertFalse($v->validate());
+    }
+
+    /**
+     * @see https://github.com/vlucas/valitron/issues/262
+     */
+    public function testOptionalArrayPartsAreIgnored()
+    {
+        $v = new Validator(array(
+                'data' => array(
+                    array('foo' => '2018-01-01'),
+                    array('bar' => 1)
+                )
+            )
+        );
+        $v->rule('date', 'data.*.foo');
+        $this->assertTrue($v->validate());
+    }
+
+    /**
+     * @see https://github.com/vlucas/valitron/issues/262
+     */
+    public function testRequiredArrayPartsAreNotIgnored()
+    {
+        $v = new Validator(array(
+                'data' => array(
+                    array('foo' => '2018-01-01'),
+                    array('bar' => 1)
+                )
+            )
+        );
+        $v->rule('required', 'data.*.foo');
+        $v->rule('date', 'data.*.foo');
+        $this->assertFalse($v->validate());
+    }
 }
 
-function sampleFunctionCallback($field, $value, array $params) {
-  return true;
+function sampleFunctionCallback($field, $value, array $params)
+{
+    return true;
 }
 
 /**
