@@ -53,14 +53,14 @@ class ValidateTest extends BaseTestCase
 
     public function testRequiredValidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'spiderman', 'password' => 'Gr33nG0Blin', 'required_but_null' => null]);
-        $v->rules([
-            'required' => [
-                ['username'],
-                ['password'],
-                ['required_but_null', true] // boolean flag allows empty value so long as the field name is set on the data array
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'spiderman', 'password' => 'Gr33nG0Blin', 'required_but_null' => null));
+        $v->rules(array(
+            'required' => array(
+                array('username'),
+                array('password'),
+                array('required_but_null', true) // boolean flag allows empty value so long as the field name is set on the data array
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -73,13 +73,13 @@ class ValidateTest extends BaseTestCase
 
     public function testRequiredNonExistentFieldAltSyntax()
     {
-        $v = new Valitron\Validator(['boozername' => 'spiderman', 'notPassword' => 'Gr33nG0Blin']);
-        $v->rules([
-            'required' => [
-                ['username'],
-                ['password']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('boozername' => 'spiderman', 'notPassword' => 'Gr33nG0Blin'));
+        $v->rules(array(
+            'required' => array(
+                array('username'),
+                array('password')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -92,12 +92,12 @@ class ValidateTest extends BaseTestCase
 
     public function testEqualsValidAltSyntax()
     {
-        $v = new Validator(['password' => 'youshouldnotseethis', 'confirmPassword' => 'youshouldnotseethis']);
-        $v->rules([
-            'equals' => [
-                ['password', 'confirmPassword']
-            ]
-        ]);
+        $v = new Validator(array('password' => 'youshouldnotseethis', 'confirmPassword' => 'youshouldnotseethis'));
+        $v->rules(array(
+            'equals' => array(
+                array('password', 'confirmPassword')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -110,12 +110,12 @@ class ValidateTest extends BaseTestCase
 
     public function testEqualsInvalidAltSyntax()
     {
-        $v = new Validator(['password' => 'youshouldnotseethis', 'confirmPassword' => 'differentpassword']);
-        $v->rules([
-            'equals' => [
-                ['password', 'confirmPassword']
-            ]
-        ]);
+        $v = new Validator(array('password' => 'youshouldnotseethis', 'confirmPassword' => 'differentpassword'));
+        $v->rules(array(
+            'equals' => array(
+                array('password', 'confirmPassword')
+            )
+        ));
     }
 
     public function testEqualsBothNull()
@@ -157,12 +157,12 @@ class ValidateTest extends BaseTestCase
 
     public function testDifferentValidAltSyntax()
     {
-        $v = new Validator(['username' => 'test', 'password' => 'test123']);
-        $v->rules([
-            'different' => [
-                ['username', 'password']
-            ]
-        ]);
+        $v = new Validator(array('username' => 'test', 'password' => 'test123'));
+        $v->rules(array(
+            'different' => array(
+                array('username', 'password')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -175,12 +175,13 @@ class ValidateTest extends BaseTestCase
 
     public function testDifferentInvalidAltSyntax()
     {
-        $v = new Validator(['username' => 'test', 'password' => 'test']);
-        $v->rules([
-            'different' => [
-                ['username', 'password']
-            ]
-        ]);
+        $v = new Validator(array('username' => 'test', 'password' => 'test'));
+        $v->rules(array(
+            'different' => array(
+                array('username', 'password')
+            )
+        ));
+        $this->assertFalse($v->validate());
     }
 
     public function testDifferentBothNull()
@@ -222,12 +223,12 @@ class ValidateTest extends BaseTestCase
 
     public function testAcceptedValidAltSyntax()
     {
-        $v = new Valitron\Validator(['remember_me' => true]);
-        $v->rules([
-            'accepted' => [
-                ['remember_me']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('remember_me' => true));
+        $v->rules(array(
+            'accepted' => array(
+                array('remember_me')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -240,16 +241,17 @@ class ValidateTest extends BaseTestCase
 
     public function testAcceptedInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['remember_me' => false]);
-        $v->rules([
-            'accepted' => [
-                ['remember_me']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('remember_me' => false));
+        $v->rules(array(
+            'accepted' => array(
+                array('remember_me')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
-    public function testAcceptedNotSet(){
+    public function testAcceptedNotSet()
+    {
         $v = new Validator();
         $v->rule('accepted', 'agree');
         $this->assertFalse($v->validate());
@@ -264,12 +266,12 @@ class ValidateTest extends BaseTestCase
 
     public function testNumericValidAltSyntax()
     {
-        $v = new Valitron\Validator(['amount' => 3.14]);
-        $v->rules([
-            'numeric' => [
-                ['amount']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('amount' => 3.14));
+        $v->rules(array(
+            'numeric' => array(
+                array('amount')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -282,12 +284,12 @@ class ValidateTest extends BaseTestCase
 
     public function testNumericInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['amount' => 'banana']);
-        $v->rules([
-            'numeric' => [
-                ['amount']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('amount' => 'banana'));
+        $v->rules(array(
+            'numeric' => array(
+                array('amount')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -304,12 +306,12 @@ class ValidateTest extends BaseTestCase
 
     public function testIntegerValidAltSyntax()
     {
-        $v = new Valitron\Validator(['age' => 27]);
-        $v->rules([
-            'integer' => [
-                ['age', true]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('age' => 27));
+        $v->rules(array(
+            'integer' => array(
+                array('age', true)
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -378,12 +380,12 @@ class ValidateTest extends BaseTestCase
 
     public function testIntegerInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['age' => 3.14]);
-        $v->rules([
-            'integer' => [
-                ['age']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('age' => 3.14));
+        $v->rules(array(
+            'integer' => array(
+                array('age')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -396,12 +398,12 @@ class ValidateTest extends BaseTestCase
 
     public function testLengthValidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'bobburgers']);
-        $v->rules([
-            'length' => [
-                ['username', 10]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'bobburgers'));
+        $v->rules(array(
+            'length' => array(
+                array('username', 10)
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -422,12 +424,12 @@ class ValidateTest extends BaseTestCase
 
     public function testLengthInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'hi']);
-        $v->rules([
-            'length' => [
-                ['username', 10]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'hi'));
+        $v->rules(array(
+            'length' => array(
+                array('username', 10)
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -440,12 +442,12 @@ class ValidateTest extends BaseTestCase
 
     public function testLengthBetweenValidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'bobburgers']);
-        $v->rules([
-            'lengthBetween' => [
-                ['username', 1, 10]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'bobburgers'));
+        $v->rules(array(
+            'lengthBetween' => array(
+                array('username', 1, 10)
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -466,12 +468,12 @@ class ValidateTest extends BaseTestCase
 
     public function testLengthBetweenInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'hi']);
-        $v->rules([
-            'lengthBetween' => [
-                ['username', 3, 10]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'hi'));
+        $v->rules(array(
+            'lengthBetween' => array(
+                array('username', 3, 10)
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -484,12 +486,12 @@ class ValidateTest extends BaseTestCase
     
     public function testLengthMinValidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'martha']);
-        $v->rules([
-            'lengthMin' => [
-                ['username', 5]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'martha'));
+        $v->rules(array(
+            'lengthMin' => array(
+                array('username', 5)
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -502,12 +504,12 @@ class ValidateTest extends BaseTestCase
 
     public function testLengthMinInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'abc']);
-        $v->rules([
-            'lengthMin' => [
-                ['username', 5]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'abc'));
+        $v->rules(array(
+            'lengthMin' => array(
+                array('username', 5)
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -520,12 +522,12 @@ class ValidateTest extends BaseTestCase
 
     public function testLengthMaxValidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'bruins91']);
-        $v->rules([
-            'lengthMax' => [
-                ['username', 10]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'bruins91'));
+        $v->rules(array(
+            'lengthMax' => array(
+                array('username', 10)
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -538,12 +540,12 @@ class ValidateTest extends BaseTestCase
 
     public function testLengthMaxInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'bruins91']);
-        $v->rules([
-            'lengthMax' => [
-                ['username', 3]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'bruins91'));
+        $v->rules(array(
+            'lengthMax' => array(
+                array('username', 3)
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -560,12 +562,12 @@ class ValidateTest extends BaseTestCase
 
     public function testMinValidAltSyntax()
     {
-        $v = new Valitron\Validator(['age' => 28]);
-        $v->rules([
-            'min' => [
-                ['age', 18]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('age' => 28));
+        $v->rules(array(
+            'min' => array(
+                array('age', 18)
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -601,12 +603,12 @@ class ValidateTest extends BaseTestCase
 
     public function testMinInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['age' => 16]);
-        $v->rules([
-            'min' => [
-                ['age', 18]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('age' => 16));
+        $v->rules(array(
+            'min' => array(
+                array('age', 18)
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -630,12 +632,12 @@ class ValidateTest extends BaseTestCase
 
     public function testMaxValidAltSyntax()
     {
-        $v = new Valitron\Validator(['age' => 10]);
-        $v->rules([
-            'max' => [
-                ['age', 12]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('age' => 10));
+        $v->rules(array(
+            'max' => array(
+                array('age', 12)
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -671,12 +673,12 @@ class ValidateTest extends BaseTestCase
 
     public function testMaxInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['age' => 29]);
-        $v->rules([
-            'max' => [
-                ['age', 12]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('age' => 29));
+        $v->rules(array(
+            'max' => array(
+                array('age', 12)
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -732,23 +734,23 @@ class ValidateTest extends BaseTestCase
 
     public function testInValidAltSyntax()
     {
-        $v = new Valitron\Validator(['color' => 'purple']);
-        $v->rules([
-            'in' => [
-                ['color', ['blue', 'green', 'red', 'purple']]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('color' => 'purple'));
+        $v->rules(array(
+            'in' => array(
+                array('color', array('blue', 'green', 'red', 'purple'))
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
     public function testInInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['color' => 'orange']);
-        $v->rules([
-            'in' => [
-                ['color', ['blue', 'green', 'red', 'purple']]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('color' => 'orange'));
+        $v->rules(array(
+            'in' => array(
+                array('color', array('blue', 'green', 'red', 'purple'))
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -779,12 +781,12 @@ class ValidateTest extends BaseTestCase
 
     public function testArrayValidAltSyntax()
     {
-        $v = new Valitron\Validator(['user_notifications' => ['bulletin_notifications' => true, 'marketing_notifications' => false, 'message_notification' => true]]);
-        $v->rules([
-            'array' => [
-                ['user_notifications']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('user_notifications' => array('bulletin_notifications' => true, 'marketing_notifications' => false, 'message_notification' => true)));
+        $v->rules(array(
+            'array' => array(
+                array('user_notifications')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -797,12 +799,12 @@ class ValidateTest extends BaseTestCase
 
     public function testArrayInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['user_notifications' => 'string']);
-        $v->rules([
-            'array' => [
-                ['user_notifications']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('user_notifications' => 'string'));
+        $v->rules(array(
+            'array' => array(
+                array('user_notifications')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -924,12 +926,12 @@ class ValidateTest extends BaseTestCase
 
     public function testNotInValidAltSyntax()
     {
-        $v = new Valitron\Validator(['color' => 'purple']);
-        $v->rules([
-            'notIn' => [
-                ['color', ['blue', 'green', 'red', 'yellow']]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('color' => 'purple'));
+        $v->rules(array(
+            'notIn' => array(
+                array('color', array('blue', 'green', 'red', 'yellow'))
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -942,12 +944,12 @@ class ValidateTest extends BaseTestCase
 
     public function testNotInInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['color' => 'yellow']);
-        $v->rules([
-            'notIn' => [
-                ['color', ['blue', 'green', 'red', 'yellow']]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('color' => 'yellow'));
+        $v->rules(array(
+            'notIn' => array(
+                array('color', array('blue', 'green', 'red', 'yellow'))
+            )
+        ));
     }
 
     public function testAsciiValid()
@@ -959,12 +961,12 @@ class ValidateTest extends BaseTestCase
 
     public function testAsciiValidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'batman123']);
-        $v->rules([
-            'ascii' => [
-                ['username']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'batman123'));
+        $v->rules(array(
+            'ascii' => array(
+                array('username')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -977,12 +979,12 @@ class ValidateTest extends BaseTestCase
 
     public function testAsciiInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => '12345 abcdé']);
-        $v->rules([
-            'ascii' => [
-                ['username']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => '12345 abcdé'));
+        $v->rules(array(
+            'ascii' => array(
+                array('username')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -995,12 +997,12 @@ class ValidateTest extends BaseTestCase
 
     public function testIpValidAltSyntax()
     {
-        $v = new Valitron\Validator(['user_ip' => '127.0.0.1']);
-        $v->rules([
-            'ip' => [
-                ['user_ip']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('user_ip' => '127.0.0.1'));
+        $v->rules(array(
+            'ip' => array(
+                array('user_ip')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1013,12 +1015,12 @@ class ValidateTest extends BaseTestCase
 
     public function testIpInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['user_ip' => '127.0.0.1.345']);
-        $v->rules([
-            'ip' => [
-                ['user_ip']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('user_ip' => '127.0.0.1.345'));
+        $v->rules(array(
+            'ip' => array(
+                array('user_ip')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1031,12 +1033,12 @@ class ValidateTest extends BaseTestCase
 
     public function testIpv4ValidAltSyntax()
     {
-        $v = new Valitron\Validator(['user_ip' => '127.0.0.1']);
-        $v->rules([
-            'ipv4' => [
-                ['user_ip']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('user_ip' => '127.0.0.1'));
+        $v->rules(array(
+            'ipv4' => array(
+                array('user_ip')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1049,12 +1051,12 @@ class ValidateTest extends BaseTestCase
 
     public function testIpv4InvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['user_ip' => '127.0.0.1.234']);
-        $v->rules([
-            'ipv4' => [
-                ['user_ip']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('user_ip' => '127.0.0.1.234'));
+        $v->rules(array(
+            'ipv4' => array(
+                array('user_ip')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1067,12 +1069,12 @@ class ValidateTest extends BaseTestCase
 
     public function testIpv6ValidAltSyntax()
     {
-        $v = new Valitron\Validator(['user_ipv6' => '0:0:0:0:0:0:0:1']);
-        $v->rules([
-            'ipv6' => [
-                ['user_ipv6']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('user_ipv6' => '0:0:0:0:0:0:0:1'));
+        $v->rules(array(
+            'ipv6' => array(
+                array('user_ipv6')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1085,12 +1087,12 @@ class ValidateTest extends BaseTestCase
 
     public function testIpv6InvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['user_ipv6' => '0:0:0:0:0:0:0:1:3:4:5']);
-        $v->rules([
-            'ipv6' => [
-                ['user_ipv6']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('user_ipv6' => '0:0:0:0:0:0:0:1:3:4:5'));
+        $v->rules(array(
+            'ipv6' => array(
+                array('user_ipv6')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1103,12 +1105,12 @@ class ValidateTest extends BaseTestCase
 
     public function testEmailValidAltSyntax()
     {
-        $v = new Valitron\Validator(['user_email' => 'someone@example.com']);
-        $v->rules([
-            'email' => [
-                ['user_email']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('user_email' => 'someone@example.com'));
+        $v->rules(array(
+            'email' => array(
+                array('user_email')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1121,12 +1123,12 @@ class ValidateTest extends BaseTestCase
 
     public function testEmailInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['user_email' => 'example.com']);
-        $v->rules([
-            'email' => [
-                ['user_email']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('user_email' => 'example.com'));
+        $v->rules(array(
+            'email' => array(
+                array('user_email')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1139,12 +1141,12 @@ class ValidateTest extends BaseTestCase
 
     public function testEmailDnsValidAltSyntax()
     {
-        $v = new Valitron\Validator(['user_email' => 'some_fake_email_address@gmail.com']);
-        $v->rules([
-            'emailDNS' => [
-                ['user_email']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('user_email' => 'some_fake_email_address@gmail.com'));
+        $v->rules(array(
+            'emailDNS' => array(
+                array('user_email')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1157,12 +1159,12 @@ class ValidateTest extends BaseTestCase
 
     public function testEmailDnsInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['user_email' => 'some_fake_email_address@gmail.zyx']);
-        $v->rules([
-            'emailDNS' => [
-                ['user_email']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('user_email' => 'some_fake_email_address@gmail.zyx'));
+        $v->rules(array(
+            'emailDNS' => array(
+                array('user_email')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1175,12 +1177,12 @@ class ValidateTest extends BaseTestCase
 
     public function testUrlValidAltSyntax()
     {
-        $v = new Valitron\Validator(['website' => 'https://example.com/contact']);
-        $v->rules([
-            'url' => [
-                ['website']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('website' => 'https://example.com/contact'));
+        $v->rules(array(
+            'url' => array(
+                array('website')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1193,12 +1195,12 @@ class ValidateTest extends BaseTestCase
 
     public function testUrlInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['website' => 'thisisjusttext']);
-        $v->rules([
-            'url' => [
-                ['website']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('website' => 'thisisjusttext'));
+        $v->rules(array(
+            'url' => array(
+                array('website')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1211,12 +1213,12 @@ class ValidateTest extends BaseTestCase
 
     public function testUrlActiveValidAltSyntax()
     {
-        $v = new Valitron\Validator(['website' => 'https://example.com/contact']);
-        $v->rules([
-            'urlActive' => [
-                ['website']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('website' => 'https://example.com/contact'));
+        $v->rules(array(
+            'urlActive' => array(
+                array('website')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1229,12 +1231,12 @@ class ValidateTest extends BaseTestCase
 
     public function testUrlActiveInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['website' => 'https://example-domain']);
-        $v->rules([
-            'urlActive' => [
-                ['website']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('website' => 'https://example-domain'));
+        $v->rules(array(
+            'urlActive' => array(
+                array('website')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1247,12 +1249,12 @@ class ValidateTest extends BaseTestCase
 
     public function testAlphaValidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'batman']);
-        $v->rules([
-            'alpha' => [
-                ['username']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'batman'));
+        $v->rules(array(
+            'alpha' => array(
+                array('username')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1265,12 +1267,12 @@ class ValidateTest extends BaseTestCase
 
     public function testAlphaInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => '123456asdf']);
-        $v->rules([
-            'alpha' => [
-                ['username']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => '123456asdf'));
+        $v->rules(array(
+            'alpha' => array(
+                array('username')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1283,12 +1285,12 @@ class ValidateTest extends BaseTestCase
 
     public function testAlphaNumValidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'batman123']);
-        $v->rules([
-            'alphaNum' => [
-                ['username']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'batman123'));
+        $v->rules(array(
+            'alphaNum' => array(
+                array('username')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1301,12 +1303,12 @@ class ValidateTest extends BaseTestCase
 
     public function testAlphaNumInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'batman123-$']);
-        $v->rules([
-            'alphaNum' => [
-                ['username']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'batman123-$'));
+        $v->rules(array(
+            'alphaNum' => array(
+                array('username')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1319,12 +1321,12 @@ class ValidateTest extends BaseTestCase
 
     public function testSlugValidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'L337-H4ckZ0rz_123']);
-        $v->rules([
-            'slug' => [
-                ['username']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'L337-H4ckZ0rz_123'));
+        $v->rules(array(
+            'slug' => array(
+                array('username')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1337,12 +1339,12 @@ class ValidateTest extends BaseTestCase
 
     public function testSlugInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'L337-H4ckZ0rz_123 $%^']);
-        $v->rules([
-            'slug' => [
-                ['username']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'L337-H4ckZ0rz_123 $%^'));
+        $v->rules(array(
+            'slug' => array(
+                array('username')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1356,36 +1358,36 @@ class ValidateTest extends BaseTestCase
     public function testRegexValid()
     {
         $v = new Validator(array('test' => '42'));
-        $v->rule('regex', 'test', '/[\d]+/');
+        $v->rule('regex', 'test', '/array(\d)+/');
         $this->assertTrue($v->validate());
     }
 
     public function testRegexValidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'Batman123']);
-        $v->rules([
-            'regex' => [
-                ['username', '/^[a-zA-Z0-9]{5,10}$/']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'Batman123'));
+        $v->rules(array(
+            'regex' => array(
+                array('username', '/^array(a-zA-Z0-9){5,10}$/')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
     public function testRegexInvalid()
     {
         $v = new Validator(array('test' => 'istheanswer'));
-        $v->rule('regex', 'test', '/[\d]+/');
+        $v->rule('regex', 'test', '/array(\d)+/');
         $this->assertFalse($v->validate());
     }
 
     public function testRegexInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'Batman_123']);
-        $v->rules([
-            'regex' => [
-                ['username', '/^[a-zA-Z0-9]{5,10}$/']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'Batman_123'));
+        $v->rules(array(
+            'regex' => array(
+                array('username', '/^array(a-zA-Z0-9){5,10}$/')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1398,12 +1400,12 @@ class ValidateTest extends BaseTestCase
 
     public function testDateValidAltSyntax()
     {
-        $v = new Valitron\Validator(['created_at' => '2018-10-13']);
-        $v->rules([
-            'date' => [
-                ['created_at']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('created_at' => '2018-10-13'));
+        $v->rules(array(
+            'date' => array(
+                array('created_at')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1423,12 +1425,12 @@ class ValidateTest extends BaseTestCase
 
     public function testDateInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['created_at' => 'bananas']);
-        $v->rules([
-            'date' => [
-                ['created_at']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('created_at' => 'bananas'));
+        $v->rules(array(
+            'date' => array(
+                array('created_at')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1451,12 +1453,12 @@ class ValidateTest extends BaseTestCase
 
     public function testDateFormatValidAltSyntax()
     {
-        $v = new Valitron\Validator(['created_at' => '2018-10-13']);
-        $v->rules([
-            'dateFormat' => [
-                ['created_at', 'Y-m-d']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('created_at' => '2018-10-13'));
+        $v->rules(array(
+            'dateFormat' => array(
+                array('created_at', 'Y-m-d')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1473,12 +1475,12 @@ class ValidateTest extends BaseTestCase
 
     public function testDateFormatInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['created_at' => '10-13-2018']);
-        $v->rules([
-            'dateFormat' => [
-                ['created_at', 'Y-m-d']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('created_at' => '10-13-2018'));
+        $v->rules(array(
+            'dateFormat' => array(
+                array('created_at', 'Y-m-d')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1491,12 +1493,12 @@ class ValidateTest extends BaseTestCase
 
     public function testDateBeforeValidAltSyntax()
     {
-        $v = new Valitron\Validator(['created_at' => '2018-09-01']);
-        $v->rules([
-            'dateBefore' => [
-                ['created_at', '2018-10-13']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('created_at' => '2018-09-01'));
+        $v->rules(array(
+            'dateBefore' => array(
+                array('created_at', '2018-10-13')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1535,12 +1537,12 @@ class ValidateTest extends BaseTestCase
 
     public function testDateBeforeInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['created_at' => '2018-11-01']);
-        $v->rules([
-            'dateBefore' => [
-                ['created_at', '2018-10-13']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('created_at' => '2018-11-01'));
+        $v->rules(array(
+            'dateBefore' => array(
+                array('created_at', '2018-10-13')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1553,12 +1555,12 @@ class ValidateTest extends BaseTestCase
 
     public function testDateAfterValidAltSyntax()
     {
-        $v = new Valitron\Validator(['created_at' => '2018-09-01']);
-        $v->rules([
-            'dateAfter' => [
-                ['created_at', '2018-01-01']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('created_at' => '2018-09-01'));
+        $v->rules(array(
+            'dateAfter' => array(
+                array('created_at', '2018-01-01')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1571,12 +1573,12 @@ class ValidateTest extends BaseTestCase
 
     public function testDateAfterInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['created_at' => '2017-09-01']);
-        $v->rules([
-            'dateAfter' => [
-                ['created_at', '2018-01-01']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('created_at' => '2017-09-01'));
+        $v->rules(array(
+            'dateAfter' => array(
+                array('created_at', '2018-01-01')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1589,13 +1591,13 @@ class ValidateTest extends BaseTestCase
 
     public function testContainsValidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'Batman123']);
-        $v->rules([
-            'contains' => [
-                ['username', 'man'],
-                ['username', 'man', true]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'Batman123'));
+        $v->rules(array(
+            'contains' => array(
+                array('username', 'man'),
+                array('username', 'man', true)
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1615,12 +1617,12 @@ class ValidateTest extends BaseTestCase
 
     public function testContainsInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'Batman123']);
-        $v->rules([
-            'contains' => [
-                ['username', 'Man', true]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'Batman123'));
+        $v->rules(array(
+            'contains' => array(
+                array('username', 'Man', true)
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1670,12 +1672,12 @@ class ValidateTest extends BaseTestCase
 
     public function testSubsetValidAltSyntax()
     {
-        $v = new Valitron\Validator(['colors' => ['green', 'blue']]);
-        $v->rules([
-            'subset' => [
-                ['colors', ['orange', 'green', 'blue', 'red']]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('colors' => array('green', 'blue')));
+        $v->rules(array(
+            'subset' => array(
+                array('colors', array('orange', 'green', 'blue', 'red'))
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1688,12 +1690,12 @@ class ValidateTest extends BaseTestCase
 
     public function testSubsetInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['colors' => ['purple', 'blue']]);
-        $v->rules([
-            'subset' => [
-                ['colors', ['orange', 'green', 'blue', 'red']]
-            ]
-        ]);
+        $v = new Valitron\Validator(array('colors' => array('purple', 'blue')));
+        $v->rules(array(
+            'subset' => array(
+                array('colors', array('orange', 'green', 'blue', 'red'))
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -1737,12 +1739,12 @@ class ValidateTest extends BaseTestCase
 
     public function testContainsUniqueValidAltSyntax()
     {
-        $v = new Valitron\Validator(['colors' => ['purple', 'blue']]);
-        $v->rules([
-            'containsUnique' => [
-                ['colors']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('colors' => array('purple', 'blue')));
+        $v->rules(array(
+            'containsUnique' => array(
+                array('colors')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -1755,12 +1757,12 @@ class ValidateTest extends BaseTestCase
 
     public function testContainsUniqueInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['colors' => ['purple', 'purple']]);
-        $v->rules([
-            'containsUnique' => [
-                ['colors']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('colors' => array('purple', 'purple')));
+        $v->rules(array(
+            'containsUnique' => array(
+                array('colors')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -2036,12 +2038,12 @@ class ValidateTest extends BaseTestCase
 
     public function testBooleanValidAltSyntax()
     {
-        $v = new Valitron\Validator(['remember_me' => true]);
-        $v->rules([
-            'boolean' => [
-                ['remember_me']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('remember_me' => true));
+        $v->rules(array(
+            'boolean' => array(
+                array('remember_me')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -2054,12 +2056,12 @@ class ValidateTest extends BaseTestCase
 
     public function testBooleanInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['remember_me' => 'lobster']);
-        $v->rules([
-            'boolean' => [
-                ['remember_me']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('remember_me' => 'lobster'));
+        $v->rules(array(
+            'boolean' => array(
+                array('remember_me')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -2138,14 +2140,14 @@ class ValidateTest extends BaseTestCase
 
     public function testInstanceOfValidAltSyntax()
     {
-        $v = new Valitron\Validator(['date' => new \DateTime()]);
+        $v = new Valitron\Validator(array('date' => new \DateTime()));
         $existingDateObject = new \DateTime();
-        $v->rules([
-            'instanceOf' => [
-                ['date', 'DateTime'],
-                ['date', $existingDateObject]
-            ]
-        ]);
+        $v->rules(array(
+            'instanceOf' => array(
+                array('date', 'DateTime'),
+                array('date', $existingDateObject)
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -2158,12 +2160,12 @@ class ValidateTest extends BaseTestCase
 
     public function testInstanceOfInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['date' => new \DateTime()]);
-        $v->rules([
-            'instanceOf' => [
-                ['date', 'stdClass']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('date' => new \DateTime()));
+        $v->rules(array(
+            'instanceOf' => array(
+                array('date', 'stdClass')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
@@ -2255,15 +2257,15 @@ class ValidateTest extends BaseTestCase
 
     public function testOptionalProvidedValidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'batman']);
-        $v->rules([
-            'alpha' => [
-                ['username']
-            ],
-            'optional' => [
-                ['username']
-            ]
-        ]);
+        $v = new Valitron\Validator(array('username' => 'batman'));
+        $v->rules(array(
+            'alpha' => array(
+                array('username')
+            ),
+            'optional' => array(
+                array('username')
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 
@@ -2276,7 +2278,7 @@ class ValidateTest extends BaseTestCase
 
     public function testChainingRules()
     {
-        $v = new Valitron\Validator(['email_address' => 'test@test.com']);
+        $v = new Valitron\Validator(array('email_address' => 'test@test.com'));
         $v->rule('required', 'email_address')->rule('email', 'email_address');
         $this->assertTrue($v->validate());
     }
@@ -2290,7 +2292,7 @@ class ValidateTest extends BaseTestCase
 
     public function testOptionalProvidedInvalidAltSyntax()
     {
-        $v = new Valitron\Validator(['username' => 'batman123']);
+        $v = new Valitron\Validator(array('username' => 'batman123'));
         $v->rules(array(
             'alpha' => array(
                 array('username')
