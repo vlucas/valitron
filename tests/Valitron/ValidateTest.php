@@ -2281,17 +2281,24 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
+    public function testNestedDotNotation()
+    {
+        $v = new Valitron\Validator(array('user' => array('first_name' => 'Steve', 'last_name' => 'Smith', 'username' => 'Batman123')));
+        $v->rule('alpha', 'user.first_name')->rule('alpha', 'user.last_name')->rule('alphaNum', 'user.username');
+        $this->assertTrue($v->validate());
+    }
+
     public function testOptionalProvidedInvalidAltSyntax()
     {
         $v = new Valitron\Validator(['username' => 'batman123']);
-        $v->rules([
-            'alpha' => [
-                ['username']
-            ],
-            'optional' => [
-                ['username']
-            ]
-        ]);
+        $v->rules(array(
+            'alpha' => array(
+                array('username')
+            ),
+            'optional' => array(
+                array('username')
+            )
+        ));
         $this->assertFalse($v->validate());
     }
 
