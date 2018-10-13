@@ -99,6 +99,19 @@ if($v->validate()) {
 }
 ```
 
+You can also access nested values using dot notation:
+
+```php
+$v = new Valitron\Validator(array('user' => array('first_name' => 'Steve', 'last_name' => 'Smith', 'username' => 'Batman123')));
+$v->rule('alpha', 'user.first_name')->rule('alpha', 'user.last_name')->rule('alphaNum', 'user.username');
+if($v->validate()) {
+    echo "Yay! We're all good!";
+} else {
+    // Errors
+    print_r($v->errors());
+}
+```
+
 Setting language and language dir globally:
 
 ```php
