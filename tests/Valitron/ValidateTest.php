@@ -116,6 +116,7 @@ class ValidateTest extends BaseTestCase
                 array('password', 'confirmPassword')
             )
         ));
+        $this->assertFalse($v->validate());
     }
 
     public function testEqualsBothNull()
@@ -1358,7 +1359,7 @@ class ValidateTest extends BaseTestCase
     public function testRegexValid()
     {
         $v = new Validator(array('test' => '42'));
-        $v->rule('regex', 'test', '/array(\d)+/');
+        $v->rule('regex', 'test', '/[\d]+/');
         $this->assertTrue($v->validate());
     }
 
@@ -1367,7 +1368,7 @@ class ValidateTest extends BaseTestCase
         $v = new Valitron\Validator(array('username' => 'Batman123'));
         $v->rules(array(
             'regex' => array(
-                array('username', '/^array(a-zA-Z0-9){5,10}$/')
+                array('username', '/^[a-zA-Z0-9]{5,10}$/')
             )
         ));
         $this->assertTrue($v->validate());
@@ -1376,7 +1377,7 @@ class ValidateTest extends BaseTestCase
     public function testRegexInvalid()
     {
         $v = new Validator(array('test' => 'istheanswer'));
-        $v->rule('regex', 'test', '/array(\d)+/');
+        $v->rule('regex', 'test', '/[\d]+/');
         $this->assertFalse($v->validate());
     }
 
@@ -1385,7 +1386,7 @@ class ValidateTest extends BaseTestCase
         $v = new Valitron\Validator(array('username' => 'Batman_123'));
         $v->rules(array(
             'regex' => array(
-                array('username', '/^array(a-zA-Z0-9){5,10}$/')
+                array('username', '/^[a-zA-Z0-9]{5,10}$/')
             )
         ));
         $this->assertFalse($v->validate());
