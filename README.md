@@ -221,7 +221,7 @@ $v->validate();
 The `requiredWith` rule checks that the field is required, not null, and not the empty string, if any other fields are present, not null, and not the empty string.
 ```php
 // password field will be required when the username field is provided and not empty
-$v->rule('requiredWith', 'password', 'username')
+$v->rule('requiredWith', 'password', 'username');
 ```
 
 Alternate syntax.
