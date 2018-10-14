@@ -285,7 +285,7 @@ $v->validate();
 
 *Note* You can provide multiple values either as comma-separated list or as an array. In this case if ANY of the fields are NOT present the field will be required.
 ```php
-// in this case the password field will be required if either the first_name or last_name fields are not present
+// in this case the username field will be required if either the first_name or last_name fields are not present
 $v->rule('requiredWithout', 'username', 'first_name', 'last_name');
 // this is the same as the above line
 $v->rule('requiredWithout', 'username', ['first_name', 'last_name']);
