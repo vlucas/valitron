@@ -909,18 +909,28 @@ class Validator
     protected function validateRequiredWith($field, $value, $params, $fields)
     {
         $conditionallyReq = false;
-        // correct for fields as comma list of params or array of params
-        // this will allow either to work
-        $params = isset($params[0]) && is_array($params[0]) ? $params[0] : $params;
         // if we actually have conditionally required with fields to check against
-        if (count($params)) {
-            foreach ($params as $requiredField) {
+        if (isset($params[0])) {
+            // convert single value to array if it isn't already
+            $reqParams = is_array($params[0]) ? $params[0] : array($params[0]);
+            // check for the flag indicating if all fields are required
+            $allRequired = isset($params[1]) && (bool)$params[1];
+            $emptyFields = 0;
+            foreach ($reqParams as $requiredField) {
                 // check the field is set, not null, and not the empty string
-                if (isset($fields[$requiredField]) && (!is_null($fields[$requiredField])
-                    || (is_string($fields[$requiredField]) && trim($fields[$requiredField]) !== ''))) {
-                    $conditionallyReq = true;
-                    break;
+                if (isset($fields[$requiredField]) && !is_null($fields[$requiredField])
+                    && (is_string($fields[$requiredField]) ? trim($fields[$requiredField]) !== '' : true)) {
+                    if (!$allRequired) {
+                        $conditionallyReq = true;
+                        break;
+                    } else {
+                        $emptyFields++;
+                    }
                 }
+            }
+            // if all required fields are present in strict mode, we're requiring it
+            if ($allRequired && $emptyFields === count($reqParams)) {
+                $conditionallyReq = true;
             }
         }
         // if we have conditionally required fields
@@ -943,18 +953,28 @@ class Validator
     protected function validateRequiredWithout($field, $value, $params, $fields)
     {
         $conditionallyReq = false;
-        // correct for fields as comma list of params or array of params
-        // this will allow either to work
-        $params = isset($params[0]) && is_array($params[0]) ? $params[0] : $params;
         // if we actually have conditionally required with fields to check against
-        if (count($params)) {
-            foreach ($params as $requiredField) {
+        if (count($params[0])) {
+            // convert single value to array if it isn't already
+            $reqParams = is_array($params[0]) ? $params[0] : array($params[0]);
+            // check for the flag indicating if all fields are required
+            $allEmpty = isset($params[1]) && (bool)$params[1];
+            $filledFields = 0;
+            foreach ($reqParams as $requiredField) {
                 // check the field is NOT set, null, or the empty string, in which case we are requiring this value be present
                 if (!isset($fields[$requiredField]) || (is_null($fields[$requiredField])
                     || (is_string($fields[$requiredField]) && trim($fields[$requiredField]) === ''))) {
-                    $conditionallyReq = true;
-                    break;
+                    if (!$allEmpty) {
+                        $conditionallyReq = true;
+                        break;
+                    } else {
+                        $filledFields++;
+                    }
                 }
+            }
+            // if all fields were empty, then we're requiring this in strict mode
+            if ($allEmpty && $filledFields === count($reqParams)) {
+                $conditionallyReq = true;
             }
         }
         // if we have conditionally required fields
