@@ -3,4 +3,3 @@ composer.phar
 composer.lock
 vendor
 .idea/
-/nbproject/private/
