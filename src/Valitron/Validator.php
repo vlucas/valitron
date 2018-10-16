@@ -954,7 +954,7 @@ class Validator
     {
         $conditionallyReq = false;
         // if we actually have conditionally required with fields to check against
-        if (count($params[0])) {
+        if (isset($params[0])) {
             // convert single value to array if it isn't already
             $reqParams = is_array($params[0]) ? $params[0] : array($params[0]);
             // check for the flag indicating if all fields are required
