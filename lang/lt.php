@@ -12,6 +12,8 @@ return array(
     'in'            => "turi neteisingą vertę",
     'notIn'         => "turi neteisingą vertę",
     'ip'            => "nėra teisingas IP adresas",
+    'ipv4'          => "nėra teisingas IPv4 adresas",
+    'ipv6'          => "nėra teisingas IPv6 adresas",
     'email'         => "nėra teisingas el. pašto adresas",
     'url'           => "nėra teisingas URL",
     'urlActive'     => "turi būti aktyvus domenas",
@@ -29,5 +31,7 @@ return array(
     'creditCard'    => "turi būti teisingas kreditinės kortelės numeris",
     'lengthMin'     => "turi būti bent %d ženklų ilgio",
     'lengthMax'     => "turi būti ne ilgesnis nei %d ženklų",
-    'instanceOf'    => "turi būti „%s“ atvejis"
+    'instanceOf'    => "turi būti „%s“ atvejis",
+    'containsUnique' => "turi turėti tik unikalius elementus",
+    'subset'         => "turi elementą, kurio nėra sąraše"
 );
