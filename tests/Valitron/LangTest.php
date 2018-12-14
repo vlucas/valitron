@@ -50,4 +50,13 @@ class LangTest extends BaseTestCase
 	{
 		new Validator(array(), array(), 'en', '/this/dir/does/not/exists');
 	}
+
+
+	public function testLoadingNorwegianLoadsNNVariant(){
+	    $validator = new Validator(array(), array(),'no', $this->getLangDir());
+	    $validator->rule('required','test');
+	    $validator->validate();
+	    $errors =$validator->errors('test');
+	    $this->assertEquals('Test er nødvendig', $errors[0]);
+    }
 }
