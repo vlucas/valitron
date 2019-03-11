@@ -2483,6 +2483,72 @@ class ValidateTest extends BaseTestCase
         $v->rule('date', 'data.*.foo');
         $this->assertFalse($v->validate());
     }
+
+    public function testArrayHasKeysTrueIfAllFieldsExist()
+    {
+        $v = new Validator(array(
+            'address' => array(
+                'name' => 'Jane Doe',
+                'street' => 'Doe Square',
+                'city' => 'Doe D.C.'
+            )
+        ));
+        $v->rule('arrayHasKeys', 'address', array('name', 'street', 'city'));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testArrayHasKeysFalseOnMissingField()
+    {
+        $v = new Validator(array(
+            'address' => array(
+                'name' => 'Jane Doe',
+                'street' => 'Doe Square'
+            )
+        ));
+        $v->rule('arrayHasKeys', 'address', array('name', 'street', 'city'));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testArrayHasKeysFalseOnNonArray()
+    {
+        $v = new Validator(array(
+            'address' => 'Jane Doe, Doe Square'
+        ));
+        $v->rule('arrayHasKeys', 'address', array('name', 'street', 'city'));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testArrayHasKeysFalseOnEmptyRequiredFields()
+    {
+        $v = new Validator(array(
+            'address' => array(
+                'lat' => 77.547,
+                'lon' => 16.337
+            )
+        ));
+        $v->rule('arrayHasKeys', 'address', array());
+        $this->assertFalse($v->validate());
+    }
+
+    public function testArrayHasKeysFalseOnUnspecifiedRequiredFields()
+    {
+        $v = new Validator(array(
+            'address' => array(
+                'lat' => 77.547,
+                'lon' => 16.337
+            )
+        ));
+        $v->rule('arrayHasKeys', 'address');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testArrayHasKeysTrueIfMissingAndOptional()
+    {
+        $v = new Validator(array());
+        $v->rule('arrayHasKeys', 'address', array('name', 'street', 'city'));
+        $v->rule('optional', 'address');
+        $this->assertTrue($v->validate());
+    }
 }
 
 function sampleFunctionCallback($field, $value, array $params)

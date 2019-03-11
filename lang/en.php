@@ -35,4 +35,5 @@ return array(
     'instanceOf'     => "must be an instance of '%s'",
     'containsUnique' => "must contain unique elements only",
     'subset'         => "contains an item that is not in the list",
+    'arrayHasKeys'   => "does not contain all required keys",
 );
