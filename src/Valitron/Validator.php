@@ -911,6 +911,23 @@ class Validator
         return true;
     }
 
+    protected function validateArrayHasKeys($field, $value, $params)
+    {
+        if (!is_array($value) || !isset($params[0])) {
+            return false;
+        }
+        $requiredFields = $params[0];
+        if (count($requiredFields) === 0) {
+            return false;
+        }
+        foreach ($requiredFields as $fieldName) {
+            if (!array_key_exists($fieldName, $value)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Get array of fields and data
      *

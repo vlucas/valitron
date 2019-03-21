@@ -167,6 +167,7 @@ V::lang('ar');
  * `creditCard` - Field is a valid credit card number
  * `instanceOf` - Field contains an instance of the given class
  * `optional` - Value does not need to be included in data array. If it is however, it must pass validation.
+ * `arrayHasKeys` - Field is an array and contains all specified keys.
 
 **NOTE**: If you are comparing floating-point numbers with min/max validators, you
 should install the [BCMath](http://us3.php.net/manual/en/book.bc.php)
@@ -935,6 +936,23 @@ $v->rules([
         ['username']
     ]
 ]);
+$v->validate();
+```
+
+## arrayHasKeys fields usage
+
+The `arrayHasKeys` rule ensures that the field is an array and that it contains all the specified keys.
+Returns false if the field is not an array or if no required keys are specified or if some key is missing.
+
+```php
+$v = new Valitron\Validator([
+    'address' => [
+        'name' => 'Jane Doe',
+        'street' => 'Doe Square',
+        'city' => 'Doe D.C.'
+    ]
+]);
+$v->rule(['arrayHasKeys', 'address', ['name', 'street', 'city']);
 $v->validate();
 ```
 
