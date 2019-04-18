@@ -11,7 +11,7 @@ namespace Valitron;
  * @author  Vance Lucas <vance@vancelucas.com>
  * @link    http://www.vancelucas.com/
  */
-class Validator
+class Validator implements ValidatorInterface
 {
     /**
      * @var string
