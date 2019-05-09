@@ -10,6 +10,7 @@ return array(
     'length'        => "nedrīkst būt garāks par %d simboliem",
     'min'           => "jābūt garākam par %s simboliem",
     'max'           => "jābūt īsākam par %s simboliem",
+    'listContains'  => "lauks satur nederīgu vērtību",
     'in'            => "lauks satur nederīgu vērtību",
     'notIn'         => "lauks satur nederīgu vērtību",
     'ip'            => " lauks nav derīga IP adrese",

@@ -10,6 +10,7 @@ return array(
     'length'        => "长度必须大于 %d",
     'min'           => "必须大于 %s",
     'max'           => "必须小于 %s",
+    'listContains'  => "无效的值",
     'in'            => "无效的值",
     'notIn'         => "无效的值",
     'ip'            => "无效IP地址",

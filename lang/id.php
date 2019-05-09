@@ -10,6 +10,7 @@ return array(
     'length'        => "harus lebih panjang dari %d",
     'min'           => "harus lebih besar dari %s",
     'max'           => "harus kurang dari %s",
+    'listContains'  => "berisi nilai/value yang tidak valid",
     'in'            => "berisi nilai/value yang tidak valid",
     'notIn'         => "berisi nilai/value yang tidak valid",
     'ip'            => "format alamat IP tidak benar",

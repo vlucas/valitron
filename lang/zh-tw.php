@@ -10,6 +10,7 @@ return array(
     'length'        => "長度必須大於 %d",
     'min'           => "必須大於 %s",
     'max'           => "必須小於 %s",
+    'listContains'  => "無效的值",
     'in'            => "無效的值",
     'notIn'         => "無效的值",
     'ip'            => "無效IP地址",

@@ -143,6 +143,7 @@ V::lang('ar');
  * `lengthMax` - String must be less than given length
  * `min` - Minimum
  * `max` - Maximum
+ * `listContains` - Performs in_array check on given array values (the other way round than `in`)
  * `in` - Performs in_array check on given array values
  * `notIn` - Negation of `in` rule (not in array of values)
  * `ip` - Valid IP address
@@ -438,6 +439,23 @@ $v = new Valitron\Validator(['age' => 10]);
 $v->rules([
     'max' => [
         ['age', 12]
+    ]
+]);
+$v->validate();
+```
+
+## listContains fields usage
+The `listContains` rule checks that the field is present in a given array of values.
+```php
+$v->rule('in', 'color', 'yellow');
+```
+
+Alternate syntax.
+```php
+$v = new Valitron\Validator(['color' => ['blue', 'green', 'red', 'yellow']]);
+$v->rules([
+    'listContains' => [
+        ['color', 'yellow']
     ]
 ]);
 $v->validate();

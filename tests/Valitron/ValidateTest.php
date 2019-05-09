@@ -726,6 +726,35 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testListContainsValid()
+    {
+        $v = new Validator(array('color' => array('blue', 'green', 'red', 'yellow')));
+        $v->rule('listContains', 'color', 'red');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testListContainsValidAltSyntax()
+    {
+        $v = new Validator(array('color' => array('blue', 'green', 'red')));
+        $v->rules(array(
+            'listContains' => array(
+                array('color', 'red')
+            )
+        ));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testListContainsInvalidAltSyntax()
+    {
+        $v = new Validator(array('color' => array('blue', 'green', 'red')));
+        $v->rules(array(
+            'listContains' => array(
+                array('color', 'yellow')
+            )
+        ));
+        $this->assertFalse($v->validate());
+    }
+
     public function testInValid()
     {
         $v = new Validator(array('color' => 'green'));
