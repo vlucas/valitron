@@ -447,7 +447,7 @@ $v->validate();
 ## listContains fields usage
 The `listContains` rule checks that the field is present in a given array of values.
 ```php
-$v->rule('in', 'color', 'yellow');
+$v->rule('listContains', 'color', 'yellow');
 ```
 
 Alternate syntax.
@@ -988,7 +988,7 @@ Valitron\Validator::addRule('alwaysFail', function($field, $value, array $params
 ```
 
 You can also use one-off rules that are only valid for the specified
-fields. 
+fields.
 
 ```php
 $v = new Valitron\Validator(array("foo" => "bar"));
@@ -1000,12 +1000,12 @@ $v->rule(function($field, $value, $params, $fields) {
 This is useful because such rules can have access to variables
 defined in the scope where the `Validator` lives. The Closure's
 signature is identical to `Validator::addRule` callback's
-signature. 
+signature.
 
 If you wish to add your own rules that are not static (i.e.,
-your rule is not static and available to call `Validator` 
-instances), you need to use `Validator::addInstanceRule`. 
-This rule will take the same parameters as 
+your rule is not static and available to call `Validator`
+instances), you need to use `Validator::addInstanceRule`.
+This rule will take the same parameters as
 `Validator::addRule` but it has to be called on a `Validator`
 instance.
 
@@ -1085,7 +1085,7 @@ You can also add rules on a per-field basis:
 $rules = [
     'required',
     ['lengthMin', 4]
-];   
+];
 
 $v = new Valitron\Validator(array('foo' => 'bar'));
 $v->mapFieldRules('foo', $rules);
@@ -1173,4 +1173,3 @@ before running the tests:
 6. Push to the branch (`git push origin my-new-feature`)
 7. Create new Pull Request
 8. Pat yourself on the back for being so awesome
-
