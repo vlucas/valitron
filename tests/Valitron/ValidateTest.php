@@ -2568,12 +2568,13 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
-    public function testIbanFalseIfEmptyIban()
+    public function testIbanFalseIfEmptyIbanAndFieldRequired()
     {
         $v = new Validator(array(
             'iban' => ''
         ));
         $v->rule('iban', 'iban');
+        $v->rule('required', 'iban');
         $this->assertFalse($v->validate());
     }
 }
