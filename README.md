@@ -168,6 +168,7 @@ V::lang('ar');
  * `instanceOf` - Field contains an instance of the given class
  * `optional` - Value does not need to be included in data array. If it is however, it must pass validation.
  * `arrayHasKeys` - Field is an array and contains all specified keys.
+ * `iban` - Field is a valid IBAN number
 
 **NOTE**: If you are comparing floating-point numbers with min/max validators, you
 should install the [BCMath](http://us3.php.net/manual/en/book.bc.php)
@@ -954,6 +955,12 @@ $v = new Valitron\Validator([
 ]);
 $v->rule(['arrayHasKeys', 'address', ['name', 'street', 'city']);
 $v->validate();
+```
+
+## iban fields usage
+The `iban` rule validates that the string from the field is a valid IBAN number
+```php
+$v->rule('iban', 'string_to_check');
 ```
 
 ## Adding Custom Validation Rules

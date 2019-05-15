@@ -2549,6 +2549,33 @@ class ValidateTest extends BaseTestCase
         $v->rule('optional', 'address');
         $this->assertTrue($v->validate());
     }
+
+    public function testIbanTrueIfValidIban()
+    {
+        $v = new Validator(array(
+            'iban' => 'GB33BUKB20201555555555'
+        ));
+        $v->rule('iban', 'iban');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testIbanFalseIfInvalidIban()
+    {
+        $v = new Validator(array(
+            'iban' => 'invalid-iban-string'
+        ));
+        $v->rule('iban', 'iban');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testIbanFalseIfEmptyIban()
+    {
+        $v = new Validator(array(
+            'iban' => ''
+        ));
+        $v->rule('iban', 'iban');
+        $this->assertFalse($v->validate());
+    }
 }
 
 function sampleFunctionCallback($field, $value, array $params)
