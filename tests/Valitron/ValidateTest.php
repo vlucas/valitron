@@ -484,7 +484,7 @@ class ValidateTest extends BaseTestCase
         $v->rule('lengthMin', 'str', 4);
         $this->assertTrue($v->validate());
     }
-    
+
     public function testLengthMinValidAltSyntax()
     {
         $v = new Valitron\Validator(array('username' => 'martha'));
@@ -1717,6 +1717,15 @@ class ValidateTest extends BaseTestCase
         // rule value not specified
         $v = new Validator(array('test_field' => array('black', 45)));
         $v->rule('subset', 'test_field');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testSubsetAcceptNullValue()
+    {
+    		// rule value equals null
+        $v = new Validator(array('test_field' => null));
+        $v->rule('required', 'test_field');
+        $v->rule('subset', 'test_field', array('black', 45));
         $this->assertFalse($v->validate());
     }
 
