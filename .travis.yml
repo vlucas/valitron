@@ -1,3 +1,6 @@
+#see https://travis-ci.community/t/php-5-4-and-5-5-archives-missing/3723
+dist: trusty
+
 # see http://about.travis-ci.org/docs/user/languages/php/ for more hints
 language: php
 
@@ -19,7 +22,7 @@ matrix:
     - php: nightly
   include:
     - php: 5.3
-      dist: trusty
+      dist: precise
 
 before_script:
   - composer install
