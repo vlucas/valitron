@@ -489,7 +489,7 @@ class Validator
         if (!is_array($params[0])) {
             $params[0] = array($params[0]);
         }
-        if (is_scalar($value)) {
+        if (is_scalar($value) || is_null($value)) {
             return $this->validateIn($field, $value, $params);
         }
 
