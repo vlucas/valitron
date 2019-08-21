@@ -10,6 +10,7 @@ return array(
     'length'        => "må være %d tegn",
     'min'           => "må være minst %s",
     'max'           => "må ikke være mer enn %s",
+    'listContains'  => "inneholder ugyldig verdi",
     'in'            => "inneholder ugyldig verdi",
     'notIn'         => "inneholder ugyldig verdi",
     'ip'            => "er ikkje ein gyldig IP Adresse",

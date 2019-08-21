@@ -9,6 +9,7 @@ return array(
     'length'        => "turi būti %d ženklų ilgio",
     'min'           => "turi būti bent %s",
     'max'           => "turi būti ne daugiau kaip %s",
+    'listContains'  => "turi neteisingą vertę",
     'in'            => "turi neteisingą vertę",
     'notIn'         => "turi neteisingą vertę",
     'ip'            => "nėra teisingas IP adresas",

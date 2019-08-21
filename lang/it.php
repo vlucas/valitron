@@ -10,6 +10,7 @@ return array(
     'length'        => "deve avere una lunghezza di %d",
     'min'           => "deve essere superiore a %s",
     'max'           => "deve essere inferiore a %s",
+    'listContains'  => "contiene un valore non valido",
     'in'            => "contiene un valore non valido",
     'notIn'         => "contiene un valore non valido",
     'ip'            => "non è un indirizzo IP valido",

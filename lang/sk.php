@@ -10,6 +10,7 @@ return array(
     'length'        => "musí byť dlhý aspoň %d",
     'min'           => "musí byť dlhý minimálne %s",
     'max'           => "musí byť maximálne %s",
+    'listContains'  => "obsahuje nepovolenú hodnotu",
     'in'            => "obsahuje nepovolenú hodnotu",
     'notIn'         => "obsahuje nepovolenú hodnotu",
     'ip'            => "nie je korektná IP adresa",

@@ -10,6 +10,7 @@ return array(
 	'length'        => "måste vara %d tecken långt",
 	'min'           => "måste vara minst %s",
 	'max'           => "får inte vara mer än %s",
+	'listContains'  => "innehåller ogiltigt värde",
 	'in'            => "innehåller ogiltigt värde",
 	'notIn'         => "innehåller ogiltigt värde",
 	'ip'            => "är inte en giltlig IP-adress",

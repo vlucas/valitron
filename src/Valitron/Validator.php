@@ -423,6 +423,29 @@ class Validator
     }
 
     /**
+     * Validate a field is contained within a list of values
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @param  array  $params
+     * @return bool
+     */
+    protected function validateListContains($field, $value, $params)
+    {
+        $isAssoc = array_values($value) !== $value;
+        if ($isAssoc) {
+            $value = array_keys($value);
+        }
+
+        $strict = false;
+        if (isset($params[1])) {
+            $strict = $params[1];
+        }
+
+        return in_array($params[0], $value, $strict);
+    }
+
+    /**
      * Validate a field is not contained within a list of values
      *
      * @param  string $field

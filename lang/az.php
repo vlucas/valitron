@@ -10,6 +10,7 @@ return array(
     'length'        => "%d qədər uzunluğu olmalıdır",
     'min'           => "minimum %s qədər olmalıdır",
     'max'           => "maksimum %s qədər olmalıdır",
+    'listContains'  => "yalnış dəyər ehtiva edir",
     'in'            => "yalnış dəyər ehtiva edir",
     'notIn'         => "yalnış dəyər ehtiva edir",
     'ip'            => "düzgün IP ünvanı deyil",

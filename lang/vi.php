@@ -10,6 +10,7 @@ return array(
     'length'        => "phải dài hơn %d",
     'min'           => "ít nhất %s",
     'max'           => "tối đa %s",
+    'listContains'  => "chứa giá trị không hợp lệ",
     'in'            => "chứa giá trị không hợp lệ",
     'notIn'         => "chứa giá trị không hợp lệ",
     'ip'            => "địa chỉ IP không hợp lệ",

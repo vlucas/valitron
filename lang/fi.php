@@ -10,6 +10,7 @@ return array(
     'length'        => "on lyhyempi kuin %d",
     'min'           => "ei ole vähintään %s",
     'max'           => "ei ole enintään %s",
+    'listContains'  => "sisältää virheellisen arvon",
     'in'            => "sisältää virheellisen arvon",
     'notIn'         => "sisältää virheellisen arvon",
     'ip'            => "ei ole oikeanmuotoinen IP-osoite",

@@ -10,6 +10,7 @@ return array(
     'length'        => "moet minstens %d karakters lang zijn",
     'min'           => "moet minstens %s zijn",
     'max'           => "mag niet meer zijn dan %s",
+    'listContains'  => "bevat een ongeldige waarde",
     'in'            => "bevat een ongeldige waarde",
     'notIn'         => "bevat een ongeldige waarde",
     'ip'            => "is geen geldig IP-adres",
