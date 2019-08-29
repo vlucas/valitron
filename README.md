@@ -125,11 +125,36 @@ V::lang('ar');
 
 ```
 
+You can conditionally require values using required conditional rules. In this example, for authentication, we're requiring either a token when both the email and password are not present, or a password when the email address is present.
+```php
+// this rule set would work for either data set...
+$data = ['email' => 'test@test.com', 'password' => 'mypassword'];
+// or...
+$data = ['token' => 'jashdjahs83rufh89y38h38h'];
 
+$v = new Valitron\Validator($data);
+$v->rules([
+    'requiredWithout' => [
+        ['token', ['email', 'password'], true]
+    ],
+    'requiredWith' => [
+        ['password', ['email']]
+    ],
+    'email' => [
+        ['email']
+    ]
+    'optional' => [
+        ['email']
+    ]
+]);
+$this->assertTrue($v->validate());
+```
 
 ## Built-in Validation Rules
 
  * `required` - Field is required
+ * `requiredWith` - Field is required if any other fields are present
+ * `requiredWithout` - Field is required if any other fields are NOT present
  * `equals` - Field must match another field (email/password confirmation)
  * `different` - Field must be different than another field
  * `accepted` - Checkbox or Radio must be accepted (yes, on, 1, true)
@@ -200,7 +225,133 @@ $v->rules([
 $v->validate();
 ```
 
-Example using alternate syntax.
+## requiredWith fields usage
+The `requiredWith` rule checks that the field is required, not null, and not the empty string, if any other fields are present, not null, and not the empty string.
+```php
+// password field will be required when the username field is provided and not empty
+$v->rule('requiredWith', 'password', 'username');
+```
+
+Alternate syntax.
+```php
+$v = new Valitron\Validator(['username' => 'spiderman', 'password' => 'Gr33nG0Blin']);
+$v->rules([
+    'requiredWith' => [
+        ['password', 'username']
+    ]
+]);
+$v->validate();
+```
+
+*Note* You can provide multiple values as an array. In this case if ANY of the fields are present the field will be required.
+```php
+// in this case the password field will be required if the username or email fields are present
+$v->rule('requiredWith', 'password', ['username', 'email']);
+```
+
+Alternate syntax.
+```php
+$v = new Valitron\Validator(['username' => 'spiderman', 'password' => 'Gr33nG0Blin']);
+$v->rules([
+    'requiredWith' => [
+        ['password', ['username', 'email']]
+    ]
+]);
+$v->validate();
+```
+
+### Strict flag
+The strict flag will change the `requiredWith` rule to `requiredWithAll` which will require the field only if ALL of the other fields are present, not null, and not the empty string.
+```php
+// in this example the suffix field is required only when both the first_name and last_name are provided
+$v->rule('requiredWith', 'suffix', ['first_name', 'last_name'], true);
+```
+Alternate syntax.
+```php
+$v = new Valitron\Validator(['first_name' => 'steve', 'last_name' => 'holt', 'suffix' => 'Mr']);
+$v->rules([
+    'requiredWith' => [
+        ['suffix', ['first_name', 'last_name'], true]
+    ]
+]);
+$v->validate();
+```
+
+Likewise, in this case `validate()` would still return true, as the suffix field would not be required in strict mode, as not all of the fields are provided.
+```php
+$v = new Valitron\Validator(['first_name' => 'steve']);
+$v->rules([
+    'requiredWith' => [
+        ['suffix', ['first_name', 'last_name'], true]
+    ]
+]);
+$v->validate();
+```
+
+## requiredWithout fields usage
+The `requiredWithout` rule checks that the field is required, not null, and not the empty string, if any other fields are NOT present.
+```php
+// this rule will require the username field when the first_name is not present
+$v->rule('requiredWithout', 'username', 'first_name')
+```
+
+Alternate syntax.
+```php
+// this will return true, as the username is provided when the first_name is not provided
+$v = new Valitron\Validator(['username' => 'spiderman']);
+$v->rules([
+    'requiredWithout' => [
+        ['username', 'first_name']
+    ]
+]);
+$v->validate();
+```
+
+*Note* You can provide multiple values as an array. In this case if ANY of the fields are NOT present the field will be required.
+```php
+// in this case the username field will be required if either the first_name or last_name fields are not present
+$v->rule('requiredWithout', 'username', ['first_name', 'last_name']);
+```
+
+Alternate syntax.
+```php
+// this passes validation because although the last_name field is not present, the username is provided
+$v = new Valitron\Validator(['username' => 'spiderman', 'first_name' => 'Peter']);
+$v->rules([
+    'requiredWithout' => [
+        ['username', ['first_name', 'last_name']]
+    ]
+]);
+$v->validate();
+```
+
+### Strict flag
+The strict flag will change the `requiredWithout` rule to `requiredWithoutAll` which will require the field only if ALL of the other fields are not present.
+```php
+// in this example the username field is required only when both the first_name and last_name are not provided
+$v->rule('requiredWithout', 'username', ['first_name', 'last_name'], true);
+```
+Alternate syntax.
+```php
+$v = new Valitron\Validator(['username' => 'BatMan']);
+$v->rules([
+    'requiredWithout' => [
+        ['username', ['first_name', 'last_name'], true]
+    ]
+]);
+$v->validate();
+```
+
+Likewise, in this case `validate()` would still return true, as the username field would not be required in strict mode, as all of the fields are provided.
+```php
+$v = new Valitron\Validator(['first_name' => 'steve', 'last_name' => 'holt']);
+$v->rules([
+    'requiredWithout' => [
+        ['suffix', ['first_name', 'last_name'], true]
+    ]
+]);
+$v->validate();
+```
 
 ## equals fields usage
 The `equals` rule checks if two fields are equals in the data array, and that the second field is not null.

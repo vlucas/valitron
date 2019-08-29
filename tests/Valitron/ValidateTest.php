@@ -2258,6 +2258,338 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testRequiredWithValid()
+    {
+        $v = new Validator(array('username' => 'tester', 'password' => 'mypassword'));
+        $v->rule('requiredWith', 'password', 'username');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithValidNoParams()
+    {
+        $v = new Validator(array());
+        $v->rule('requiredWith', 'password', 'username');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithValidEmptyString()
+    {
+        $v = new Validator(array('username' => ''));
+        $v->rule('requiredWith', 'password', 'username');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithValidNullValue()
+    {
+        $v = new Validator(array('username' => null));
+        $v->rule('requiredWith', 'password', 'username');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithValidAltSyntax()
+    {
+        $v = new Validator(array('username' => 'tester', 'password' => 'mypassword'));
+        $v->rules(array(
+            'requiredWith' => array(
+                array('password', 'username')
+            )
+        ));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithValidArray()
+    {
+        $v = new Validator(array('username' => 'tester', 'email' => 'test@test.com', 'password' => 'mypassword'));
+        $v->rule('requiredWith', 'password', array('username', 'email'));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithStrictValidArray()
+    {
+        $v = new Validator(array('username' => 'tester', 'email' => 'test@test.com', 'password' => 'mypassword'));
+        $v->rule('requiredWith', 'password', array('username', 'email'), true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithStrictInvalidArray()
+    {
+        $v = new Validator(array('email' => 'test@test.com', 'username' => 'batman'));
+        $v->rule('requiredWith', 'password', array('username', 'email'), true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithStrictValidArrayNotRequired()
+    {
+        $v = new Validator(array('username' => 'tester', 'email' => 'test@test.com'));
+        $v->rule('requiredWith', 'password', array('username', 'email', 'nickname'), true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithStrictValidArrayEmptyValues()
+    {
+        $v = new Validator(array('email' => '', 'username' => null));
+        $v->rule('requiredWith', 'password', array('username', 'email'), true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithStrictInvalidArraySingleValue()
+    {
+        $v = new Validator(array('email' => 'tester', 'username' => null));
+        $v->rule('requiredWith', 'password', array('username', 'email'), true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithValidArrayAltSyntax()
+    {
+        $v = new Validator(array('password' => 'mypassword'));
+        $v->rules(array(
+            'requiredWith' => array(
+                array('password', array('username', 'email'))
+            )
+        ));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithInvalid()
+    {
+        $v = new Validator(array('username' => 'tester'));
+        $v->rule('requiredWith', 'password', 'username');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithInvalidAltSyntax()
+    {
+        $v = new Validator(array('username' => 'tester'));
+        $v->rules(array(
+            'requiredWith' => array(
+                array('password', 'username')
+            )
+        ));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithInvalidArray()
+    {
+        $v = new Validator(array('email' => 'test@test.com', 'nickname' => 'kevin'));
+        $v->rule('requiredWith', 'password', array('username', 'email', 'nickname'));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithInvalidStrictArray()
+    {
+        $v = new Validator(array('email' => 'test@test.com', 'username' => 'batman', 'nickname' => 'james'));
+        $v->rule('requiredWith', 'password', array('username', 'email', 'nickname'), true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithInvalidArrayAltSyntax()
+    {
+        $v = new Validator(array('username' => 'tester', 'email' => 'test@test.com'));
+        $v->rules(array(
+            'requiredWith' => array(
+                array('password', array('username', 'email', 'nickname'))
+            )
+        ));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithStrictInvalidArrayAltSyntax()
+    {
+        $v = new Validator(array('username' => 'tester', 'email' => 'test@test.com', 'nickname' => 'joseph'));
+        $v->rules(array(
+            'requiredWith' => array(
+                array('password', array('username', 'email', 'nickname'), true)
+            )
+        ));
+        $this->assertFalse($v->validate());
+    }
+
+    // required without tests
+
+    public function testRequiredWithoutValid()
+    {
+        $v = new Validator(array('password' => 'mypassword'));
+        $v->rule('requiredWithout', 'password', 'username');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithoutInvalidNotPresent()
+    {
+        $v = new Validator(array());
+        $v->rule('requiredWithout', 'password', 'username');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutValidEmptyString()
+    {
+        $v = new Validator(array('username' => '', 'password' => 'mypassword'));
+        $v->rule('requiredWithout', 'password', 'username');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithoutInvalidEmptyStringNotPresent()
+    {
+        $v = new Validator(array('username' => ''));
+        $v->rule('requiredWithout', 'password', 'username');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutValidNullValue()
+    {
+        $v = new Validator(array('username' => null, 'password' => 'mypassword'));
+        $v->rule('requiredWithout', 'password', 'username');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithoutInvlidNullValueNotPresent()
+    {
+        $v = new Validator(array('username' => null));
+        $v->rule('requiredWithout', 'password', 'username');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutValidAltSyntax()
+    {
+        $v = new Validator(array('password' => 'mypassword'));
+        $v->rules(array(
+            'requiredWithout' => array(
+                array('password', 'username')
+            )
+        ));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithoutInvalidAltSyntaxNotPresent()
+    {
+        $v = new Validator(array());
+        $v->rules(array(
+            'requiredWithout' => array(
+                array('password', 'username')
+            )
+        ));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutValidArray()
+    {
+        $v = new Validator(array('password' => 'mypassword'));
+        $v->rule('requiredWithout', 'password', array('username', 'email'));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithoutInvalidArrayNotPresent()
+    {
+        $v = new Validator(array());
+        $v->rule('requiredWithout', 'password', array('username', 'email'));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutValidArrayPartial()
+    {
+        $v = new Validator(array('password' => 'mypassword', 'email' => 'test@test.com'));
+        $v->rule('requiredWithout', 'password', array('username', 'email'));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithoutInvalidArrayPartial()
+    {
+        $v = new Validator(array('email' => 'test@test.com'));
+        $v->rule('requiredWithout', 'password', array('username', 'email'));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutValidArrayStrict()
+    {
+        $v = new Validator(array('email' => 'test@test.com'));
+        $v->rule('requiredWithout', 'password', array('username', 'email'), true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithoutInvalidArrayStrict()
+    {
+        $v = new Validator(array());
+        $v->rule('requiredWithout', 'password', array('username', 'email'), true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutInvalidArrayNotProvided()
+    {
+        $v = new Validator(array('email' => 'test@test.com'));
+        $v->rule('requiredWithout', 'password', array('username', 'email'));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutValidArrayAltSyntax()
+    {
+        $v = new Validator(array('password' => 'mypassword'));
+        $v->rules(array(
+            'requiredWithout' => array(
+                array('password', array('username', 'email'))
+            )
+        ));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testConditionallyRequiredAuthSampleToken()
+    {
+        $v = new Validator(array('token' => 'ajkdhieyf2834fsuhf8934y89'));
+        $v->rule('requiredWithout', 'token', array('email', 'password'));
+        $v->rule('requiredWith', 'password', 'email');
+        $v->rule('email', 'email');
+        $v->rule('optional', 'email');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testConditionallyRequiredAuthSampleMissingPassword()
+    {
+        $v = new Validator(array('email' => 'test@test.com'));
+        $v->rule('requiredWithout', 'token', array('email', 'password'));
+        $v->rule('requiredWith', 'password', 'email');
+        $v->rule('email', 'email');
+        $v->rule('optional', 'email');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testConditionallyRequiredAuthSampleTokenAltSyntax()
+    {
+        $v = new Validator(array('token' => 'ajkdhieyf2834fsuhf8934y89'));
+        $v->rules(array(
+            'requiredWithout' => array(
+                array('token', array('email', 'password'))
+            ),
+            'requiredWith' => array(
+                array('password', array('email'))
+            ),
+            'email' => array(
+                array('email')
+            ),
+            'optional' => array(
+                array('email')
+            )
+        ));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testConditionallyRequiredAuthSampleEmailPasswordAltSyntax()
+    {
+        $v = new Validator(array('email' => 'test@test.com', 'password' => 'mypassword'));
+        $v->rules(array(
+            'requiredWithout' => array(
+                array('token', array('email', 'password'))
+            ),
+            'requiredWith' => array(
+                array('password', array('email'))
+            ),
+            'email' => array(
+                array('email')
+            ),
+            'optional' => array(
+                array('email')
+            )
+        ));
+        $this->assertTrue($v->validate());
+    }
+
     /**
      * @dataProvider dataProviderFor_testError
      */
