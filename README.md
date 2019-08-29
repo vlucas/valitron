@@ -1324,3 +1324,7 @@ before running the tests:
 6. Push to the branch (`git push origin my-new-feature`)
 7. Create new Pull Request
 8. Pat yourself on the back for being so awesome
+
+## Security Disclosures and Contact Information
+
+To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security). Tidelift will coordinate the fix and disclosure.
