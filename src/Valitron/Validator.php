@@ -86,7 +86,7 @@ class Validator
     /**
      * @var bool
      */
-    protected $using_field_label_on_massage = true;
+    protected static $using_field_label_on_massage = true;
 
     /**
      * Setup validation
