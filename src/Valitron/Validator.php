@@ -84,6 +84,11 @@ class Validator
     protected $stop_on_first_fail = false;
 
     /**
+     * @var bool
+     */
+    protected $using_field_label_on_massage = true;
+
+    /**
      * Setup validation
      *
      * @param  array $data
@@ -142,6 +147,21 @@ class Validator
         }
 
         return static::$_langDir ?: dirname(dirname(__DIR__)) . '/lang';
+    }
+
+    /**
+     * Get/set using field label on massage
+     *
+     * @param  string $dir
+     * @return string
+     */
+    public static function fieldLabelMassage($usebool = true)
+    {
+        if ($usebool === false) {
+            static::$using_field_label_on_massage = $usebool;
+        }
+
+        return static::$using_field_label_on_massage;
     }
 
     /**
@@ -1396,7 +1416,7 @@ class Validator
         } else {
             $notContains = strpos($message, '{field}') === false;
         }
-        if ($notContains) {
+        if ($notContains && static::$using_field_label_on_massage) {
             $message = '{field} ' . $message;
         }
 
