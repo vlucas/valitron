@@ -1167,6 +1167,27 @@ class Validator
         }
     }
 
+    private function validationMustBeExcecuted($validation, $field, $values, $multiple){
+        //always excecute requiredWith(out) rules
+        if (in_array($validation['rule'], array('requiredWith', 'requiredWithout'))){
+            return true;
+        }
+
+        //do not execute if the field is optional and not set
+        if($this->hasRule('optional', $field) && ! isset($values)){
+            return false;
+        }
+
+        //ignore empty input, except for required and accepted rule
+        if (! $this->hasRule('required', $field) && ! in_array($validation['rule'], array('required', 'accepted'))){
+            if($multiple){
+                return count($values) != 0;
+            }
+            return (isset($values) && $values !== '');
+        }
+
+        return true;
+    }
     /**
      * Run validations and return boolean result
      *
@@ -1179,15 +1200,7 @@ class Validator
             foreach ($v['fields'] as $field) {
                 list($values, $multiple) = $this->getPart($this->_fields, explode('.', $field), false);
 
-                // Don't validate if the field is not required and the value is empty and we don't have a conditionally required rule present on the field
-                if (($this->hasRule('optional', $field) && isset($values)) 
-                    || ($this->hasRule('requiredWith', $field) || $this->hasRule('requiredWithout', $field))) {
-                    //Continue with execution below if statement
-                } elseif (
-                    $v['rule'] !== 'required' && !$this->hasRule('required', $field) &&
-                    $v['rule'] !== 'accepted' &&
-                    (!isset($values) || $values === '' || ($multiple && count($values) == 0))
-                ) {
+                if (! $this->validationMustBeExcecuted($v, $field, $values, $multiple)){
                     continue;
                 }
 
