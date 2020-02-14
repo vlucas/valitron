@@ -440,24 +440,19 @@ $v->rules([
 $v->validate();
 ```
 
-*Note* the optional boolean flag for strict mode will allow for integers to be supplied as negative values. So the following rule would evaluate to true:
+*Note* the optional boolean flag for strict mode makes sure integers are to be supplied in a strictly numeric form. So the following rule would evaluate to true:
 ```php
-$v = new Valitron\Validator(['age' => '-27']);
-$v->rules([
-    'integer' => [
-        ['age', true]
-    ]
-]);
+$v = new Valitron\Validator(['negative' => '-27', 'positive'=>'27']);
+$v->rule('integer', 'age', true);
+$v->rule('integer', 'height', true);
 $v->validate();
 ```
-Whereas the same for a positive (+) value would evaluate to false, as the + in this case is redundant:
+
+Whereas the following will evaluate to false, as the + for the positive number in this case is redundant:
 ```php
-$v = new Valitron\Validator(['age' => '+27']);
-$v->rules([
-    'integer' => [
-        ['age', true]
-    ]
-]);
+$v = new Valitron\Validator(['negative' => '-27', 'positive'=>'+27']);
+$v->rule('integer', 'age', true);
+$v->rule('integer', 'height', true);
 $v->validate();
 ```
 
