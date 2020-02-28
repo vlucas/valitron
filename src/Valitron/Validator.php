@@ -64,6 +64,11 @@ class Validator
     protected static $_langDir;
 
     /**
+     * @var bool
+     */
+    protected static $_prependErrorMessage;
+
+    /**
      * @var array
      */
     protected static $_rules = array();
@@ -86,13 +91,13 @@ class Validator
     /**
      * Setup validation
      *
-     * @param  array $data
-     * @param  array $fields
-     * @param  string $lang
-     * @param  string $langDir
-     * @throws \InvalidArgumentException
+     * @param array $data
+     * @param array $fields
+     * @param string $lang
+     * @param string $langDir
+     * @param bool $prependErrorMessage
      */
-    public function __construct($data = array(), $fields = array(), $lang = null, $langDir = null)
+    public function __construct($data = array(), $fields = array(), $lang = null, $langDir = null, $prependErrorMessage = true)
     {
         // Allows filtering of used input fields against optional second array of field names allowed
         // This is useful for limiting raw $_POST or $_GET data to only known fields
@@ -103,6 +108,9 @@ class Validator
 
         // set langDir in the follow order: constructor param, static::$_langDir, default to package lang dir
         $langDir = $langDir ?: static::langDir();
+
+        // set prependErrorMessage
+        static::prependErrorMessages($prependErrorMessage);
 
         // Load language file in directory
         $langFile = rtrim($langDir, '/') . '/' . $lang . '.php';
@@ -142,6 +150,19 @@ class Validator
         }
 
         return static::$_langDir ?: dirname(dirname(__DIR__)) . '/lang';
+    }
+
+    /**
+     * Get/set prependErrorMessage
+     *
+     * @param bool $prependError
+     * @return bool
+     */
+    public static function prependErrorMessages($prependError)
+    {
+        static::$_prependErrorMessage = $prependError;
+
+        return static::$_prependErrorMessage;
     }
 
     /**
@@ -1404,6 +1425,7 @@ class Validator
         $message = isset($messages[$rule]) ? $messages[$rule] : self::ERROR_DEFAULT;
 
         // Ensure message contains field label
+        echo __FUNCTION__ . '::' . __LINE__ . "({$message}) ({$rule})\n";
         if (function_exists('mb_strpos')) {
             $notContains = mb_strpos($message, '{field}') === false;
         } else {
@@ -1459,6 +1481,7 @@ class Validator
     protected function checkAndSetLabel($field, $message, $params)
     {
         if (isset($this->_labels[$field])) {
+            $message = $this->checkAndSetPrepend($field, $message);
             $message = str_replace('{field}', $this->_labels[$field], $message);
 
             if (is_array($params)) {
@@ -1471,10 +1494,33 @@ class Validator
                 }
             }
         } else {
-            $message = str_replace('{field}', ucwords(str_replace('_', ' ', $field)), $message);
+            $message = $this->checkAndSetPrependTitleCase($field, $message);
         }
 
         return $message;
+    }
+
+    /**
+     * @param string $field
+     * @param string $message
+     * @return string|string[]
+     */
+    protected function checkAndSetPrepend($field, $message)
+    {
+        if (static::$_prependErrorMessage === true) {
+            return str_replace('{field}', $this->_labels[$field], $message);
+        }
+
+        return $message;
+    }
+
+    protected function checkAndSetPrependTitleCase($field, $message)
+    {
+        if (static::$_prependErrorMessage === true) {
+            return str_replace('{field}', ucwords(str_replace('_', ' ', $field)), $message);
+        }
+
+        return trim(str_replace('{field}', '', $message));
     }
 
     /**
