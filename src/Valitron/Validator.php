@@ -1425,7 +1425,6 @@ class Validator
         $message = isset($messages[$rule]) ? $messages[$rule] : self::ERROR_DEFAULT;
 
         // Ensure message contains field label
-        echo __FUNCTION__ . '::' . __LINE__ . "({$message}) ({$rule})\n";
         if (function_exists('mb_strpos')) {
             $notContains = mb_strpos($message, '{field}') === false;
         } else {
