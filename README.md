@@ -1118,7 +1118,7 @@ $v = new Valitron\Validator([
         'city' => 'Doe D.C.'
     ]
 ]);
-$v->rule(['arrayHasKeys', 'address', ['name', 'street', 'city']);
+$v->rule('arrayHasKeys', 'address', ['name', 'street', 'city']);
 $v->validate();
 ```
 
