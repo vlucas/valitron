@@ -722,7 +722,7 @@ class Validator
     protected function validateDate($field, $value)
     {
         $isDate = false;
-        if ($value instanceof \DateTimeInterface) {
+        if ($this->isDateObject($value)) {
             $isDate = true;
         } else {
             $isDate = strtotime($value) !== false;
@@ -756,8 +756,8 @@ class Validator
      */
     protected function validateDateBefore($field, $value, $params)
     {
-        $vtime = ($value instanceof \DateTimeInterface) ? $value->getTimestamp() : strtotime($value);
-        $ptime = ($params[0] instanceof \DateTimeInterface) ? $params[0]->getTimestamp() : strtotime($params[0]);
+        $vtime = $this->isDateObject($value) ? $value->getTimestamp() : strtotime($value);
+        $ptime = $this->isDateObject($params[0]) ? $params[0]->getTimestamp() : strtotime($params[0]);
 
         return $vtime < $ptime;
     }
@@ -772,8 +772,8 @@ class Validator
      */
     protected function validateDateAfter($field, $value, $params)
     {
-        $vtime = ($value instanceof \DateTimeInterface) ? $value->getTimestamp() : strtotime($value);
-        $ptime = ($params[0] instanceof \DateTimeInterface) ? $params[0]->getTimestamp() : strtotime($params[0]);
+        $vtime = $this->isDateObject($value) ? $value->getTimestamp() : strtotime($value);
+        $ptime = $this->isDateObject($params[0]) ? $params[0]->getTimestamp() : strtotime($params[0]);
 
         return $vtime > $ptime;
     }
@@ -1081,7 +1081,7 @@ class Validator
             if (is_array($param)) {
                 $param = "['" . implode("', '", $param) . "']";
             }
-            if ($param instanceof \DateTimeInterface) {
+            if ($this->isDateObject($param)) {
                 $param = $param->format('Y-m-d');
             } else {
                 if (is_object($param)) {
@@ -1557,5 +1557,19 @@ class Validator
         array_map(function ($field) use ($rules, $me) {
             $me->mapFieldRules($field, $rules[$field]);
         }, array_keys($rules));
+    }
+    
+    /**
+     * @param $date
+     * @return bool
+     */
+    private function isDateObject($date): bool
+    {
+        // may not exist if you are using php <= 5.5
+        $dateTimeImmutable = '\DateTimeImmutable';
+        $dateTimeInterface = '\DateTimeInterface';
+
+
+        return $date instanceof $dateTimeInterface || $date instanceof \DateTime || $date instanceof $dateTimeImmutable;
     }
 }
