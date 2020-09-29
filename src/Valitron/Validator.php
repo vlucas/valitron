@@ -1563,7 +1563,7 @@ class Validator
      * @param $date
      * @return bool
      */
-    private function isDateObject($date): bool
+    private function isDateObject($date)
     {
         // may not exist if you are using php <= 5.5
         $dateTimeImmutable = '\DateTimeImmutable';
