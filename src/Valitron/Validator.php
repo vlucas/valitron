@@ -722,7 +722,7 @@ class Validator
     protected function validateDate($field, $value)
     {
         $isDate = false;
-        if ($value instanceof \DateTime) {
+        if ($value instanceof \DateTimeInterface) {
             $isDate = true;
         } else {
             $isDate = strtotime($value) !== false;
@@ -756,8 +756,8 @@ class Validator
      */
     protected function validateDateBefore($field, $value, $params)
     {
-        $vtime = ($value instanceof \DateTime) ? $value->getTimestamp() : strtotime($value);
-        $ptime = ($params[0] instanceof \DateTime) ? $params[0]->getTimestamp() : strtotime($params[0]);
+        $vtime = ($value instanceof \DateTimeInterface) ? $value->getTimestamp() : strtotime($value);
+        $ptime = ($params[0] instanceof \DateTimeInterface) ? $params[0]->getTimestamp() : strtotime($params[0]);
 
         return $vtime < $ptime;
     }
@@ -772,8 +772,8 @@ class Validator
      */
     protected function validateDateAfter($field, $value, $params)
     {
-        $vtime = ($value instanceof \DateTime) ? $value->getTimestamp() : strtotime($value);
-        $ptime = ($params[0] instanceof \DateTime) ? $params[0]->getTimestamp() : strtotime($params[0]);
+        $vtime = ($value instanceof \DateTimeInterface) ? $value->getTimestamp() : strtotime($value);
+        $ptime = ($params[0] instanceof \DateTimeInterface) ? $params[0]->getTimestamp() : strtotime($params[0]);
 
         return $vtime > $ptime;
     }
@@ -1081,7 +1081,7 @@ class Validator
             if (is_array($param)) {
                 $param = "['" . implode("', '", $param) . "']";
             }
-            if ($param instanceof \DateTime) {
+            if ($param instanceof \DateTimeInterface) {
                 $param = $param->format('Y-m-d');
             } else {
                 if (is_object($param)) {
