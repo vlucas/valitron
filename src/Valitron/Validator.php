@@ -913,12 +913,6 @@ class Validator
         return false;
     }
 
-    /**
-     * @param $field
-     * @param $value
-     * @param $params
-     * @return bool
-     */
     protected function validateInstanceOf($field, $value, $params)
     {
         $isInstanceOf = false;
@@ -1041,12 +1035,6 @@ class Validator
         return true;
     }
 
-    /**
-     * @param $field
-     * @param $value
-     * @param $params
-     * @return bool
-     */
     protected function validateArrayHasKeys($field, $value, $params)
     {
         if (!is_array($value) || !isset($params[0])) {
@@ -1149,12 +1137,6 @@ class Validator
         $this->_labels = array();
     }
 
-    /**
-     * @param $data
-     * @param $identifiers
-     * @param bool $allow_empty
-     * @return array
-     */
     protected function getPart($data, $identifiers, $allow_empty = false)
     {
         // Catches the case where the field is an array of discrete values
@@ -1198,13 +1180,6 @@ class Validator
         }
     }
 
-    /**
-     * @param $validation
-     * @param $field
-     * @param $values
-     * @param $multiple
-     * @return bool
-     */
     private function validationMustBeExcecuted($validation, $field, $values, $multiple){
         //always excecute requiredWith(out) rules
         if (in_array($validation['rule'], array('requiredWith', 'requiredWithout'))){
@@ -1326,9 +1301,6 @@ class Validator
         return false;
     }
 
-    /**
-     * @param $callback
-     */
     protected static function assertRuleCallback($callback)
     {
         if (!is_callable($callback)) {
