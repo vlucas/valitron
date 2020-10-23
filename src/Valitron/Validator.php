@@ -152,7 +152,7 @@ class Validator
     /**
      * @param bool $prepend_labels
      */
-    public function prependLabels($prepend_labels = true)
+    public function setPrependLabels($prepend_labels = true)
     {
         $this->prepend_labels = $prepend_labels;
     }
