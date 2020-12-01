@@ -127,6 +127,33 @@ V::lang('ar');
 
 ```
 
+Disabling the {field} name in the output of the error message. 
+
+```php
+use Valitron\Validator as V;
+
+$v = new Valitron\Validator(['name' => 'John']);
+$v->rule('required', ['name']);
+
+// Disable prepending the labels
+$v->setPrependLabels(false);
+
+// Error output for the "false" condition
+[
+    ["name"] => [
+        "is required"
+    ]
+]
+
+// Error output for the default (true) condition
+[
+    ["name"] => [
+        "name is required"
+    ]
+]
+
+```
+
 You can conditionally require values using required conditional rules. In this example, for authentication, we're requiring either a token when both the email and password are not present, or a password when the email address is present.
 ```php
 // this rule set would work for either data set...

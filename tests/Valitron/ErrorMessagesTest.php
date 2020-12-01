@@ -12,6 +12,19 @@ class ErrorMessagesTest extends BaseTestCase
         $this->assertSame(array("Name is required"), $v->errors('name'));
     }
 
+    /**
+     * Test the disabling of prepending the field labels
+     * to error messages.
+     */
+    public function testErrorMessageExcludeFieldName()
+    {
+        $v = new Validator(array());
+        $v->setPrependLabels(false);
+        $v->rule('required', 'name');
+        $v->validate();
+        $this->assertSame(array("is required"), $v->errors('name'));
+    }
+
     public function testAccurateErrorMessageParams()
     {
         $v = new Validator(array('num' => 5));

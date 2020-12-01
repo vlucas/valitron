@@ -84,6 +84,11 @@ class Validator
     protected $stop_on_first_fail = false;
 
     /**
+     * @var bool
+     */
+    protected $prepend_labels = true;
+
+    /**
      * Setup validation
      *
      * @param  array $data
@@ -142,6 +147,14 @@ class Validator
         }
 
         return static::$_langDir ?: dirname(dirname(__DIR__)) . '/lang';
+    }
+
+    /**
+     * @param bool $prepend_labels
+     */
+    public function setPrependLabels($prepend_labels = true)
+    {
+        $this->prepend_labels = $prepend_labels;
     }
 
     /**
@@ -1471,7 +1484,9 @@ class Validator
                 }
             }
         } else {
-            $message = str_replace('{field}', ucwords(str_replace('_', ' ', $field)), $message);
+            $message = $this->prepend_labels
+                ? str_replace('{field}', ucwords(str_replace('_', ' ', $field)), $message)
+                : str_replace('{field} ', '', $message);
         }
 
         return $message;
