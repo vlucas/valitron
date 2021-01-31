@@ -270,6 +270,19 @@ class Validator
     }
 
     /**
+     * Validate that a field is an integer type
+     *
+     * @param  string $field
+     * @param  mixed $value
+     * @param  array $params
+     * @return bool
+     */
+    protected function validateIntegerType($field, $value, $params)
+    {
+        return is_int($value);
+    }
+
+    /**
      * Validate the length of a string
      *
      * @param  string $field
