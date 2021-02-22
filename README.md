@@ -154,6 +154,31 @@ $v->setPrependLabels(false);
 
 ```
 
+Allowing indexing of error messages by the name of the rule.
+
+```php
+$v = new Valitron\Validator(['name' => 'John']);
+$v->rule('required', ['name']);
+
+// Enable indexing of error messages
+$v->setIndexErrorByRule(true);
+
+// Error output for the default (false) condition
+[
+    ["name"] => [
+        "Name is required"
+    ]
+]
+
+// Error output for the "true" condition
+[
+    ["name"] => [
+        "required" => "Name is required"
+    ]
+]
+
+```
+
 You can conditionally require values using required conditional rules. In this example, for authentication, we're requiring either a token when both the email and password are not present, or a password when the email address is present.
 ```php
 // this rule set would work for either data set...
