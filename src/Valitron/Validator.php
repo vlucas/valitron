@@ -172,9 +172,7 @@ class Validator
             return $find[1];
         }
 
-        if (is_null($value)) {
-            return false;
-        } elseif (is_string($value) && trim($value) === '') {
+        if (is_null($value) || (is_string($value) && trim($value) === '')) {
             return false;
         }
 
@@ -890,11 +888,9 @@ class Validator
                 } elseif (isset($cards)) {
                     // if we have cards, check our users card against only the ones we have
                     foreach ($cards as $card) {
-                        if (in_array($card, array_keys($cardRegex))) {
+                        if (in_array($card, array_keys($cardRegex)) && preg_match($cardRegex[$card], $value) === 1) {
                             // if the card is valid, we want to stop looping
-                            if (preg_match($cardRegex[$card], $value) === 1) {
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 } else {
@@ -1102,10 +1098,8 @@ class Validator
                 }
             }
             // Use custom label instead of field name if set
-            if (is_string($params[0])) {
-                if (isset($this->_labels[$param])) {
-                    $param = $this->_labels[$param];
-                }
+            if (is_string($params[0]) && isset($this->_labels[$param])) {
+                $param = $this->_labels[$param];
             }
             $values[] = $param;
         }
@@ -1291,10 +1285,8 @@ class Validator
     protected function hasRule($name, $field)
     {
         foreach ($this->_validations as $validation) {
-            if ($validation['rule'] == $name) {
-                if (in_array($field, $validation['fields'])) {
-                    return true;
-                }
+            if ($validation['rule'] == $name && in_array($field, $validation['fields'])) {
+                return true;
             }
         }
 
