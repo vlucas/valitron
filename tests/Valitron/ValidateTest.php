@@ -972,6 +972,9 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testNotInInvalidAltSyntax()
     {
         $v = new Valitron\Validator(array('color' => 'yellow'));
