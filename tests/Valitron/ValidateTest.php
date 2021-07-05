@@ -980,6 +980,7 @@ class ValidateTest extends BaseTestCase
                 array('color', array('blue', 'green', 'red', 'yellow'))
             )
         ));
+        $this->assertFalse($v->validate());
     }
 
     public function testAsciiValid()
