@@ -627,7 +627,8 @@ class Validator
             if (function_exists('idn_to_ascii') && defined('INTL_IDNA_VARIANT_UTS46')) {
                 $domain = idn_to_ascii($domain, 0, INTL_IDNA_VARIANT_UTS46);
             }
-            return checkdnsrr($domain, 'ANY');
+
+            return checkdnsrr($domain, 'MX');
         }
 
         return false;
