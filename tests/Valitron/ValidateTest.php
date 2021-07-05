@@ -4,6 +4,7 @@ use Valitron\Validator;
 
 class ValidateTest extends BaseTestCase
 {
+
     public function testValidWithNoRules()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
@@ -2919,6 +2920,35 @@ class ValidateTest extends BaseTestCase
         $v->rule('arrayHasKeys', 'address', array('name', 'street', 'city'));
         $v->rule('optional', 'address');
         $this->assertTrue($v->validate());
+    }
+
+    /**
+     *
+     * @see https://github.com/vlucas/valitron/issues/332
+     */
+    public function testInRuleSearchesValuesForNumericArray(){
+
+        $v = new Valitron\Validator(array('color' => 'purple'));
+
+        $v->rules(array(
+            'in' => array(
+                array('color', array(3=>'green', 2=>'purple'))
+            )
+        ));
+
+        $this->assertTrue($v->validate());
+    }
+
+    public function testInRuleSearchesKeysForAssociativeArray(){
+        $v = new Valitron\Validator(array('color' => 'purple'));
+
+        $v->rules(array(
+            'in' => array(
+                array('color', array('c-3'=>'green', 'c-2'=>'purple'))
+            )
+        ));
+
+        $this->assertFalse($v->validate());
     }
 }
 
