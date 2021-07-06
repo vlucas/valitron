@@ -420,9 +420,13 @@ class Validator
      */
     protected function validateIn($field, $value, $params)
     {
-        $isAssoc = array_values($params[0]) !== $params[0];
-        if ($isAssoc) {
-            $params[0] = array_keys($params[0]);
+        $forceAsAssociative = false;
+        if (isset($params[2])) {
+            $forceAsAssociative = (bool) $params[2];
+        }
+
+        if ($forceAsAssociative || $this->isAssociativeArray($params[0])) {
+           $params[0] = array_keys($params[0]);
         }
 
         $strict = false;
@@ -443,8 +447,12 @@ class Validator
      */
     protected function validateListContains($field, $value, $params)
     {
-        $isAssoc = array_values($value) !== $value;
-        if ($isAssoc) {
+        $forceAsAssociative = false;
+        if (isset($params[2])) {
+            $forceAsAssociative = (bool) $params[2];
+        }
+
+        if ($forceAsAssociative || $this->isAssociativeArray($value)) {
             $value = array_keys($value);
         }
 
@@ -1565,5 +1573,10 @@ class Validator
         array_map(function ($field) use ($rules, $me) {
             $me->mapFieldRules($field, $rules[$field]);
         }, array_keys($rules));
+    }
+
+    private function isAssociativeArray($input){
+        //array contains at least one key that's not an can not be cast to an integer
+        return count(array_filter(array_keys($input), 'is_string')) > 0;
     }
 }

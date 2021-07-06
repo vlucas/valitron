@@ -4,6 +4,7 @@ use Valitron\Validator;
 
 class ValidateTest extends BaseTestCase
 {
+
     public function testValidWithNoRules()
     {
         $v = new Validator(array('name' => 'Chester Tester'));
@@ -2918,6 +2919,46 @@ class ValidateTest extends BaseTestCase
         $v = new Validator(array());
         $v->rule('arrayHasKeys', 'address', array('name', 'street', 'city'));
         $v->rule('optional', 'address');
+        $this->assertTrue($v->validate());
+    }
+
+    /**
+     *
+     * @see https://github.com/vlucas/valitron/issues/332
+     */
+    public function testInRuleSearchesValuesForNumericArray(){
+
+        $v = new Valitron\Validator(array('color' => 'purple'));
+
+        $v->rules(array(
+            'in' => array(
+                array('color', array(3=>'green', 2=>'purple'))
+            )
+        ));
+
+        $this->assertTrue($v->validate());
+    }
+
+    public function testInRuleSearchesKeysForAssociativeArray(){
+        $v = new Valitron\Validator(array('color' => 'c-2'));
+
+        $v->rules(array(
+            'in' => array(
+                array('color', array('c-3'=>'green', 'c-2'=>'purple'))
+            )
+        ));
+
+        $this->assertTrue($v->validate());
+    }
+
+    public function testInRuleSearchesKeysWhenForcedTo(){
+        $v = new Valitron\Validator(array('color' => 2));
+
+        $v->rules(array(
+            'in' => array(
+                array('color', array('3'=>'green', '2'=>'purple'), null, true)
+            )
+        ));
         $this->assertTrue($v->validate());
     }
 }
