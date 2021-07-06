@@ -2940,7 +2940,7 @@ class ValidateTest extends BaseTestCase
     }
 
     public function testInRuleSearchesKeysForAssociativeArray(){
-        $v = new Valitron\Validator(array('color' => 'purple'));
+        $v = new Valitron\Validator(array('color' => 'c-2'));
 
         $v->rules(array(
             'in' => array(
@@ -2948,7 +2948,18 @@ class ValidateTest extends BaseTestCase
             )
         ));
 
-        $this->assertFalse($v->validate());
+        $this->assertTrue($v->validate());
+    }
+
+    public function testInRuleSearchesKeysWhenForcedTo(){
+        $v = new Valitron\Validator(array('color' => 2));
+
+        $v->rules(array(
+            'in' => array(
+                array('color', array('3'=>'green', '2'=>'purple'), null, true)
+            )
+        ));
+        $this->assertTrue($v->validate());
     }
 }
 

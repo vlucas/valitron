@@ -420,7 +420,11 @@ class Validator
      */
     protected function validateIn($field, $value, $params)
     {
-        if ($this->isAssociativeArray($params[0])) {
+        $forceAsAssociative = false;
+        if (isset($params[2])) {
+            $forceAsAssociative = (bool) $params[2];
+        }
+        if ($this->isAssociativeArray($params[0]) || $forceAsAssociative) {
            $params[0] = array_keys($params[0]);
         }
 
@@ -442,7 +446,12 @@ class Validator
      */
     protected function validateListContains($field, $value, $params)
     {
-        if ($this->isAssociativeArray($value)) {
+        $forceAsAssociative = false;
+        if (isset($params[2])) {
+            $forceAsAssociative = (bool) $params[2];
+        }
+
+        if ($this->isAssociativeArray($value) || $forceAsAssociative) {
             $value = array_keys($value);
         }
 
