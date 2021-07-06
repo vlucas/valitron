@@ -424,7 +424,8 @@ class Validator
         if (isset($params[2])) {
             $forceAsAssociative = (bool) $params[2];
         }
-        if ($this->isAssociativeArray($params[0]) || $forceAsAssociative) {
+
+        if ($forceAsAssociative || $this->isAssociativeArray($params[0])) {
            $params[0] = array_keys($params[0]);
         }
 
@@ -451,7 +452,7 @@ class Validator
             $forceAsAssociative = (bool) $params[2];
         }
 
-        if ($this->isAssociativeArray($value) || $forceAsAssociative) {
+        if ($forceAsAssociative || $this->isAssociativeArray($value)) {
             $value = array_keys($value);
         }
 
