@@ -10,6 +10,7 @@ class StaticVsInstanceTest extends BaseTestCase
 		$this->assertEquals(
 		    'ar', Validator::lang(), 'instance defined lang should not replace static global lang'
         );
+		Validator::lang('en');
 	}
 
 	/**
