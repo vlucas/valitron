@@ -45,9 +45,12 @@ class LangTest extends BaseTestCase
 
 	public function testLangException()
 	{
-	    $this->expectException("InvalidArgumentException");
-        $this->expectExceptionMessage("Fail to load language file '/this/dir/does/not/exists/en.php'");
+        try{
 		new Validator(array(), array(), 'en', '/this/dir/does/not/exists');
+        } catch (Exception $exception){
+            $this->assertInstanceOf("InvalidArgumentException", $exception);
+            $this->assertEquals("Fail to load language file '/this/dir/does/not/exists/en.php'", $exception->getMessage());
+        }
 	}
 
 
