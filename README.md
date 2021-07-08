@@ -188,6 +188,7 @@ $this->assertTrue($v->validate());
  * `different` - Field must be different than another field
  * `accepted` - Checkbox or Radio must be accepted (yes, on, 1, true)
  * `numeric` - Must be numeric
+ * `integerType` - Must be integer type
  * `integer` - Must be integer number
  * `boolean` - Must be boolean
  * `array` - Must be array
