@@ -4,7 +4,6 @@ use Valitron\Validator;
 
 class ValidateTest extends BaseTestCase
 {
-
     public function testValidWithNoRules()
     {
         $v = new Validator(array('name' => 'Chester Tester'));

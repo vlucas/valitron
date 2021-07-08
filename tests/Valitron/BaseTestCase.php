@@ -4,10 +4,8 @@ use PHPUnit\Framework\TestCase;
 
 class BaseTestCase extends TestCase
 {
-	public function setUp()
-	{
-	}
 
+/*
 	public function tearDown()
 	{
 		$this->resetProperty('_lang');
@@ -23,4 +21,5 @@ class BaseTestCase extends TestCase
 		$prop->setValue($value);
 		$prop->setAccessible(false);
 	}
+*/
 }

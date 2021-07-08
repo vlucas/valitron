@@ -15,8 +15,8 @@ class LangTest extends BaseTestCase
     {
     	$lang = 'ar';
     	Validator::lang($lang);
-    	$validator = new Validator(array());
     	$this->assertEquals($lang, Validator::lang());
+        Validator::lang('en');
 	}
 
 	/**
@@ -42,13 +42,15 @@ class LangTest extends BaseTestCase
 		$this->assertEquals(realpath($this->getLangDir()), realpath(Validator::langDir()));
 	}
 
-	/**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Fail to load language file '/this/dir/does/not/exists/en.php'
-     */
+
 	public function testLangException()
 	{
+        try{
 		new Validator(array(), array(), 'en', '/this/dir/does/not/exists');
+        } catch (Exception $exception){
+            $this->assertInstanceOf("InvalidArgumentException", $exception);
+            $this->assertEquals("Fail to load language file '/this/dir/does/not/exists/en.php'", $exception->getMessage());
+        }
 	}
 
 
