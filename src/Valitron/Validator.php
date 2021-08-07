@@ -1507,7 +1507,7 @@ class Validator
                         $innerParams = (array)$innerParams;
                     }
                     array_unshift($innerParams, $ruleType);
-                    call_user_func_array(array($this, 'rule'), $innerParams);
+                    call_user_func_array(array($this, 'rule'), array_values($innerParams));
                 }
             } else {
                 $this->rule($ruleType, $params);
@@ -1555,7 +1555,7 @@ class Validator
                 unset($rule['message']);
             }
             //Add the field and additional parameters to the rule
-            $added = call_user_func_array(array($me, 'rule'), array_merge(array($ruleName, $field), $rule));
+            $added = call_user_func_array(array($me, 'rule'), array_values(array_merge(array($ruleName, $field), $rule)));
             if (!empty($message)) {
                 $added->message($message);
             }
