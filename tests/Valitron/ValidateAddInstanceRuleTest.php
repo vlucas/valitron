@@ -115,6 +115,6 @@ class ValidateAddInstanceRuleTest extends BaseTestCase
         $v->addInstanceRule("foo_rule", function () {
         });
         $u = $v->getUniqueRuleName("foo");
-        $this->assertRegExp("/^foo_rule_[0-9]{1,5}$/", $u);
+        $this->assertMatchesRegularExpression("/^foo_rule_[0-9]{1,5}$/", $u);
     }
 }

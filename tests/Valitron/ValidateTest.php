@@ -1307,6 +1307,42 @@ class ValidateTest extends BaseTestCase
         $this->assertFalse($v->validate());
     }
 
+    public function testAlphaSpaceValid()
+    {
+        $v = new Validator(array('name' => 'Bruce Wayne'));
+        $v->rule('alphaSpace', 'name');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testAlphaSpaceValidAltSyntax()
+    {
+        $v = new Valitron\Validator(array('name' => 'Bruce Wayne'));
+        $v->rules(array(
+            'alphaSpace' => array(
+                array('name')
+            )
+        ));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testAlphaSpaceInvalid()
+    {
+        $v = new Validator(array('street' => 'Wayne Manor 1'));
+        $v->rule('alphaSpace', 'street');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testAlphaSpaceInvalidAltSyntax()
+    {
+        $v = new Valitron\Validator(array('street' => 'Wayne Manor 1'));
+        $v->rules(array(
+            'alphaSpace' => array(
+                array('street')
+            )
+        ));
+        $this->assertFalse($v->validate());
+    }
+
     public function testAlphaNumValid()
     {
         $v = new Validator(array('test' => 'abc123'));
@@ -1338,6 +1374,42 @@ class ValidateTest extends BaseTestCase
         $v->rules(array(
             'alphaNum' => array(
                 array('username')
+            )
+        ));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testAlphaNumSpaceValid()
+    {
+        $v = new Validator(array('street' => 'Wayne Manor 1'));
+        $v->rule('alphaNumSpace', 'street');
+        $this->assertTrue($v->validate());
+    }
+
+    public function testAlphaNumSpaceValidAltSyntax()
+    {
+        $v = new Valitron\Validator(array('street' => 'Wayne Manor 1'));
+        $v->rules(array(
+            'alphaNumSpace' => array(
+                array('street')
+            )
+        ));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testAlphaNumSpaceInvalid()
+    {
+        $v = new Validator(array('street' => 'Wayne Manor 1#'));
+        $v->rule('alphaNumSpace', 'street');
+        $this->assertFalse($v->validate());
+    }
+
+    public function testAlphaNumSpaceInvalidAltSyntax()
+    {
+        $v = new Valitron\Validator(array('street' => 'Wayne Manor 1#'));
+        $v->rules(array(
+            'alphaNum' => array(
+                array('street')
             )
         ));
         $this->assertFalse($v->validate());
