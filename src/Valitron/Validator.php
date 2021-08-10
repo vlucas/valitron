@@ -693,6 +693,18 @@ class Validator
     }
 
     /**
+     * Validate that a field contains only alphabetic characters and whitespace.
+     *
+     * @param  string $field
+     * @param  mixed $value
+     * @return bool
+     */
+    protected function validateAlphaSpace($field, $value)
+    {
+        return preg_match('/^([a-z\s])+$/i', $value);
+    }
+
+    /**
      * Validate that a field contains only alpha-numeric characters
      *
      * @param  string $field
@@ -702,6 +714,18 @@ class Validator
     protected function validateAlphaNum($field, $value)
     {
         return preg_match('/^([a-z0-9])+$/i', $value);
+    }
+
+    /**
+     * Validate that a field contains only alpha-numeric characters and whitespace.
+     *
+     * @param  string $field
+     * @param  mixed $value
+     * @return bool
+     */
+    protected function validateAlphaNumSpace($field, $value)
+    {
+        return preg_match('/^([a-z0-9\s])+$/i', $value);
     }
 
     /**

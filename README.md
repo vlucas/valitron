@@ -208,7 +208,9 @@ $this->assertTrue($v->validate());
  * `url` - Valid URL
  * `urlActive` - Valid URL with active DNS record
  * `alpha` - Alphabetic characters only
+ * `alphaSpace` - Alphabetic characters and whitespace only
  * `alphaNum` - Alphabetic and numeric characters only
+ * `alphaNumSpace` - Alphabetic, numeric, and whitespace characters only
  * `ascii` - ASCII characters only
  * `slug` - URL slug characters (a-z, 0-9, -, \_)
  * `regex` - Field matches given regex pattern
@@ -806,6 +808,23 @@ $v->rules([
 $v->validate();
 ```
 
+## alphaSpace fields usage
+The `alphaSpace` rule checks the field is alphabetic characters and whitespace only.
+```php
+$v->rule('alphaSpace', 'name');
+```
+
+Alternate syntax.
+```php
+$v = new Valitron\Validator(['name' => 'Bruce Wayne']);
+$v->rules([
+    'alphaSpace' => [
+        ['name']
+    ]
+]);
+$v->validate();
+```
+
 ## alphaNum fields usage
 The `alphaNum` rule checks the field contains only alphabetic or numeric characters.
 ```php
@@ -823,6 +842,22 @@ $v->rules([
 $v->validate();
 ```
 
+## alphaNumSpace fields usage
+The `alphaNumSpace` rule checks the field contains only alphabetic, numeric, and whitespace characters.
+```php
+$v->rule('alphaNumSpace', 'street');
+```
+
+Alternate syntax.
+```php
+$v = new Valitron\Validator(['street' => 'Wayne Manor 1']);
+$v->rules([
+    'alphaNumSpace' => [
+        ['street']
+    ]
+]);
+$v->validate();
+```
 ## ascii fields usage
 The `ascii` rule checks the field contains only characters in the ascii character set.
 ```php
