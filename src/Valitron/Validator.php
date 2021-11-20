@@ -959,8 +959,8 @@ class Validator
             $emptyFields = 0;
             foreach ($reqParams as $requiredField) {
                 // check the field is set, not null, and not the empty string
-                if (isset($fields[$requiredField]) && !is_null($fields[$requiredField])
-                    && (is_string($fields[$requiredField]) ? trim($fields[$requiredField]) !== '' : true)) {
+                list($requiredFieldValue, $multiple) = $this->getPart($fields, explode('.', $requiredField));
+                if (isset($requiredFieldValue) && (!is_string($requiredFieldValue) || trim($requiredFieldValue) !== '')) {
                     if (!$allRequired) {
                         $conditionallyReq = true;
                         break;
@@ -1003,8 +1003,8 @@ class Validator
             $filledFields = 0;
             foreach ($reqParams as $requiredField) {
                 // check the field is NOT set, null, or the empty string, in which case we are requiring this value be present
-                if (!isset($fields[$requiredField]) || (is_null($fields[$requiredField])
-                    || (is_string($fields[$requiredField]) && trim($fields[$requiredField]) === ''))) {
+                list($requiredFieldValue, $multiple) = $this->getPart($fields, explode('.', $requiredField));
+                if (!isset($requiredFieldValue) || (is_string($requiredFieldValue) && trim($requiredFieldValue) === '')) {
                     if (!$allEmpty) {
                         $conditionallyReq = true;
                         break;
