@@ -426,7 +426,7 @@ class Validator
         }
 
         if ($forceAsAssociative || $this->isAssociativeArray($params[0])) {
-           $params[0] = array_keys($params[0]);
+            $params[0] = array_keys($params[0]);
         }
 
         $strict = false;
@@ -939,7 +939,7 @@ class Validator
     }
 
     /**
-     * Validates whether or not a field is required based on whether or not other fields are present.
+     * Validates whether a field is required based on whether other fields are present.
      *
      * @param string $field name of the field in the data array
      * @param mixed $value value of this field
@@ -956,11 +956,19 @@ class Validator
             $reqParams = is_array($params[0]) ? $params[0] : array($params[0]);
             // check for the flag indicating if all fields are required
             $allRequired = isset($params[1]) && (bool)$params[1];
+            // check for the flag indicating if boolean value on the required field should be accounted for
+            $checkBool = isset($params[2]) && (bool)$params[2];
             $emptyFields = 0;
             foreach ($reqParams as $requiredField) {
-                // check the field is set, not null, and not the empty string
-                if (isset($fields[$requiredField]) && !is_null($fields[$requiredField])
-                    && (is_string($fields[$requiredField]) ? trim($fields[$requiredField]) !== '' : true)) {
+                // check the field is set, not null, not boolean false (when flag enabled), and not an empty string
+//                if (isset($fields[$requiredField]) && !is_null($fields[$requiredField])
+//                    && (is_string($fields[$requiredField]) ? trim($fields[$requiredField]) !== '' : true)) {
+                if (isset($fields[$requiredField]) && !is_null($fields[$requiredField]) &&
+                    (
+                        (is_string($fields[$requiredField]) ? trim($fields[$requiredField]) !== '' : true) &&
+                        !($checkBool && is_bool($fields[$requiredField]) && $fields[$requiredField] === false) // Boolean false check when enabled
+                    )) {
+
                     if (!$allRequired) {
                         $conditionallyReq = true;
                         break;
@@ -983,7 +991,7 @@ class Validator
     }
 
     /**
-     * Validates whether or not a field is required based on whether or not other fields are present.
+     * Validates whether a field is required based on whether other fields are present.
      *
      * @param string $field name of the field in the data array
      * @param mixed $value value of this field
@@ -1000,11 +1008,17 @@ class Validator
             $reqParams = is_array($params[0]) ? $params[0] : array($params[0]);
             // check for the flag indicating if all fields are required
             $allEmpty = isset($params[1]) && (bool)$params[1];
+            // check for the flag indicating if boolean value on the required field should be accounted for
+            $checkBool = isset($params[2]) && (bool)$params[2];
             $filledFields = 0;
             foreach ($reqParams as $requiredField) {
-                // check the field is NOT set, null, or the empty string, in which case we are requiring this value be present
-                if (!isset($fields[$requiredField]) || (is_null($fields[$requiredField])
-                    || (is_string($fields[$requiredField]) && trim($fields[$requiredField]) === ''))) {
+                // check the field is NOT set, null, an empty string, or boolean false (when $checkBool flag is set),
+                // in which case we are requiring this value be present
+                if (!isset($fields[$requiredField]) || is_null($fields[$requiredField]) ||
+                    (is_string($fields[$requiredField]) ? trim($fields[$requiredField]) === '' : true) ||
+                    ($checkBool && is_bool($fields[$requiredField]) && $fields[$requiredField] === false) // Boolean false check when enabled
+                ) {
+
                     if (!$allEmpty) {
                         $conditionallyReq = true;
                         break;

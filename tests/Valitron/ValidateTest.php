@@ -1,5 +1,6 @@
 <?php
 
+use PHPUnit\Framework\ExpectationFailedException;
 use Valitron\Validator;
 
 class ValidateTest extends BaseTestCase
@@ -2121,11 +2122,11 @@ class ValidateTest extends BaseTestCase
 
     public function testCreditCardValid()
     {
-        $visa = array(4539511619543489, 4532949059629052, 4024007171194938, 4929646403373269, 4539135861690622);
-        $mastercard = array(5162057048081965, 5382687859049349, 5484388880142230, 5464941521226434, 5473481232685965, 2223000048400011, 2223520043560014);
-        $amex = array(371442067262027, 340743030537918, 345509167493596, 343665795576848, 346087552944316);
-        $dinersclub = array(30363194756249, 30160097740704, 38186521192206, 38977384214552, 38563220301454);
-        $discover = array(6011712400392605, 6011536340491809, 6011785775263015, 6011984124619056, 6011320958064251);
+        $visa = array('4539511619543489', '4532949059629052', '4024007171194938', '4929646403373269', '4539135861690622');
+        $mastercard = array('5162057048081965', '5382687859049349', '5484388880142230', '5464941521226434', '5473481232685965', '2223000048400011', '2223520043560014');
+        $amex = array('371442067262027', '340743030537918', '345509167493596', '343665795576848', '346087552944316');
+        $dinersclub = array('30363194756249', '30160097740704', '38186521192206', '38977384214552', '38563220301454');
+        $discover = array('6011712400392605', '6011536340491809', '6011785775263015', '6011984124619056', '6011320958064251');
 
         foreach (compact('visa', 'mastercard', 'amex', 'dinersclub', 'discover') as $type => $numbers) {
             foreach ($numbers as $number) {
@@ -2145,11 +2146,11 @@ class ValidateTest extends BaseTestCase
 
     public function testCreditCardInvalid()
     {
-        $visa = array(3539511619543489, 3532949059629052, 3024007171194938, 3929646403373269, 3539135861690622);
-        $mastercard = array(4162057048081965, 4382687859049349, 4484388880142230, 4464941521226434, 4473481232685965);
-        $amex = array(271442067262027, 240743030537918, 245509167493596, 243665795576848, 246087552944316);
-        $dinersclub = array(20363194756249, 20160097740704, 28186521192206, 28977384214552, 28563220301454);
-        $discover = array(5011712400392605, 5011536340491809, 5011785775263015, 5011984124619056, 5011320958064251);
+        $visa = array('3539511619543489', '3532949059629052', '3024007171194938', '3929646403373269', '3539135861690622');
+        $mastercard = array('4162057048081965', '4382687859049349', '4484388880142230', '4464941521226434', '4473481232685965');
+        $amex = array('271442067262027', '240743030537918', '245509167493596', '243665795576848', '246087552944316');
+        $dinersclub = array('20363194756249', '20160097740704', '28186521192206', '28977384214552', '28563220301454');
+        $discover = array('5011712400392605', '5011536340491809', '5011785775263015', '5011984124619056', '5011320958064251');
 
         foreach (compact('visa', 'mastercard', 'amex', 'dinersclub', 'discover') as $type => $numbers) {
             foreach ($numbers as $number) {
@@ -2531,6 +2532,357 @@ class ValidateTest extends BaseTestCase
         $this->assertTrue($v->validate());
     }
 
+
+    
+    // REPEAT SAME EXACT TESTS for requiredWith AND requiredWithout, BUT WITH CHECK BOOLEAN ENABLED
+    // TO VERIFY BACKWARD COMPATIBILITY.
+    // Begin Check Boolean tests for requiredWith and requiredWithout
+
+    public function testRequiredWithCheckBooleanValid()
+    {
+        $v = new Validator(array('username' => 'tester', 'password' => 'mypassword'));
+        $v->rule('requiredWith', 'password', 'username', false, true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanValidNoParams()
+    {
+        $v = new Validator(array());
+        $v->rule('requiredWith', 'password', 'username', false, true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanValidEmptyString()
+    {
+        $v = new Validator(array('username' => ''));
+        $v->rule('requiredWith', 'password', 'username', false, true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanValidNullValue()
+    {
+        $v = new Validator(array('username' => null));
+        $v->rule('requiredWith', 'password', 'username', false, true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanValidAltSyntax()
+    {
+        $v = new Validator(array('username' => 'tester', 'password' => 'mypassword'));
+        $v->rules(array(
+            'requiredWith' => array(
+                array('password', 'username', false, true)
+            )
+        ));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanValidArray()
+    {
+        $v = new Validator(array('username' => 'tester', 'email' => 'test@test.com', 'password' => 'mypassword'));
+        $v->rule('requiredWith', 'password', array('username', 'email'), false, true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanStrictValidArray()
+    {
+        $v = new Validator(array('username' => 'tester', 'email' => 'test@test.com', 'password' => 'mypassword'));
+        $v->rule('requiredWith', 'password', array('username', 'email'), true, true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanStrictInvalidArray()
+    {
+        $v = new Validator(array('email' => 'test@test.com', 'username' => 'batman'));
+        $v->rule('requiredWith', 'password', array('username', 'email'), true, true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanStrictValidArrayNotRequired()
+    {
+        $v = new Validator(array('username' => 'tester', 'email' => 'test@test.com'));
+        $v->rule('requiredWith', 'password', array('username', 'email', 'nickname'), true, true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanStrictValidArrayEmptyValues()
+    {
+        $v = new Validator(array('email' => '', 'username' => null));
+        $v->rule('requiredWith', 'password', array('username', 'email'), true, true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanStrictInvalidArraySingleValue()
+    {
+        $v = new Validator(array('email' => 'tester', 'username' => null));
+        $v->rule('requiredWith', 'password', array('username', 'email'), true, true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanValidArrayAltSyntax()
+    {
+        $v = new Validator(array('password' => 'mypassword'));
+        $v->rules(array(
+            'requiredWith' => array(
+                array('password', array('username', 'email'), false, true)
+            )
+        ));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanInvalid()
+    {
+        $v = new Validator(array('username' => 'tester'));
+        $v->rule('requiredWith', 'password', 'username', false, true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanInvalidAltSyntax()
+    {
+        $v = new Validator(array('username' => 'tester'));
+        $v->rules(array(
+            'requiredWith' => array(
+                array('password', 'username', false, true)
+            )
+        ));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanInvalidArray()
+    {
+        $v = new Validator(array('email' => 'test@test.com', 'nickname' => 'kevin'));
+        $v->rule('requiredWith', 'password', array('username', 'email', 'nickname'), false, true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanInvalidStrictArray()
+    {
+        $v = new Validator(array('email' => 'test@test.com', 'username' => 'batman', 'nickname' => 'james'));
+        $v->rule('requiredWith', 'password', array('username', 'email', 'nickname'), true, true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanInvalidArrayAltSyntax()
+    {
+        $v = new Validator(array('username' => 'tester', 'email' => 'test@test.com'));
+        $v->rules(array(
+            'requiredWith' => array(
+                array('password', array('username', 'email', 'nickname'), false, true)
+            )
+        ));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanStrictInvalidArrayAltSyntax()
+    {
+        $v = new Validator(array('username' => 'tester', 'email' => 'test@test.com', 'nickname' => 'joseph'));
+        $v->rules(array(
+            'requiredWith' => array(
+                array('password', array('username', 'email', 'nickname'), true, true)
+            )
+        ));
+        $this->assertFalse($v->validate());
+    }
+
+    // required without tests
+
+    public function testRequiredWithoutCheckBooleanValid()
+    {
+        $v = new Validator(array('password' => 'mypassword'));
+        $v->rule('requiredWithout', 'password', 'username', false, true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanInvalidNotPresent()
+    {
+        $v = new Validator(array());
+        $v->rule('requiredWithout', 'password', 'username', false, true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanValidEmptyString()
+    {
+        $v = new Validator(array('username' => '', 'password' => 'mypassword'));
+        $v->rule('requiredWithout', 'password', 'username', false, true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanInvalidEmptyStringNotPresent()
+    {
+        $v = new Validator(array('username' => ''));
+        $v->rule('requiredWithout', 'password', 'username', false, true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanValidNullValue()
+    {
+        $v = new Validator(array('username' => null, 'password' => 'mypassword'));
+        $v->rule('requiredWithout', 'password', 'username', false, true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanInvlidNullValueNotPresent()
+    {
+        $v = new Validator(array('username' => null));
+        $v->rule('requiredWithout', 'password', 'username', false, true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanValidAltSyntax()
+    {
+        $v = new Validator(array('password' => 'mypassword'));
+        $v->rules(array(
+            'requiredWithout' => array(
+                array('password', 'username', false, true)
+            )
+        ));
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanInvalidAltSyntaxNotPresent()
+    {
+        $v = new Validator(array());
+        $v->rules(array(
+            'requiredWithout' => array(
+                array('password', 'username', false, true)
+            )
+        ));
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanValidArray()
+    {
+        $v = new Validator(array('password' => 'mypassword'));
+        $v->rule('requiredWithout', 'password', array('username', 'email'), false, true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanInvalidArrayNotPresent()
+    {
+        $v = new Validator(array());
+        $v->rule('requiredWithout', 'password', array('username', 'email'), false, true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanValidArrayPartial()
+    {
+        $v = new Validator(array('password' => 'mypassword', 'email' => 'test@test.com'));
+        $v->rule('requiredWithout', 'password', array('username', 'email'), false, true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanInvalidArrayPartial()
+    {
+        $v = new Validator(array('email' => 'test@test.com'));
+        $v->rule('requiredWithout', 'password', array('username', 'email'), false, true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanValidArrayStrict()
+    {
+        $v = new Validator(array('email' => 'test@test.com'));
+        $v->rule('requiredWithout', 'password', array('username', 'email'), true, true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanInvalidArrayStrict()
+    {
+        $v = new Validator(array());
+        $v->rule('requiredWithout', 'password', array('username', 'email'), true, true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanInvalidArrayNotProvided()
+    {
+        $v = new Validator(array('email' => 'test@test.com'));
+        $v->rule('requiredWithout', 'password', array('username', 'email'), false, true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanValidArrayAltSyntax()
+    {
+        $v = new Validator(array('password' => 'mypassword'));
+        $v->rules(array(
+            'requiredWithout' => array(
+                array('password', array('username', 'email'), false, true)
+            )
+        ));
+        $this->assertTrue($v->validate());
+    }
+
+    
+    // End Check boolean tests for requiredWith and requiredWithout
+
+    // Start new tests for $checkBool feature
+
+    // This test proves the new code (with $checkBool flag) treats (bool)false as "NOT set".
+    public function testRequiredWithCheckBooleanBoolFalseValid()
+    {
+        $v = new Validator(array('enabled' => false));
+        $v->rule('requiredWith', 'suffix', 'enabled', false, true);
+        $this->assertTrue($v->validate());
+    }
+
+    // This test proves the previous code (no $checkBool flag) treated (bool)false as "being set".
+    public function testRequiredWithCheckBooleanBoolFalseInvalid()
+    {
+        $v = new Validator(array('enabled' => false));
+        $v->rule('requiredWith', 'suffix', 'enabled', false, false);
+        $this->assertFalse($v->validate());
+    }
+
+    // These tests make the same assertions but test function with the Strict Flag.
+    public function testRequiredWithCheckBooleanStrictBoolFalseValid()
+    {
+        $v = new Validator(array('enabled' => false, 'hidden' => true));
+        $v->rule('requiredWith', 'suffix', ['enabled', 'hidden'], true, true);
+        $this->assertTrue($v->validate());
+    }
+
+    public function testRequiredWithCheckBooleanStrictBoolFalseInvalid()
+    {
+        $v = new Validator(array('enabled' => false, 'hidden' => true));
+        $v->rule('requiredWith', 'suffix', ['enabled', 'hidden'], true, false);
+        $this->assertFalse($v->validate());
+    }
+
+    // Next 4 tests, same as above, but for requiredWithout
+    public function testRequiredWithoutCheckBooleanBoolFalseValid()
+    {
+        $v = new Validator(array('is_adult' => false));
+        $v->rule('requiredWithout', 'mothers_name', 'is_adult', false, true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanBoolFalseInvalid()
+    {
+        $v = new Validator(array('is_adult' => false));
+        $v->rule('requiredWithout', 'mothers_name', 'is_adult', false, false);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutCheckBooleanStrictDoubleBoolFalseInvalid()
+    {
+        // Strict requires both to NOT be set, one is set, so mothers_name is required.
+        // We are not providing mothers_name so this should assert false.
+        $v = new Validator(array('is_adult' => false, 'has_mother' => false));
+        $v->rule('requiredWithout', 'mothers_name', ['is_adult', 'has_mother'], true, true);
+        $this->assertFalse($v->validate());
+    }
+
+    public function testRequiredWithoutStrictDoubleBoolFalseInvalid()
+    {
+        // Strict requires both to NOT be set for mothers_name to be required.
+        // Check bool is not enabled, so these false values are treated as set per the previous code.
+        // For backwards compatibility, this should assert false since we are not providing mothers_name
+        $v = new Validator(array('is_adult' => false, 'has_mother' => false));
+        $v->rule('requiredWithout', 'mothers_name', ['is_adult', 'has_mother'], true, false);
+        $this->assertFalse($v->validate());
+    }
+
+    // End new tests for $checkBool
+    
+    
     public function testConditionallyRequiredAuthSampleToken()
     {
         $v = new Validator(array('token' => 'ajkdhieyf2834fsuhf8934y89'));

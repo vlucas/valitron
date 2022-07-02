@@ -255,7 +255,7 @@ $v->validate();
 ```
 
 ## requiredWith fields usage
-The `requiredWith` rule checks that the field is required, not null, and not the empty string, if any other fields are present, not null, and not the empty string.
+The `requiredWith` rule checks that the field is required, not null, and not an empty string, if any other fields are present, not null, not boolean false, and not an empty string.
 ```php
 // password field will be required when the username field is provided and not empty
 $v->rule('requiredWith', 'password', 'username');
@@ -290,7 +290,7 @@ $v->validate();
 ```
 
 ### Strict flag
-The strict flag will change the `requiredWith` rule to `requiredWithAll` which will require the field only if ALL of the other fields are present, not null, and not the empty string.
+The strict flag will change the `requiredWith` rule to `requiredWithAll` which will require the field only if all the other fields are present, not null, and not an empty string.
 ```php
 // in this example the suffix field is required only when both the first_name and last_name are provided
 $v->rule('requiredWith', 'suffix', ['first_name', 'last_name'], true);
@@ -306,7 +306,7 @@ $v->rules([
 $v->validate();
 ```
 
-Likewise, in this case `validate()` would still return true, as the suffix field would not be required in strict mode, as not all of the fields are provided.
+Likewise, in this case `validate()` would still return true, as the suffix field would not be required in strict mode, as not all the fields are provided.
 ```php
 $v = new Valitron\Validator(['first_name' => 'steve']);
 $v->rules([
@@ -317,8 +317,31 @@ $v->rules([
 $v->validate();
 ```
 
+### Check Boolean Flag
+The check boolean flag will enable the rule to work if the conditional field(s) are set too (bool)false. When not enabled, a (bool)false is treated as "SET" and would require the specified fields. Since this parameter comes after the strict flag, you must also set the strict flag to `true` or `false` when enabling the check boolean flag.
+```php
+// in this example the 'suffix' field is not required when the 'enabled' is included in the data and set to 
+// (bool)false. Without enabling the check boolean flag, this scenario would result in 'suffix' being required.
+$v->rule('requiredWith', 'suffix', 'enabled', false, true);
+
+// we can still use the strict flag as described when providing multiple fields; in this case,
+// setting fields 'hidden' AND 'enabled' to (bool)true would make 'suffix' required but if either
+// was set to (bool)false then 'suffix' would not be required when it previously would be.
+$v->rule('requiredWith', 'suffix', ['enabled', 'hidden'], true, true);
+```
+Alternate syntax.
+```php
+$v = new Valitron\Validator(['first_name' => 'steve', 'last_name' => 'holt', 'suffix' => 'Mr']);
+$v->rules([
+    'requiredWith' => [
+        ['suffix', ['first_name', 'last_name'], true]
+    ]
+]);
+$v->validate();
+```
+
 ## requiredWithout fields usage
-The `requiredWithout` rule checks that the field is required, not null, and not the empty string, if any other fields are NOT present.
+The `requiredWithout` rule checks that the field is required, not null, and not an empty string, if any other fields are NOT present.
 ```php
 // this rule will require the username field when the first_name is not present
 $v->rule('requiredWithout', 'username', 'first_name')
@@ -355,7 +378,7 @@ $v->validate();
 ```
 
 ### Strict flag
-The strict flag will change the `requiredWithout` rule to `requiredWithoutAll` which will require the field only if ALL of the other fields are not present.
+The strict flag will change the `requiredWithout` rule to `requiredWithoutAll` which will require the field only if all the other fields are not present.
 ```php
 // in this example the username field is required only when both the first_name and last_name are not provided
 $v->rule('requiredWithout', 'username', ['first_name', 'last_name'], true);
@@ -371,12 +394,35 @@ $v->rules([
 $v->validate();
 ```
 
-Likewise, in this case `validate()` would still return true, as the username field would not be required in strict mode, as all of the fields are provided.
+Likewise, in this case `validate()` would still return true, as the username field would not be required in strict mode, as all fields are provided.
 ```php
 $v = new Valitron\Validator(['first_name' => 'steve', 'last_name' => 'holt']);
 $v->rules([
     'requiredWithout' => [
         ['suffix', ['first_name', 'last_name'], true]
+    ]
+]);
+$v->validate();
+```
+
+### Check Boolean Flag
+The check boolean flag will enable the rule to work if the conditional field is set to (bool)false. When not enabled, a (bool)false on the conditional field(s) are treated as "SET" and would require the specified fields. Since this parameter comes after the strict flag, you must also set the strict flag to `true` or `false` when enabling the check boolean flag.
+```php
+// in this example the 'mothers_name' field is required if the 'is_adult' field is included and set to (bool)false.
+// Without enabling the check boolean flag, this scenario would result in mothers_name not being required.
+$v->rule('requiredWithout', 'mothers_name', 'is_adult', false, true);
+
+// we can still use the strict flag as described when providing multiple fields; in this case,
+// setting fields 'is_adult' AND 'is_orphan' to (bool)false would make mothers_name required but if either
+// was set to (bool)true then 'mothers_name' would not be required when it previously would be.
+$v->rule('requiredWithout', 'mothers_name', ['is_adult', 'is_orphan'], true, true);
+```
+Alternate syntax.
+```php
+$v = new Valitron\Validator(['mothers_name' => 'Sharon Marsh', 'is_adult' => false, 'is_orphan' => false]);
+$v->rules([
+    'requiredWithout' => [
+        ['mothers_name', ['is_adult', 'is_orphan'], true, true] 
     ]
 ]);
 $v->validate();
