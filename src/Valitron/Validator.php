@@ -364,9 +364,8 @@ class Validator
             return false;
         } elseif (function_exists('bccomp')) {
             return !(bccomp($params[0], $value, 14) === 1);
-        } else {
-            return $params[0] <= $value;
         }
+        return $params[0] <= $value;
     }
 
     /**
@@ -383,9 +382,8 @@ class Validator
             return false;
         } elseif (function_exists('bccomp')) {
             return !(bccomp($value, $params[0], 14) === 1);
-        } else {
-            return $params[0] >= $value;
         }
+        return $params[0] >= $value;
     }
 
     /**
@@ -426,7 +424,7 @@ class Validator
         }
 
         if ($forceAsAssociative || $this->isAssociativeArray($params[0])) {
-           $params[0] = array_keys($params[0]);
+            $params[0] = array_keys($params[0]);
         }
 
         $strict = false;
@@ -876,39 +874,37 @@ class Validator
         if ($numberIsValid()) {
             if (!isset($cards)) {
                 return true;
+            }
+            $cardRegex = array(
+                'visa' => '#^4[0-9]{12}(?:[0-9]{3})?$#',
+                'mastercard' => '#^(5[1-5]|2[2-7])[0-9]{14}$#',
+                'amex' => '#^3[47][0-9]{13}$#',
+                'dinersclub' => '#^3(?:0[0-5]|[68][0-9])[0-9]{11}$#',
+                'discover' => '#^6(?:011|5[0-9]{2})[0-9]{12}$#',
+            );
+
+            if (isset($cardType)) {
+                // if we don't have any valid cards specified and the card we've been given isn't in our regex array
+                if (!isset($cards) && !in_array($cardType, array_keys($cardRegex))) {
+                    return false;
+                }
+
+                // we only need to test against one card type
+                return (preg_match($cardRegex[$cardType], $value) === 1);
+            } elseif (isset($cards)) {
+                // if we have cards, check our users card against only the ones we have
+                foreach ($cards as $card) {
+                    if (in_array($card, array_keys($cardRegex)) && preg_match($cardRegex[$card], $value) === 1) {
+                        // if the card is valid, we want to stop looping
+                        return true;
+                    }
+                }
             } else {
-                $cardRegex = array(
-                    'visa' => '#^4[0-9]{12}(?:[0-9]{3})?$#',
-                    'mastercard' => '#^(5[1-5]|2[2-7])[0-9]{14}$#',
-                    'amex' => '#^3[47][0-9]{13}$#',
-                    'dinersclub' => '#^3(?:0[0-5]|[68][0-9])[0-9]{11}$#',
-                    'discover' => '#^6(?:011|5[0-9]{2})[0-9]{12}$#',
-                );
-
-                if (isset($cardType)) {
-                    // if we don't have any valid cards specified and the card we've been given isn't in our regex array
-                    if (!isset($cards) && !in_array($cardType, array_keys($cardRegex))) {
-                        return false;
-                    }
-
-                    // we only need to test against one card type
-                    return (preg_match($cardRegex[$cardType], $value) === 1);
-
-                } elseif (isset($cards)) {
-                    // if we have cards, check our users card against only the ones we have
-                    foreach ($cards as $card) {
-                        if (in_array($card, array_keys($cardRegex)) && preg_match($cardRegex[$card], $value) === 1) {
-                            // if the card is valid, we want to stop looping
-                            return true;
-                        }
-                    }
-                } else {
-                    // loop through every card
-                    foreach ($cardRegex as $regex) {
-                        // until we find a valid one
-                        if (preg_match($regex, $value) === 1) {
-                            return true;
-                        }
+                // loop through every card
+                foreach ($cardRegex as $regex) {
+                    // until we find a valid one
+                    if (preg_match($regex, $value) === 1) {
+                        return true;
                     }
                 }
             }
@@ -959,14 +955,15 @@ class Validator
             $emptyFields = 0;
             foreach ($reqParams as $requiredField) {
                 // check the field is set, not null, and not the empty string
-                if (isset($fields[$requiredField]) && !is_null($fields[$requiredField])
-                    && (is_string($fields[$requiredField]) ? trim($fields[$requiredField]) !== '' : true)) {
+                if (
+                    isset($fields[$requiredField]) && !is_null($fields[$requiredField])
+                    && (is_string($fields[$requiredField]) ? trim($fields[$requiredField]) !== '' : true)
+                ) {
                     if (!$allRequired) {
                         $conditionallyReq = true;
                         break;
-                    } else {
-                        $emptyFields++;
                     }
+                    $emptyFields++;
                 }
             }
             // if all required fields are present in strict mode, we're requiring it
@@ -976,7 +973,7 @@ class Validator
         }
         // if we have conditionally required fields
         if ($conditionallyReq && (is_null($value) ||
-                is_string($value) && trim($value) === '')) {
+            is_string($value) && trim($value) === '')) {
             return false;
         }
         return true;
@@ -1008,9 +1005,8 @@ class Validator
                     if (!$allEmpty) {
                         $conditionallyReq = true;
                         break;
-                    } else {
-                        $filledFields++;
                     }
+                    $filledFields++;
                 }
             }
             // if all fields were empty, then we're requiring this in strict mode
@@ -1020,7 +1016,7 @@ class Validator
         }
         // if we have conditionally required fields
         if ($conditionallyReq && (is_null($value) ||
-                is_string($value) && trim($value) === '')) {
+            is_string($value) && trim($value) === '')) {
             return false;
         }
         return true;
@@ -1164,8 +1160,8 @@ class Validator
             }
             return array($values, true);
         } // Dead end, abort
-        elseif ($identifier === null || ! isset($data[$identifier])) {
-            if ($allow_empty){
+        elseif ($identifier === null || !isset($data[$identifier])) {
+            if ($allow_empty) {
                 //when empty values are allowed, we only care if the key exists
                 return array(null, array_key_exists($identifier, $data));
             }
@@ -1178,25 +1174,25 @@ class Validator
             }
             return array($data[$identifier], $allow_empty);
         } // We need to go deeper
-        else {
-            return $this->getPart($data[$identifier], $identifiers, $allow_empty);
-        }
+
+        return $this->getPart($data[$identifier], $identifiers, $allow_empty);
     }
 
-    private function validationMustBeExcecuted($validation, $field, $values, $multiple){
+    private function validationMustBeExcecuted($validation, $field, $values, $multiple)
+    {
         //always excecute requiredWith(out) rules
-        if (in_array($validation['rule'], array('requiredWith', 'requiredWithout'))){
+        if (in_array($validation['rule'], array('requiredWith', 'requiredWithout'))) {
             return true;
         }
 
         //do not execute if the field is optional and not set
-        if($this->hasRule('optional', $field) && ! isset($values)){
+        if ($this->hasRule('optional', $field) && !isset($values)) {
             return false;
         }
 
         //ignore empty input, except for required and accepted rule
-        if (! $this->hasRule('required', $field) && ! in_array($validation['rule'], array('required', 'accepted'))){
-            if($multiple){
+        if (!$this->hasRule('required', $field) && !in_array($validation['rule'], array('required', 'accepted'))) {
+            if ($multiple) {
                 return count($values) != 0;
             }
             return (isset($values) && $values !== '');
@@ -1216,7 +1212,7 @@ class Validator
             foreach ($v['fields'] as $field) {
                 list($values, $multiple) = $this->getPart($this->_fields, explode('.', $field), false);
 
-                if (! $this->validationMustBeExcecuted($v, $field, $values, $multiple)){
+                if (!$this->validationMustBeExcecuted($v, $field, $values, $multiple)) {
                     continue;
                 }
 
@@ -1230,7 +1226,7 @@ class Validator
 
                 if (!$multiple) {
                     $values = array($values);
-                } else if (! $this->hasRule('required', $field)){
+                } else if (!$this->hasRule('required', $field)) {
                     $values = array_filter($values);
                 }
 
@@ -1395,8 +1391,10 @@ class Validator
         // Get any other arguments passed to function
         $params = array_slice(func_get_args(), 2);
 
-        if (is_callable($rule)
-            && !(is_string($rule) && $this->hasValidator($rule))) {
+        if (
+            is_callable($rule)
+            && !(is_string($rule) && $this->hasValidator($rule))
+        ) {
             $name = $this->getUniqueRuleName($fields);
             $message = isset($params[0]) ? $params[0] : null;
             $this->addInstanceRule($name, $rule, $message);
@@ -1575,7 +1573,8 @@ class Validator
         }, array_keys($rules));
     }
 
-    private function isAssociativeArray($input){
+    private function isAssociativeArray($input)
+    {
         //array contains at least one key that's not an can not be cast to an integer
         return count(array_filter(array_keys($input), 'is_string')) > 0;
     }
