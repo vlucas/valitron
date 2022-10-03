@@ -630,6 +630,10 @@ class Validator
      */
     protected function validateEmailDNS($field, $value)
     {
+        if (!is_string($value)) {
+            return false;
+        }
+
         if ($this->validateEmail($field, $value)) {
             $domain = ltrim(stristr($value, '@'), '@') . '.';
             if (function_exists('idn_to_ascii') && defined('INTL_IDNA_VARIANT_UTS46')) {
@@ -651,6 +655,10 @@ class Validator
      */
     protected function validateUrl($field, $value)
     {
+        if (!is_string($value)) {
+            return false;
+        }
+
         foreach ($this->validUrlPrefixes as $prefix) {
             if (strpos($value, $prefix) !== false) {
                 return filter_var($value, \FILTER_VALIDATE_URL) !== false;
@@ -669,6 +677,10 @@ class Validator
      */
     protected function validateUrlActive($field, $value)
     {
+        if (!is_string($value)) {
+            return false;
+        }
+
         foreach ($this->validUrlPrefixes as $prefix) {
             if (strpos($value, $prefix) !== false) {
                 $host = parse_url(strtolower($value), PHP_URL_HOST);
