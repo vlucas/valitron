@@ -29,7 +29,7 @@ return array(
     'boolean'       => "boolean olmalı",
     'lengthBetween' => "%d ve %d karakter arasında olmalı",
     'creditCard'    => "geçerli bir kredi kartı numarası olmalı",
-    "lengthMin"     => "%d katakterden fazla içermeli",
+    "lengthMin"     => "%d karakterden fazla içermeli",
     "lengthMax"     => "%d karakterden az içermeli",
     "instanceOf"    => "bunun bir örneği olmalı '%s'"
 );
