@@ -1273,7 +1273,7 @@ class Validator
      */
     public function stopOnFirstFail($stop = true)
     {
-        $this->stop_on_first_fail = (bool)$stop;
+        $this->stop_on_first_fail = $stop;
     }
 
     /**
@@ -1442,7 +1442,7 @@ class Validator
         $this->_validations[] = array(
             'rule' => $rule,
             'fields' => (array)$fields,
-            'params' => (array)$params,
+            'params' => $params,
             'message' => $message
         );
 
