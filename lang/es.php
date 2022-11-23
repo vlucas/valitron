@@ -7,9 +7,9 @@ return array(
     'accepted'       => "debe ser aceptado",
     'numeric'        => "debe ser numérico",
     'integer'        => "debe ser un entero",
-    'length'         => "debe ser mas largo de %d",
-    'min'            => "debe ser mayor de %s",
-    'max'            => "debe ser menor de %s",
+    'length'         => "debe tener una longitud de %d",
+    'min'            => "debe ser mayor que %s",
+    'max'            => "debe ser menor que %s",
     'in'             => "contiene un valor inválido",
     'notIn'          => "contiene un valor inválido",
     'ip'             => "no es una dirección IP",
@@ -33,5 +33,6 @@ return array(
     "instanceOf"     => "debe ser una instancia de '%s'",
     'containsUnique' => "debe contener solo valores únicos",
     'subset'         => "contiene un elemento que no está en la lista",
-    'arrayHasKeys'   => "no contiene todas las claves requeridas"    
+    'arrayHasKeys'   => "no contiene todas las claves requeridas",
+    'array'          => "debe ser una matriz"
 );
