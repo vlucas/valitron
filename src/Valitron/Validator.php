@@ -89,6 +89,11 @@ class Validator
     protected $prepend_labels = true;
 
     /**
+     * @var bool
+     */
+    protected $index_error_by_rule = false;
+
+    /**
      * Setup validation
      *
      * @param  array $data
@@ -155,6 +160,14 @@ class Validator
     public function setPrependLabels($prepend_labels = true)
     {
         $this->prepend_labels = $prepend_labels;
+    }
+
+    /**
+     * @param bool $index_error_by_rule
+     */
+    public function setIndexErrorByRule($index_error_by_rule = true)
+    {
+        $this->index_error_by_rule = $index_error_by_rule;
     }
 
     /**
@@ -1099,9 +1112,10 @@ class Validator
      *
      * @param string $field
      * @param string $message
-     * @param array  $params
+     * @param array $params
+     * @param string|null $rule
      */
-    public function error($field, $message, array $params = array())
+    public function error($field, $message, array $params = array(), $rule = null)
     {
         $message = $this->checkAndSetLabel($field, $message, $params);
 
@@ -1125,7 +1139,12 @@ class Validator
             $values[] = $param;
         }
 
-        $this->_errors[$field][] = vsprintf($message, $values);
+        $error = vsprintf($message, $values);
+        if ($this->index_error_by_rule && $rule !== null) {
+            $this->_errors[$field][$rule] = $error;
+        } else {
+            $this->_errors[$field][] = $error;
+        }
     }
 
     /**
@@ -1252,7 +1271,7 @@ class Validator
                 }
 
                 if (!$result) {
-                    $this->error($field, $v['message'], $v['params']);
+                    $this-> error($field, $v['message'], $v['params'], $v['rule']);
                     if ($this->stop_on_first_fail) {
                         $set_to_break = true;
                         break;
@@ -1480,7 +1499,7 @@ class Validator
      * @param  string $field
      * @param  string $message
      * @param  array  $params
-     * @return array
+     * @return string
      */
     protected function checkAndSetLabel($field, $message, $params)
     {
