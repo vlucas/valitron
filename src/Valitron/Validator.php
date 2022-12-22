@@ -1195,7 +1195,8 @@ class Validator
         }
     }
 
-    private function validationMustBeExcecuted($validation, $field, $values, $multiple){
+    protected function validationMustBeExecuted($validation, $field, $values, $multiple)
+    {
         //always excecute requiredWith(out) rules
         if (in_array($validation['rule'], array('requiredWith', 'requiredWithout'))){
             return true;
@@ -1216,6 +1217,7 @@ class Validator
 
         return true;
     }
+
     /**
      * Run validations and return boolean result
      *
@@ -1228,7 +1230,7 @@ class Validator
             foreach ($v['fields'] as $field) {
                 list($values, $multiple) = $this->getPart($this->_fields, explode('.', $field), false);
 
-                if (! $this->validationMustBeExcecuted($v, $field, $values, $multiple)){
+                if (! $this->validationMustBeExecuted($v, $field, $values, $multiple)){
                     continue;
                 }
 
