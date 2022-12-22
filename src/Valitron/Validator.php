@@ -753,6 +753,9 @@ class Validator
      */
     protected function validateDate($field, $value)
     {
+        if ($value === null) {
+            return false;
+        }
         $isDate = false;
         if ($value instanceof \DateTime) {
             $isDate = true;
