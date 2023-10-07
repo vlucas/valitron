@@ -2,7 +2,7 @@
 
 use Valitron\Validator;
 
-class StopOnFirstFail extends BaseTestCase
+class StopOnFirstFailTest extends BaseTestCase
 {
     public function testStopOnFirstFail()
     {
