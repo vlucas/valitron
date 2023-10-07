@@ -2602,7 +2602,7 @@ class ValidateTest extends BaseTestCase
         $this->assertEquals(array('test' => array($expected)), $v->errors());
     }
 
-    public function dataProviderFor_testError()
+    public static function dataProviderFor_testError()
     {
         return array(
             array(
